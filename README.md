@@ -56,10 +56,3 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
  - ``` npm run format ``` - run Prettier to check the formatting of the code
 
  - ``` npm run test ``` - run the process of executing tests and generating test outcome reports using Jest
-
-## VS Code extensions required for contributing
-
-- [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-- [Stylelint](https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint)
