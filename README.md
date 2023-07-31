@@ -1,4 +1,5 @@
 # COMFORTO
+
 <p align="center">
   <a href="https://aniretakey.github.io/ecommerce-application/ecommerce-application/">
     <img height="200" src="https://github-production-user-asset-6210df.s3.amazonaws.com/98079971/257190619-9ffbe3e2-0603-4c70-91a3-0a7f11b8b15b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230731T102019Z&X-Amz-Expires=300&X-Amz-Signature=334d0fa0c3f77e4c503b38048128a8c4c94d0bccca70ebc3b298a46e9e13cd70&X-Amz-SignedHeaders=host&actor_id=98079971&key_id=0&repo_id=672496541" alt="comforto-logo">
@@ -9,11 +10,12 @@
 
 COMFORTO is an online furniture and home accessories store powered by CommerceTools. Users can browse through a vast range of products 🪑🛏🛋, view detailed descriptions, add their favorite items to the basket 🛒, and proceed to checkout 💳. It includes features such as user registration and login 📝🔐, product search 🔍, product categorization, and sorting to make the shopping experience more streamlined and convenient.
 
-The application was created as part of the [JavaScript/Front-end 2023Q1 course](https://rs.school/js/) ([eCommerce Application](https://github.com/rolling-scopes-school/tasks/tree/master/tasks/eCommerce-Application))  by [@aniretakey](https://github.com/aniretakey), [@mracoon](https://github.com/mracoon) and [@gorobchenko-k](https://github.com/gorobchenko-k)
+The application was created as part of the [JavaScript/Front-end 2023Q1 course](https://rs.school/js/) ([eCommerce Application](https://github.com/rolling-scopes-school/tasks/tree/master/tasks/eCommerce-Application)) by [@aniretakey](https://github.com/aniretakey), [@mracoon](https://github.com/mracoon) and [@gorobchenko-k](https://github.com/gorobchenko-k)
 
 ## Technologies
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white) 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white) 
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![DaisyUI](https://img.shields.io/badge/daisyui-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white)
 ![Webpack](https://img.shields.io/badge/webpack-%238DD6F9.svg?style=for-the-badge&logo=webpack&logoColor=black)
@@ -44,15 +46,15 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
    ```sh
    npm run build
    ```
-   
+
 ## Available Scripts
- 
--  ``` npm run start ``` -  run the application in development mode using DevServer to track changes in the project
 
- - ``` npm run build ``` - build the project
+- `npm run start` - run the application in development mode using DevServer to track changes in the project
 
- - ``` npm run lint  ``` - run ESLint to identify code style issues and errors
+- `npm run build` - build the project
 
- - ``` npm run format ``` - run Prettier to check the formatting of the code
+- `npm run lint ` - run ESLint to identify code style issues and errors
 
- - ``` npm run test ``` - run the process of executing tests and generating test outcome reports using Jest
+- `npm run format` - run Prettier to check the formatting of the code
+
+- `npm run test` - run the process of executing tests and generating test outcome reports using Jest
