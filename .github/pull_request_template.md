@@ -1,6 +1,8 @@
 ## Title: (what changes have been added)
 
-#### Task: Sprint_2 / Login Page Implementation
+#### Task: Sprint_2 / Login Page Implementation:
+
+link to technical assignment - [link](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/eCommerce-Application/Sprints/Sprint%231.md#1-repository-setup-19-points-)
 
 ### Changes:
 
