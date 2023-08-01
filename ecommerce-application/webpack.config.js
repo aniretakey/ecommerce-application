@@ -21,6 +21,11 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.ts$/i,
+        use: 'ts-loader',
+        exclude: ['/node_modules/'],
+      },
+      {
         test: /\.css$/i,
         use: [stylesHandler, 'css-loader'],
       },
