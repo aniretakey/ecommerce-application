@@ -1,3 +1,4 @@
 dist
 webpack.config.js
+commitlint.config.js
 node_modules
