@@ -5,7 +5,10 @@
   "scripts": {
     "start": "webpack server --open",
     "build": "webpack --node-env=production",
-    "prepare": "cd .. && npx husky install ecommerce-application/.husky"
+    "prepare": "cd .. && npx husky install ecommerce-application/.husky",
+    "lint": "npx eslint --fix ./src",
+    "format": "npx prettier -w .",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
