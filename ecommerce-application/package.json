@@ -6,8 +6,8 @@
     "start": "webpack server --open",
     "build": "webpack --node-env=production",
     "prepare": "cd .. && npx husky install ecommerce-application/.husky",
-    "lint": "npx eslint --fix ./src",
-    "format": "npx prettier -w .",
+    "lint": "eslint --fix ./src",
+    "format": "prettier -w ./src",
     "test": "jest"
   },
   "author": "",
