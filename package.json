@@ -5,7 +5,7 @@
   "scripts": {
     "start": "webpack server --open",
     "build": "webpack --node-env=production",
-    "prepare": "npx husky install",
+    "prepare": "husky install",
     "lint": "eslint --fix ./src",
     "format": "prettier -w ./src",
     "test": "jest"
