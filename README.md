@@ -1,7 +1,7 @@
 # COMFORTO
 
 <p align="center">
-  <a href="https://aniretakey.github.io/ecommerce-application/ecommerce-application/">
+  <a href="https://aniretakey.github.io/ecommerce-application/">
     <img height="200" src="https://github-production-user-asset-6210df.s3.amazonaws.com/98079971/257190619-9ffbe3e2-0603-4c70-91a3-0a7f11b8b15b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230731T102019Z&X-Amz-Expires=300&X-Amz-Signature=334d0fa0c3f77e4c503b38048128a8c4c94d0bccca70ebc3b298a46e9e13cd70&X-Amz-SignedHeaders=host&actor_id=98079971&key_id=0&repo_id=672496541" alt="comforto-logo">
   </a>
 </p>
