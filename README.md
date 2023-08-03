@@ -30,15 +30,20 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
    ```sh
    git clone https://github.com/aniretakey/ecommerce-application.git
    ```
-2. Change directory
+2. Go to the preject directory
    ```sh
    cd ecommerce-application
    ```
-3. Install all dependencies
+3. Switch to the `develop` branch and pull the latest changes
+   ```sh
+   $ git checkout develop
+   $ git pull
+   ```
+4. Install all dependencies
    ```sh
    npm install
    ```
-4. Run the application in development mode using DevServer to track changes in the project
+5. Run the application in development mode using DevServer to track changes in the project
    ```sh
    npm run start
    ```
@@ -53,7 +58,7 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 
 - `npm run build` - build the project
 
-- `npm run lint ` - run ESLint to identify code style issues and errors
+- `npm run lint ` - run ESLint to identify and fix code style issues and errors
 
 - `npm run format` - run Prettier to check the formatting of the code
 
