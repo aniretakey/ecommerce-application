@@ -1,7 +1,8 @@
 {
   "name": "ecommerce-application",
   "version": "1.0.0",
-  "description": "",
+  "description": "COMFORTO is an online furniture and home accessories store powered by CommerceTools",
+  "private": true,
   "scripts": {
     "start": "webpack server --open",
     "build": "webpack --node-env=production",
@@ -10,7 +11,11 @@
     "format": "prettier -w ./src",
     "test": "jest"
   },
-  "author": "",
+  "author": "Ekaterina Kornishina <EMKornishina@gmail.com> (https://github.com/aniretakey)",
+  "contributors": [
+    "Natalia Oreshkova <nataliyakomarova777@gmail.com> (https://github.com/mracoon)",
+    "Ekaterina Gorobchenko <gorobchenko.es@mail.ru> (https://github.com/gorobchenko-k)"
+  ],
   "license": "ISC",
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
