@@ -36,8 +36,8 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
    ```
 3. Switch to the `develop` branch and pull the latest changes
    ```sh
-   $ git checkout develop
-   $ git pull
+   git checkout develop
+   git pull
    ```
 4. Install all dependencies
    ```sh
@@ -60,6 +60,6 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 
 - `npm run lint ` - run ESLint to identify and fix code style issues and errors
 
-- `npm run format` - run Prettier to check the formatting of the code
+- `npm run format` - fix code formatting with Prettier
 
 - `npm run test` - run the process of executing tests and generating test outcome reports using Jest
