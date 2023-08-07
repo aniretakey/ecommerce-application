@@ -16,7 +16,7 @@ const config = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
       filename: 'index.html',
-      favicon: path.resolve(__dirname, 'src', 'assets', 'favicon.png'),
+      favicon: path.resolve(__dirname, 'src', 'assets', 'favicon2.png'),
     }),
   ],
   module: {
@@ -37,7 +37,7 @@ const config = {
     ],
   },
   resolve: {
-    extensions: ['.ts','.js'],
+    extensions: ['.ts', '.js'],
   },
 };
 
