@@ -30,13 +30,13 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
    ```sh
    git clone https://github.com/aniretakey/ecommerce-application.git
    ```
-2. Go to the preject directory
+2. Go to the project directory
    ```sh
    cd ecommerce-application
    ```
 3. Switch to the `develop` branch and pull the latest changes
    ```sh
-   git checkout develop
+   git switch develop
    git pull
    ```
 4. Install all dependencies
