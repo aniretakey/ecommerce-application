@@ -1,12 +1,12 @@
 import Page from '../../../utils/pageTemplate';
 
-export default class Registration extends Page {
+export default class Catalog extends Page {
   constructor() {
-    super('registration');
+    super('catalog');
   }
 
   public render(): HTMLElement {
-    const title = this.createHeaderTitle('Registration');
+    const title = this.createHeaderTitle('Catalog');
     this.container.append(title);
     return this.container;
   }
