@@ -22,7 +22,8 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 [<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/ff6eb911-01ba-44fd-bb45-8c171b7a5f44" alt="prettier" height="28px">](https://prettier.io/)
-[<image src="https://commercetools.com/_build/images/logos/commercetools-logo-desktop.svg" alt="commercetools" height="26px">](https://commercetools.com/)
+[<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/d3a69683-701e-4b0b-88fd-f6beeeb54b7d" alt="commercetools" height="28px">](https://commercetools.com/)
+
 
 ## Getting Started
 
