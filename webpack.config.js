@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV == 'production';
 
@@ -38,6 +39,12 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        extensions: ['.js', '.ts', '.tsx', '.styl'],
+        mainFields: ['components', 'types', 'utils', 'assets', 'app', 'router', 'components/pages'],
+      }),
+    ],
   },
 };
 
