@@ -1,6 +1,7 @@
 import BaseComponent from '../../utils/baseComponent';
 import { PageIds } from '../../types/types';
 import './style.css';
+import { safeQuerySelector } from '../../utils/safeQuerySelector';
 
 const navButtons = [
   { id: PageIds.MainPage, header: 'Main' },
@@ -34,6 +35,8 @@ export default class Header extends BaseComponent {
       navLinks.getNode().innerHTML += navLink;
     });
     this.append(navLinks);
+    const mainPageLink = safeQuerySelector('#main-page');
+    mainPageLink.setAttribute('href', '/');
   }
 
   public render(): void {
