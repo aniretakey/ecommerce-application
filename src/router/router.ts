@@ -4,6 +4,7 @@ import Catalog from '../components/pages/catalog';
 import Registration from '../components/pages/registration';
 import Login from '../components/pages/login';
 import About from '../components/pages/about';
+import Error from '../components/pages/error';
 import BaseComponent from '../utils/baseComponent';
 
 const pagesList = ['main-page', 'catalog-page', 'about-page', 'registration-page', 'login-page'];
@@ -35,6 +36,11 @@ export default function routing(mainHTML: BaseComponent): void {
     const AboutPage = new About().render();
     renderNewPage(mainHTML, AboutPage);
   });
+  router.on(`/error-page`, function () {
+    const ErrorPage = new Error().render();
+    renderNewPage(mainHTML, ErrorPage);
+  });
+
   router.navigate(`${window.location.hash.slice(2)}`);
 
   window.addEventListener('hashchange', function () {
@@ -43,13 +49,7 @@ export default function routing(mainHTML: BaseComponent): void {
     if (pagesList.includes(hash)) {
       router.navigate(`/${hash}`);
     } else {
-      mainHTML.clearInnerHTML();
-      console.log('404 - Page is not found');
-      router.on(`/$error-page`, function () {
-        console.log('error');
-      });
+      router.navigate(`/error-page`);
     }
   });
 }
-
-// TODO: open error page when URL doesn't exist
