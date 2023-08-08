@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://aniretakey.github.io/ecommerce-application/">
-    <img height="200" src="https://github-production-user-asset-6210df.s3.amazonaws.com/98079971/257190619-9ffbe3e2-0603-4c70-91a3-0a7f11b8b15b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20230731%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230731T102019Z&X-Amz-Expires=300&X-Amz-Signature=334d0fa0c3f77e4c503b38048128a8c4c94d0bccca70ebc3b298a46e9e13cd70&X-Amz-SignedHeaders=host&actor_id=98079971&key_id=0&repo_id=672496541" alt="comforto-logo">
+    <img height="200" src="./src/assets/logo.png" alt="comforto-logo">
   </a>
 </p>
 
@@ -22,7 +22,8 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white)
 ![Jest](https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white)
 [<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/ff6eb911-01ba-44fd-bb45-8c171b7a5f44" alt="prettier" height="28px">](https://prettier.io/)
-[<image src="https://commercetools.com/_build/images/logos/commercetools-logo-desktop.svg" alt="commercetools" height="26px">](https://commercetools.com/)
+[<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/d3a69683-701e-4b0b-88fd-f6beeeb54b7d" alt="commercetools" height="28px">](https://commercetools.com/)
+
 
 ## Getting Started
 
@@ -30,13 +31,13 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
    ```sh
    git clone https://github.com/aniretakey/ecommerce-application.git
    ```
-2. Go to the preject directory
+2. Go to the project directory
    ```sh
    cd ecommerce-application
    ```
 3. Switch to the `develop` branch and pull the latest changes
    ```sh
-   git checkout develop
+   git switch develop
    git pull
    ```
 4. Install all dependencies
