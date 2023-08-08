@@ -8,9 +8,9 @@ const navButtons = [
   { id: PageIds.AboutPage, header: 'About' },
   { id: PageIds.RegistrationPage, header: 'Registration' },
   { id: PageIds.LoginPage, header: 'Login' },
-  { id: PageIds.ProductPage, header: 'Product' },
-  { id: PageIds.BasketPage, header: 'Basket' },
-  { id: PageIds.UserProfilePage, header: 'User Profile' },
+  // { id: PageIds.ProductPage, header: 'Product' },
+  // { id: PageIds.BasketPage, header: 'Basket' },
+  // { id: PageIds.UserProfilePage, header: 'User Profile' },
 ];
 
 export default class Header extends BaseComponent {
