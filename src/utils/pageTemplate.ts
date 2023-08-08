@@ -4,6 +4,7 @@ export default abstract class Page {
   constructor(id: string) {
     this.container = document.createElement('div');
     this.container.id = id;
+    this.container.classList.add(id);
   }
 
   protected createHeaderTitle(text: string): HTMLElement {
