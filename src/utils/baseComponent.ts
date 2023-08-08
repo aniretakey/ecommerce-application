@@ -43,6 +43,10 @@ export default class BaseComponent {
     return this.#node;
   }
 
+  public clearInnerHTML(): void {
+    this.#node.innerHTML = '';
+  }
+
   public addClass(classNames: string[]): void {
     classNames.forEach((className) => {
       this.#node.classList.add(className);
