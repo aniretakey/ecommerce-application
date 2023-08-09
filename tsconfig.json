@@ -12,12 +12,12 @@
     "baseUrl": "./src",
     "paths": {
       "@components/*": ["components/*"],
-      "@types/*": ["types/*"],
+      "@customTypes/*": ["types/*"],
       "@utils/*": ["utils/*"],
       "@assets/*": ["assets/*"],
       "@app/*": ["app/*"],
       "@router/*": ["router/*"],
-      "@pages/*": ["components/pages/*"]
+      "@pages/*": ["pages/*"]
     }
   }
 }
