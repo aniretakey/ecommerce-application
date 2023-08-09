@@ -49,8 +49,6 @@ router.on(`/error-page`, function () {
   renderNewPage(mainHTML, ErrorPage);
 });
 
-// router.navigate(`${window.location.hash.slice(2)}`);
-
 window.addEventListener('hashchange', function () {
   const hash = window.location.hash.slice(2);
   if (pagesList.includes(hash)) {
