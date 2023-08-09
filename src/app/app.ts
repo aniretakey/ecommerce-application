@@ -10,7 +10,7 @@ export default class App {
     this.header = new Header();
   }
 
-  public run(mainHTML: BaseComponent): void {
+  public run(mainHTML: BaseComponent<'main'>): void {
     this.header.render();
     document.body.append(mainHTML.getNode());
     router.navigate(`${window.location.hash.slice(2)}`);

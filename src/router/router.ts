@@ -17,7 +17,7 @@ export const mainHTML = new BaseComponent({
   },
 });
 
-function renderNewPage(mainHTML: BaseComponent, newPage: HTMLElement): void {
+function renderNewPage(mainHTML: BaseComponent<'main'>, newPage: HTMLElement): void {
   mainHTML.clearInnerHTML();
   mainHTML.getNode().append(newPage);
 }

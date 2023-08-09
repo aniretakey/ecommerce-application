@@ -15,9 +15,11 @@ const navButtons = [
   // { id: PageIds.UserProfilePage, header: 'User Profile' },
 ];
 
-export default class Header extends BaseComponent {
+export default class Header {
+  protected header: BaseComponent<'header'>;
+
   constructor() {
-    super({
+    this.header = new BaseComponent({
       tagName: 'header',
       classNames: ['header'],
       parentNode: document.body,
@@ -28,7 +30,7 @@ export default class Header extends BaseComponent {
     const navLinks = new BaseComponent({
       tagName: 'nav',
       classNames: ['nav'],
-      parentNode: this.getNode(),
+      parentNode: this.header.getNode(),
     });
 
     navButtons.forEach((elem) => {
@@ -50,7 +52,7 @@ export default class Header extends BaseComponent {
       });
       navLinks.append(navLink);
     });
-    this.append(navLinks);
+    this.header.append(navLinks);
 
     const mainPageLink = safeQuerySelector('#main-page');
     mainPageLink.setAttribute('href', '/');
