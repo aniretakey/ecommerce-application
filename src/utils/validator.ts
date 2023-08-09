@@ -24,10 +24,11 @@ class Validator {
   }
 }
 
+/**
+ * @example
+ * ```ts
+ * validator.validate(validator.password, '123Aa!*ddsd', cb);
+ * validator.validate(validator.email, 'user@example.com');
+ * ```
+ */
 export const validator = new Validator();
-
-// use:
-//
-// validator.validate(validator.password, '123Aa!*ddsd', cb);
-//
-// validator.validate(validator.email, 'user@example.com');
