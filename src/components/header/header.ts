@@ -1,5 +1,5 @@
 import BaseComponent from '@utils/baseComponent';
-import { PageIds } from '../../types/types';
+import { PageIds } from '@customTypes/types';
 import './style.css';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { router } from '@router/router';

@@ -1,10 +1,10 @@
 import Navigo from 'navigo';
-import Main from '@components/pages/main';
-import Catalog from '@components/pages/catalog';
-import Registration from '@components/pages/registration';
-import Login from '@components/pages/login';
-import About from '@components/pages/about';
-import Error from '@components/pages/error';
+import Main from '@pages/main';
+import Catalog from '@pages/catalog';
+import Registration from '@pages/registration';
+import Login from '@pages/login';
+import About from '@pages/about';
+import Error from '@pages/error';
 import BaseComponent from '@utils/baseComponent';
 
 const pagesList = ['main-page', 'catalog-page', 'about-page', 'registration-page', 'login-page'];

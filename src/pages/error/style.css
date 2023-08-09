@@ -7,7 +7,7 @@
 }
 
 .error-img {
-  background-image: url(../../../assets/img/error.png);
+  background-image: url(../../assets/img/error.png);
   width: 60vh;
   height: 60vh;
   background-repeat: no-repeat;
