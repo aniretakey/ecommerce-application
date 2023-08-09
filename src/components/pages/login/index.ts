@@ -1,4 +1,4 @@
-import Page from '../../../utils/pageTemplate';
+import Page from '@utils/pageTemplate';
 
 export default class Login extends Page {
   constructor() {
