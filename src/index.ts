@@ -1,5 +1,9 @@
 import './global.css';
-import App from '../src/app/app';
+import App from '@app/app';
+import BaseComponent from '@utils/baseComponent';
+import { mainHTML } from '@router/router';
 
 const app = new App();
-app.run();
+if (mainHTML instanceof BaseComponent) {
+  app.run(mainHTML);
+}

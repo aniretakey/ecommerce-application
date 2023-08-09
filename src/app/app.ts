@@ -1,6 +1,6 @@
-import Header from '../components/header/header';
-import BaseComponent from '../utils/baseComponent';
-import routing from '../router/router';
+import Header from '@components/header/header';
+import BaseComponent from '@utils/baseComponent';
+import { router } from '@router/router';
 
 export default class App {
   private static container: HTMLElement = document.body;
@@ -10,17 +10,9 @@ export default class App {
     this.header = new Header();
   }
 
-  private mainHTML = new BaseComponent({
-    tagName: 'main',
-    classNames: ['main'],
-    attributes: {
-      id: 'main',
-    },
-  });
-
-  public run(): void {
+  public run(mainHTML: BaseComponent): void {
     this.header.render();
-    document.body.append(this.mainHTML.getNode());
-    routing(this.mainHTML);
+    document.body.append(mainHTML.getNode());
+    router.navigate(`${window.location.hash.slice(2)}`);
   }
 }

@@ -1,7 +1,8 @@
-import BaseComponent from '../../utils/baseComponent';
+import BaseComponent from '@utils/baseComponent';
 import { PageIds } from '../../types/types';
 import './style.css';
-import { safeQuerySelector } from '../../utils/safeQuerySelector';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { router } from '@router/router';
 
 const navButtons = [
   { id: PageIds.MainPage, header: 'Main' },
@@ -31,10 +32,26 @@ export default class Header extends BaseComponent {
     });
 
     navButtons.forEach((elem) => {
-      const navLink = `<a class="nav-link" href="${elem.id}" id="${elem.id}" data-navigo>${elem.header}</a>`;
-      navLinks.getNode().innerHTML += navLink;
+      const navLink = new BaseComponent({
+        tagName: 'a',
+        classNames: ['nav-link'],
+        textContent: elem.header,
+        attributes: {
+          href: `/${elem.id}`,
+          id: elem.id,
+        },
+      });
+      navLink.getNode().setAttribute('data-navigo', '');
+      navLink.getNode().addEventListener('click', (e) => {
+        e.preventDefault();
+        if (router) {
+          router.navigate(`/${navLink.getNode().id}`);
+        }
+      });
+      navLinks.append(navLink);
     });
     this.append(navLinks);
+
     const mainPageLink = safeQuerySelector('#main-page');
     mainPageLink.setAttribute('href', '/');
   }
