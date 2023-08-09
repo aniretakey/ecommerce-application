@@ -1,6 +1,7 @@
 import './login-styles.css';
 import BaseComponent from '@utils/baseComponent';
 import Page from '@utils/pageTemplate';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 export default class Login extends Page {
   constructor() {
@@ -110,7 +111,12 @@ export default class Login extends Page {
       textContent: 'Show password',
       attributes: { for: 'showPass' },
       parentNode: ShowPwContainer,
-    }).getNode();
+    })
+      .getNode()
+      .addEventListener('click', () => {
+        const passwordInput = safeQuerySelector<HTMLInputElement>('#loginPassword');
+        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      });
 
     /* const showPwInput = */ new BaseComponent({
       tagName: 'input',
