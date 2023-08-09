@@ -39,12 +39,7 @@ const config = {
   },
   resolve: {
     extensions: ['.ts', '.js'],
-    plugins: [
-      new TsconfigPathsPlugin({
-        extensions: ['.js', '.ts', '.tsx', '.styl'],
-        mainFields: ['components', 'types', 'utils', 'assets', 'app', 'router', 'components/pages'],
-      }),
-    ],
+    plugins: [new TsconfigPathsPlugin()],
   },
 };
 
