@@ -14,13 +14,13 @@ export default class App {
   private static container: HTMLElement = document.body;
   private header: Header;
   private main: Main;
-  private router: Navigo;
+  public static router: Navigo;
 
   // eslint-disable-next-line max-lines-per-function
   constructor() {
     this.header = new Header();
     this.main = new Main();
-    this.router = new Navigo('/', { hash: true, strategy: 'ALL' }); // { hash: true }, strategy: 'ALL'
+    App.router = new Navigo('/', { hash: true, strategy: 'ALL' }); // { hash: true }, strategy: 'ALL'
 
     window.addEventListener('load', () => {
       function renderNewPage(mainHTML: BaseComponent<'main'>, newPage: HTMLElement | string): void {
@@ -28,49 +28,52 @@ export default class App {
         mainHTML.getNode().append(newPage);
       }
 
-      this.router.on('', () => {
+      App.router.on('', () => {
         renderNewPage(this.main.main, 'main');
       });
 
-      this.router.on('/catalog-page', () => {
+      App.router.on('/catalog-page', () => {
         const CatalogPage = new Catalog().render();
         renderNewPage(this.main.main, CatalogPage);
       });
 
-      this.router.on('/registration-page', () => {
+      App.router.on('/registration-page', () => {
         const RegistrationPage = new Registration().render();
         renderNewPage(this.main.main, RegistrationPage);
       });
 
-      this.router.on('/about-page', () => {
+      App.router.on('/about-page', () => {
         const AboutPage = new About().render();
         renderNewPage(this.main.main, AboutPage);
       });
 
-      this.router.on('/login-page', () => {
+      App.router.on('/login-page', () => {
         const LoginPage = new Login().render();
         renderNewPage(this.main.main, LoginPage);
       });
 
-      this.router.on(`/error-page`, () => {
+      App.router.on(`/error-page`, () => {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
       });
 
-      this.router.resolve();
+      App.router.resolve();
     });
 
     window.addEventListener('hashchange', () => {
       const hash = window.location.hash.slice(2);
       if (!pagesList.includes(hash)) {
-        this.router.navigate('/error-page');
+        App.router.navigate('/error-page');
       }
     });
   }
 
+  public static navigateToPage(page: string): void {
+    App.router.navigate(`/${page}`);
+  }
+
   public run(): void {
     this.header.render();
-    // document.body.append(this.main);
-    this.router.navigate(`${window.location.hash.slice(2)}`);
+    App.router.navigate(`${window.location.hash.slice(2)}`);
   }
 }
