@@ -2,7 +2,6 @@ import BaseComponent from '@utils/baseComponent';
 import { PageIds } from '@customTypes/types';
 import './style.css';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
-import { router } from '@router/router';
 
 const navButtons = [
   { id: PageIds.MainPage, header: 'Main' },
@@ -45,10 +44,8 @@ export default class Header {
       });
       navLink.getNode().setAttribute('data-navigo', '');
       navLink.getNode().addEventListener('click', (e) => {
+        console.log('start');
         e.preventDefault();
-        if (router) {
-          router.navigate(`/${navLink.getNode().id}`);
-        }
       });
       navLinks.append(navLink);
     });

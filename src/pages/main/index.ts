@@ -1,13 +1,16 @@
-import Page from '@utils/pageTemplate';
+import BaseComponent from '@utils/baseComponent';
 
-export default class Main extends Page {
+export default class Main {
+  public main: BaseComponent<'main'>;
+
   constructor() {
-    super('main');
-  }
-
-  public render(): HTMLElement {
-    const title = this.createHeaderTitle('Main');
-    this.container.append(title);
-    return this.container;
+    this.main = new BaseComponent({
+      tagName: 'main',
+      classNames: ['main'],
+      attributes: {
+        id: 'main',
+      },
+      parentNode: document.body,
+    });
   }
 }

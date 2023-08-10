@@ -1,7 +1,6 @@
 import Page from '@utils/pageTemplate';
 import BaseComponent from '@utils/baseComponent';
 import './style.css';
-import { router } from '@router/router';
 
 export default class Error extends Page {
   constructor() {
@@ -34,13 +33,6 @@ export default class Error extends Page {
     this.container.append(this.errorImg.getNode());
     this.container.append(this.errorText.getNode());
     this.container.append(this.homeLink.getNode());
-
-    this.homeLink.addListener('click', (e) => {
-      e.preventDefault();
-      if (router) {
-        router.navigate('/');
-      }
-    });
 
     return this.container;
   }
