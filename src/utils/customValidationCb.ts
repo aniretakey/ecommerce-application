@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { FormFields } from '../types/enums';
-import { ValidationCb } from '../types/types';
+import { FormFields } from '@customTypes/enums';
+import { ValidationCb } from '@customTypes/types';
 import { checkMandatory, checkMatch, checkMinLength, checkWhitespaces } from './validationHelper';
 
 const MIN_PASSWORD_LENGTH = 8;

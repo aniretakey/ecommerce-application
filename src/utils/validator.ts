@@ -1,5 +1,5 @@
+import { ValidationCb } from '@customTypes/types';
 import { z } from 'zod';
-import { ValidationCb } from '../types/types';
 
 class Validator {
   public email: z.ZodString;
