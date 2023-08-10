@@ -1,12 +1,12 @@
+import { ValidationCb } from '@customTypes/types';
 import { z } from 'zod';
-import { ValidationCb } from '../types/types';
 
 class Validator {
   public email: z.ZodString;
   public password: z.ZodString;
 
   constructor() {
-    this.email = z.string().email();
+    this.email = z.string();
     this.password = z.string();
   }
 
@@ -16,10 +16,9 @@ class Validator {
     if (!result.success) {
       const error = result.error.issues[0];
       const errMessage = error ? error.message : '';
-      console.log(errMessage);
       return errMessage;
     } else {
-      console.log('data: ', result.data);
+      //   console.log('data: ', result.data);
     }
   }
 }
@@ -27,8 +26,8 @@ class Validator {
 /**
  * @example
  * ```ts
- * validator.validate(validator.password, '123Aa!*ddsd', cb);
- * validator.validate(validator.email, 'user@example.com');
+ * validator.validate(validator.password, '123Aa!*ddsd', passwordValidationCb)
+ * validator.validate(validator.email, 'user@example.com', emailValidationCb);
  * ```
  */
 export const validator = new Validator();

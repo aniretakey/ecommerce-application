@@ -1,8 +1,9 @@
+import { emailValidationCb, passwordValidationCb } from '@utils/customValidationCb';
 import './login-styles.css';
 import BaseComponent from '@utils/baseComponent';
 import Page from '@utils/pageTemplate';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
-
+import { validator } from '@utils/validator';
 export default class Login extends Page {
   constructor() {
     super('login');
@@ -11,10 +12,7 @@ export default class Login extends Page {
   public render(): HTMLElement {
     const title = this.createHeaderTitle('Log In');
     const loginForm = this.addForm();
-    // loginForm.append()
-
     this.container.append(title, loginForm);
-
     return this.container;
   }
 
@@ -49,20 +47,29 @@ export default class Login extends Page {
       parentNode: loginEmailContainer,
     }).getNode();
 
-    /* const emailInput = */ new BaseComponent({
+    const emailInput = new BaseComponent({
       tagName: 'input',
       classNames: ['login__email-input'],
-      attributes: { type: 'email', id: 'loginEmail' },
+      attributes: { type: 'text', id: 'loginEmail' },
       parentNode: loginEmailContainer,
     }).getNode();
 
-    /*  const emailError = */ new BaseComponent({
+    const emailError = new BaseComponent({
       tagName: 'p',
       classNames: ['error-message'],
-      textContent: 'Invalid email',
+      textContent: '', //'Invalid email',
       attributes: { id: 'loginEmailError' },
       parentNode: loginEmailContainer,
     }).getNode();
+
+    emailInput.addEventListener('input', () => {
+      const errorMessage = validator.validate(validator.email, emailInput.value, emailValidationCb);
+      if (errorMessage) {
+        emailError.textContent = errorMessage;
+      } else {
+        emailError.textContent = '';
+      }
+    });
 
     return loginEmailContainer;
   }
@@ -71,8 +78,8 @@ export default class Login extends Page {
     const loginPwContainer = new BaseComponent({
       tagName: 'div',
       classNames: ['login__pw-container', 'form-field-container'],
+      attributes: { 'data-valid': 'false' },
     }).getNode();
-
     /* const pwLabel = */ new BaseComponent({
       tagName: 'label',
       classNames: ['login__pw-label'],
@@ -80,22 +87,27 @@ export default class Login extends Page {
       attributes: { for: 'loginPassword' },
       parentNode: loginPwContainer,
     }).getNode();
-
-    /* const pwInput = */ new BaseComponent({
+    const pwInput = new BaseComponent({
       tagName: 'input',
       classNames: ['login__pw-input'],
       attributes: { type: 'password', id: 'loginPassword' },
       parentNode: loginPwContainer,
     }).getNode();
-
-    /* const pwError = */ new BaseComponent({
+    const pwError = new BaseComponent({
       tagName: 'p',
       classNames: ['error-message'],
-      textContent: 'Password must contain at least one uppercase letter (A-Z).',
+      textContent: '', //'Password must contain at least one uppercase letter (A-Z).',
       attributes: { id: 'loginPwError' },
       parentNode: loginPwContainer,
     }).getNode();
-
+    pwInput.addEventListener('input', () => {
+      const errorMessage = validator.validate(validator.password, pwInput.value, passwordValidationCb);
+      if (errorMessage) {
+        pwError.textContent = errorMessage;
+      } else {
+        pwError.textContent = '';
+      }
+    });
     return loginPwContainer;
   }
 
@@ -105,18 +117,16 @@ export default class Login extends Page {
       classNames: ['login__pw-container', 'form-field-container'],
     }).getNode();
 
-    /* const showPwLabel = */ new BaseComponent({
+    /*  const showPwLabel = */ new BaseComponent({
       tagName: 'label',
       classNames: ['show-password'],
       textContent: 'Show password',
       attributes: { for: 'showPass' },
       parentNode: ShowPwContainer,
-    })
-      .getNode()
-      .addEventListener('click', () => {
-        const passwordInput = safeQuerySelector<HTMLInputElement>('#loginPassword');
-        passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
-      });
+    }).addListener('click', () => {
+      const passwordInput = safeQuerySelector<HTMLInputElement>('#loginPassword');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
 
     /* const showPwInput = */ new BaseComponent({
       tagName: 'input',
