@@ -23,12 +23,14 @@ export const passwordValidationCb: ValidationCb = (val: string, ctx: z.Refinemen
 export const emailValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkWhitespaces(val, ctx, FormFields.email);
-  checkMatch(
-    val,
-    ctx,
-    /[\w@._-]/gi,
-    `You can only use Latin letters, numerals, underscores, periods, and minus signs.`,
-  );
+
+  if (val.match(/[^_\-@.a-z0-9]/gi)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'You can only use Latin letters, numerals, underscores, periods, and minus signs.',
+    });
+  }
+
   if ([...val.matchAll(/@/g)].length !== 1) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
