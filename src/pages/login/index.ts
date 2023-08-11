@@ -1,5 +1,6 @@
+import './login-styles.css';
 import Page from '@utils/pageTemplate';
-
+import { LoginForm } from '../../components/form/LoginForm';
 export default class Login extends Page {
   constructor() {
     super('login');
@@ -7,7 +8,8 @@ export default class Login extends Page {
 
   public render(): HTMLElement {
     const title = this.createHeaderTitle('Log In');
-    this.container.append(title);
+    const loginForm = new LoginForm();
+    this.container.append(title, loginForm.form.getNode());
     return this.container;
   }
 }
