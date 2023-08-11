@@ -1,4 +1,4 @@
-import { FormFields } from '@customTypes/enums';
+import { FormFields, FormPages } from '@customTypes/enums';
 import { ValidationCb } from '@customTypes/types';
 import BaseComponent from '@utils/baseComponent';
 import { validator } from '@utils/validator';
@@ -12,7 +12,6 @@ import { ZodString } from 'zod';
  *    <p class="error-message" id="loginEmailError"></p>
  * </div>
  * ```
- *
  */
 export class FormFieldCreator {
   public fieldContainer: BaseComponent<'div'>;
@@ -21,7 +20,7 @@ export class FormFieldCreator {
   public fieldError: BaseComponent<'p'> | null = null;
 
   constructor(
-    page: string,
+    page: FormPages,
     fieldName: FormFields,
     inputType: string,
     isErrMessRequired = true,
