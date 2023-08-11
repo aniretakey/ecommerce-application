@@ -51,6 +51,7 @@ export default class Header {
     const startList = safeQuerySelector('.nav__list-start', nav.getNode());
     const centerList = safeQuerySelector('.nav__list-center', nav.getNode());
     const endList = safeQuerySelector('.nav__list-end', nav.getNode());
+    const buregerIcon = safeQuerySelector('.dropdown label', nav.getNode());
 
     logoLink.setAttribute('data-navigo', '');
     logoLink.setAttribute('href', '/');
@@ -67,6 +68,10 @@ export default class Header {
     });
 
     this.setEndSubListLink(false);
+
+    buregerIcon.addEventListener('click', () => {
+      startList.classList.toggle('hidden');
+    });
   }
 
   public setEndSubListLink(isAuthorizedUser: boolean): void {
@@ -99,6 +104,14 @@ export default class Header {
       },
     });
     linkElement.getNode().innerHTML = link.header;
+    linkElement.addListener('click', () => {
+      const startList = safeQuerySelector('.nav__list-start');
+      const endSubList = safeQuerySelector<HTMLDetailsElement>('.nav__list-end > li > details');
+      startList.classList.add('hidden');
+      if (endSubList.open) {
+        endSubList.open = false;
+      }
+    });
     return linkElement.getNode();
   }
 

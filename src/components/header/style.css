@@ -12,3 +12,8 @@
   background-size: contain;
   background-position: center;
 }
+
+.nav__list-start.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
