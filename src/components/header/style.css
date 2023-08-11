@@ -6,8 +6,8 @@
 
 .navbar__logo {
   background-image: url('../../assets/logo-header.png');
-  width: 10vh;
-  height: 6vh;
+  width: 60px;
+  height: 40px;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
