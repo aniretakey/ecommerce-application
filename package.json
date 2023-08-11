@@ -49,5 +49,6 @@
   },
   "dependencies": {
     "zod": "^3.21.4"
+    "navigo": "^8.11.1"
   }
 }
