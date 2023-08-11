@@ -3,3 +3,17 @@
   justify-content: space-evenly;
   font-size: 1.5rem;
 }
+
+.navbar__logo {
+  background-image: url('../../assets/logo-header.png');
+  width: 60px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.nav__list-start.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
