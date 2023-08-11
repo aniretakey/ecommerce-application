@@ -1,7 +1,7 @@
 import { FormFields, FormPages, FormRedirectBtn, FormSubmitBtn, RedirectMessage } from '@customTypes/enums';
 import BaseComponent from '@utils/baseComponent';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
-import { ValidationCb } from '@customTypes/types';
+import { PageIds, ValidationCb } from '@customTypes/types';
 import { ZodString, z } from 'zod';
 import { FormFieldCreator } from './FormFieldCreator';
 
@@ -27,7 +27,7 @@ export class Form {
   public submitBtn: BaseComponent<'button'>;
   protected formFields: HTMLDivElement[] = [];
   private pageName: FormPages;
-  protected redirectBtn: BaseComponent<'button'>;
+  protected redirectBtn: BaseComponent<'a'>;
 
   constructor(pageName: FormPages) {
     this.pageName = pageName;
@@ -41,21 +41,15 @@ export class Form {
       tagName: 'button',
       classNames: [`${pageName}__submit-btn`, 'btn', 'bg-green-500'],
       textContent: FormSubmitBtn[pageName],
-      attributes: { id: `${pageName}SubmitBtn` },
+      attributes: { id: `${pageName}SubmitBtn`, disabled: '' },
     });
-
+    const anotherPage = this.pageName === FormPages.login ? PageIds.RegistrationPage : PageIds.LoginPage;
     this.redirectBtn = new BaseComponent({
-      tagName: 'button',
+      tagName: 'a',
       classNames: [`${pageName}__redirect-btn`, 'btn', 'bg-blue-500'],
       textContent: FormRedirectBtn[pageName],
-      attributes: { id: `${pageName}RedirectBtn` },
-    }).addListener('click', this.formRedirect.bind(this));
-  }
-
-  private formRedirect(): void {
-    // TODO add redirection to login/registration page
-    const anotherPage = this.pageName === FormPages.login ? FormPages.registration : FormPages.login;
-    console.log(`go to ${anotherPage} page`);
+      attributes: { id: `${pageName}RedirectBtn`, 'data-navigo': '', href: `/${anotherPage}` },
+    });
   }
 
   public addSubmitListener(submitHandler: (event: Event) => void): this {
