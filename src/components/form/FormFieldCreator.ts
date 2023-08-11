@@ -4,6 +4,21 @@ import BaseComponent from '@utils/baseComponent';
 import { validator } from '@utils/validator';
 import { ZodString } from 'zod';
 
+const labelClassnames = ['block', 'text-gray-700', 'text-sm', 'font-bold', 'mb-2'];
+const inputclassNames = [
+  'shadow',
+  'appearance-none',
+  'border',
+  'rounded',
+  'w-full',
+  'py-2',
+  'px-3',
+  'text-gray-700',
+  'leading-tight',
+  'focus:outline-none',
+  'focus:shadow-outline',
+];
+
 /**
  * ```html
  * <div class="login__email-container form-field-container" data-valid="">
@@ -33,21 +48,21 @@ export class FormFieldCreator {
     });
     this.fieldLabel = new BaseComponent({
       tagName: 'label',
-      classNames: [`${page}__${fieldName}-label`.toLowerCase()],
+      classNames: [`${page}__${fieldName}-label`.toLowerCase(), ...labelClassnames],
       textContent: `${labelText}`,
       attributes: { for: `${page}${fieldName}` },
       parentNode: this.fieldContainer.getNode(),
     });
     this.fieldInput = new BaseComponent({
       tagName: 'input',
-      classNames: [`${page}__${fieldName}-input`.toLowerCase()],
+      classNames: [`${page}__${fieldName}-input`.toLowerCase(), ...inputclassNames],
       attributes: { type: inputType, id: `${page}${fieldName}` },
       parentNode: this.fieldContainer.getNode(),
     });
     if (isErrMessRequired) {
       this.fieldError = new BaseComponent({
         tagName: 'p',
-        classNames: ['error-message'],
+        classNames: ['error-message', 'text-red-500', 'text-xs', 'italic'],
         textContent: '', //'Invalid email',
         attributes: { id: `${page}${fieldName}Error` },
         parentNode: this.fieldContainer.getNode(),

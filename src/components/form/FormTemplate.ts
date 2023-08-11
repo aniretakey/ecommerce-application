@@ -5,6 +5,23 @@ import { ValidationCb } from '@customTypes/types';
 import { ZodString, z } from 'zod';
 import { FormFieldCreator } from './FormFieldCreator';
 
+const formClassNames = [
+  'flex',
+  'flex-col',
+  'items-center',
+  'm-auto',
+  'gap-2',
+  'bg-white',
+  'shadow-md',
+  'rounded',
+  'px-8',
+  'pt-6',
+  'pb-8',
+  'mb-4',
+  'w-full',
+  'max-w-xs',
+];
+
 export class Form {
   public form: BaseComponent<'form'>;
   public submitBtn: BaseComponent<'button'>;
@@ -16,20 +33,20 @@ export class Form {
     this.pageName = pageName;
     this.form = new BaseComponent({
       tagName: 'form',
-      classNames: [`${pageName}__form`],
+      classNames: [`${pageName}__form`, ...formClassNames],
       attributes: { id: `${pageName}Form` },
     });
 
     this.submitBtn = new BaseComponent({
       tagName: 'button',
-      classNames: [`${pageName}__submit-btn`],
+      classNames: [`${pageName}__submit-btn`, 'btn', 'bg-green-500'],
       textContent: FormSubmitBtn[pageName],
       attributes: { id: `${pageName}SubmitBtn` },
     });
 
     this.redirectBtn = new BaseComponent({
       tagName: 'button',
-      classNames: [`${pageName}__redirect-btn`],
+      classNames: [`${pageName}__redirect-btn`, 'btn', 'bg-blue-500'],
       textContent: FormRedirectBtn[pageName],
       attributes: { id: `${pageName}RedirectBtn` },
     }).addListener('click', this.formRedirect.bind(this));
