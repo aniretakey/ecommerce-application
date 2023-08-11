@@ -2,17 +2,30 @@ import BaseComponent from '@utils/baseComponent';
 import { PageIds } from '@customTypes/types';
 import './style.css';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { renderNavUI, renderBagSVG } from './headerUI';
 
-const navButtons = [
-  { id: PageIds.MainPage, header: 'Main' },
-  { id: PageIds.CatalogPage, header: 'Catalog' },
-  { id: PageIds.AboutPage, header: 'About' },
-  { id: PageIds.RegistrationPage, header: 'Registration' },
-  { id: PageIds.LoginPage, header: 'Login' },
-  // { id: PageIds.ProductPage, header: 'Product' },
-  // { id: PageIds.BasketPage, header: 'Basket' },
-  // { id: PageIds.UserProfilePage, header: 'User Profile' },
-];
+const endSubListLinks = {
+  isAuthorized: [
+    { id: PageIds.UserProfilePage, header: 'User Profile' },
+    { id: PageIds.MainPage, header: 'Logout' },
+  ],
+  isNotAuthorized: [
+    { id: PageIds.RegistrationPage, header: 'Registration' },
+    { id: PageIds.LoginPage, header: 'Login' },
+  ],
+};
+
+const navButtons = {
+  mainList: [
+    { id: '/', header: 'Main' },
+    { id: PageIds.CatalogPage, header: 'Catalog' },
+    { id: PageIds.AboutPage, header: 'About' },
+  ],
+  endList: {
+    baskate: [{ id: PageIds.BasketPage, header: renderBagSVG() }],
+    endSubList: endSubListLinks,
+  },
+};
 
 export default class Header {
   protected header: BaseComponent<'header'>;
@@ -25,37 +38,84 @@ export default class Header {
     });
   }
 
-  private createNavLinks(): void {
-    const navLinks = new BaseComponent({
+  private createNav(): void {
+    const nav = new BaseComponent({
       tagName: 'nav',
       classNames: ['nav'],
       parentNode: this.header.getNode(),
     });
 
-    navButtons.forEach((elem) => {
-      const navLink = new BaseComponent({
-        tagName: 'a',
-        classNames: ['nav-link'],
-        textContent: elem.header,
-        attributes: {
-          href: `/${elem.id}`,
-          id: elem.id,
-        },
-      });
-      navLink.getNode().setAttribute('data-navigo', '');
-      navLink.getNode().addEventListener('click', (e) => {
-        console.log('start');
-        e.preventDefault();
-      });
-      navLinks.append(navLink);
-    });
-    this.header.append(navLinks);
+    nav.getNode().innerHTML = renderNavUI();
 
-    const mainPageLink = safeQuerySelector('#main-page');
-    mainPageLink.setAttribute('href', '/');
+    const logoLink = safeQuerySelector('.navbar__link-logo', nav.getNode());
+    const startList = safeQuerySelector('.nav__list-start', nav.getNode());
+    const centerList = safeQuerySelector('.nav__list-center', nav.getNode());
+    const endList = safeQuerySelector('.nav__list-end', nav.getNode());
+    const buregerIcon = safeQuerySelector('.dropdown label', nav.getNode());
+
+    logoLink.setAttribute('data-navigo', '');
+    logoLink.setAttribute('href', '/');
+
+    navButtons.mainList.forEach((link) => {
+      startList.append(this.createNavListItem(link));
+    });
+    navButtons.mainList.forEach((link) => {
+      centerList.append(this.createNavListItem(link));
+    });
+
+    navButtons.endList.baskate.forEach((link) => {
+      endList.prepend(this.createNavListItem(link));
+    });
+
+    this.setEndSubListLink(false);
+
+    buregerIcon.addEventListener('click', () => {
+      startList.classList.toggle('hidden');
+    });
+  }
+
+  public setEndSubListLink(isAuthorizedUser: boolean): void {
+    const endSubList = safeQuerySelector('.nav__sublist-end');
+    const endSubListLinks = isAuthorizedUser
+      ? navButtons.endList.endSubList.isAuthorized
+      : navButtons.endList.endSubList.isNotAuthorized;
+
+    endSubListLinks.forEach((link) => {
+      endSubList.append(this.createNavListItem(link));
+    });
+  }
+
+  private createNavListItem(link: { id: string; header: string }): HTMLLIElement {
+    const listItem = document.createElement('li');
+    const linkElement = this.createNavLink(link);
+    listItem.append(linkElement);
+    return listItem;
+  }
+
+  private createNavLink(link: { id: string; header: string }): HTMLAnchorElement {
+    const linkElement = new BaseComponent({
+      tagName: 'a',
+      classNames: ['nav-link'],
+      textContent: link.header,
+      attributes: {
+        href: `/${link.id}`,
+        id: link.id,
+        'data-navigo': '',
+      },
+    });
+    linkElement.getNode().innerHTML = link.header;
+    linkElement.addListener('click', () => {
+      const startList = safeQuerySelector('.nav__list-start');
+      const endSubList = safeQuerySelector<HTMLDetailsElement>('.nav__list-end > li > details');
+      startList.classList.add('hidden');
+      if (endSubList.open) {
+        endSubList.open = false;
+      }
+    });
+    return linkElement.getNode();
   }
 
   public render(): void {
-    this.createNavLinks();
+    this.createNav();
   }
 }

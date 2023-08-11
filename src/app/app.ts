@@ -7,8 +7,9 @@ import Registration from '@pages/registration';
 import Login from '@pages/login';
 import About from '@pages/about';
 import Error from '@pages/error';
+import Basket from '@pages/basket';
 
-const pagesList = ['main-page', 'catalog-page', 'about-page', 'registration-page', 'login-page'];
+const pagesList = ['main-page', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page'];
 
 export default class App {
   private static container: HTMLElement = document.body;
@@ -51,7 +52,10 @@ export default class App {
         const LoginPage = new Login().render();
         renderNewPage(this.main.main, LoginPage);
       });
-
+      this.router.on(`/basket-page`, () => {
+        const BasketPage = new Basket().render();
+        renderNewPage(this.main.main, BasketPage);
+      });
       this.router.on(`/error-page`, () => {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
