@@ -37,6 +37,8 @@ export class Form {
 
   private formRedirect(): void {
     // TODO add redirection to login/registration page
+    const anotherPage = this.pageName === FormPages.login ? FormPages.registration : FormPages.login;
+    console.log(`go to ${anotherPage} page`);
   }
 
   public addSubmitListener(submitHandler: (event: Event) => void): this {
@@ -58,15 +60,12 @@ export class Form {
   protected addNewValidatedField(
     fieldName: FormFields,
     inputType = 'text',
-    isErrMessRequired: boolean,
     labelText = `${fieldName}*`,
     validatorField: ZodString = z.string(),
     validationCb?: ValidationCb,
   ): this {
-    const field = new FormFieldCreator(this.pageName, fieldName, inputType, isErrMessRequired, labelText);
-    if (isErrMessRequired) {
-      field.addInputValidation(validatorField, validationCb);
-    }
+    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText);
+    field.addInputValidation(validatorField, validationCb);
     const fieldContainer = field.fieldContainer.getNode();
     this.formFields.push(fieldContainer);
     return this;
