@@ -1,11 +1,13 @@
 export enum FormFields {
   email = 'Email',
   password = 'Password',
-  firstName = 'First name',
-  lastName = 'Last name',
+  firstName = 'First-name',
+  lastName = 'Last-name',
+  birthDate = 'Birth-date',
   street = 'Street',
   city = 'City',
-  postalCode = 'Postal code',
+  country = 'Country',
+  postalCode = 'Postal-code',
   showPw = 'show-pw',
 }
 
