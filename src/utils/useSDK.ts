@@ -1,11 +1,11 @@
 // import { ctpClient } from './BuildClient';
 import { ClientResponse, ProductPagedQueryResponse, createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { ctpClient } from './BuildClient';
-import { projectKey } from './apiClientData';
+import { PROJECT_KEY } from './apiClientData';
 // import { projectKey } from './clientData';
 
 // Create apiRoot from the imported ClientBuilder and include your Project key
-const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: `${projectKey}` });
+const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
 
 // Example call to return list of products
 // This code has the same effect as sending a GET request to the commercetools Composable Commerce API without any endpoints.
