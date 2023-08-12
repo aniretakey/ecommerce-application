@@ -9,7 +9,7 @@ import About from '@pages/about';
 import Error from '@pages/error';
 import Basket from '@pages/basket';
 
-const pagesList = ['main-page', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page'];
+const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page'];
 
 export default class App {
   private static container: HTMLElement = document.body;
