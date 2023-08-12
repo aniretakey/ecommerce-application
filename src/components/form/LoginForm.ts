@@ -2,6 +2,9 @@ import { FormFields, FormPages } from '@customTypes/enums';
 import { emailValidationCb, passwordValidationCb } from '@utils/customValidationCb';
 import { validator } from '@utils/validator';
 import { Form } from '@components/form/FormTemplate';
+import { getOrders, signIn } from '@utils/apiRequests';
+import { apiClient } from '@utils/ApiClient';
+import { InvalidCredentialsError } from '@commercetools/platform-sdk';
 
 /**
  * ```html
@@ -50,10 +53,35 @@ export class LoginForm extends Form {
         'click',
         this.showPassword.bind(this, '#loginPassword'),
       )
-      .addSubmitListener(() => {
-        // TODO add submit handler and disable the button if there are errors
-        console.log('submited!');
-      })
       .buildForm();
+    this.submitBtn.getNode().addEventListener('click', () => {
+      const email = 'ivanov@test.com1'; //'alexSmith123@test.com';
+      const password = 'Password123!'; // 'Alex12345!';
+      signIn(email, password)
+        .then(() => {
+          apiClient.updatePassFlow(email, password);
+        })
+        .catch((e: InvalidCredentialsError) => {
+          console.log(e.code, e.message);
+          return null;
+        });
+      console.log('submited!');
+    });
+  }
+
+  private async submitLogin(): Promise<void> {
+    // TODO add submit handler and disable the button if there are errors
+    const email = 'ivanov@test.com'; //'alexSmith123@test.com';
+    const password = 'Password123!'; // 'Alex12345!';
+    await signIn(email, password)
+      .then(() => {
+        apiClient.updatePassFlow(email, password);
+      })
+      .catch((e: InvalidCredentialsError) => {
+        console.log(e.code, e.message);
+        return null;
+      });
+    console.log('submited!');
+    getOrders().then(console.log).catch(console.error);
   }
 }
