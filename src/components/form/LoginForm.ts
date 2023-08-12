@@ -2,9 +2,10 @@ import { FormFields, FormPages } from '@customTypes/enums';
 import { emailValidationCb, passwordValidationCb } from '@utils/customValidationCb';
 import { validator } from '@utils/validator';
 import { Form } from '@components/form/FormTemplate';
-import { getOrders, signIn } from '@utils/apiRequests';
+import { signIn } from '@utils/apiRequests';
 import { apiClient } from '@utils/ApiClient';
 import { InvalidCredentialsError } from '@commercetools/platform-sdk';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 /**
  * ```html
@@ -54,34 +55,27 @@ export class LoginForm extends Form {
         this.showPassword.bind(this, '#loginPassword'),
       )
       .buildForm();
-    this.submitBtn.getNode().addEventListener('click', () => {
-      const email = 'ivanov@test.com1'; //'alexSmith123@test.com';
-      const password = 'Password123!'; // 'Alex12345!';
+    this.submitBtn.getNode().addEventListener('click', this.submitLogin.bind(this));
+  }
+
+  private submitLogin(e: Event): void {
+    e.preventDefault();
+    const fieldContainers = Array.from(document.querySelectorAll<HTMLDivElement>('.form-field-container'));
+    if (fieldContainers.find((field) => field.getAttribute('data-valid') === 'false')) {
+      this.errAuthMessage.getNode().textContent = 'You must fill in all the fields of the form correctly';
+    } else {
+      const email = safeQuerySelector<HTMLInputElement>('#loginEmail').value;
+      const password = safeQuerySelector<HTMLInputElement>('#loginPassword').value;
       signIn(email, password)
         .then(() => {
           apiClient.updatePassFlow(email, password);
+          window.location.hash = '#/';
         })
         .catch((e: InvalidCredentialsError) => {
           console.log(e.code, e.message);
+          this.errAuthMessage.getNode().textContent = 'The account was not found. Check the correctness of the data';
           return null;
         });
-      console.log('submited!');
-    });
-  }
-
-  private async submitLogin(): Promise<void> {
-    // TODO add submit handler and disable the button if there are errors
-    const email = 'ivanov@test.com'; //'alexSmith123@test.com';
-    const password = 'Password123!'; // 'Alex12345!';
-    await signIn(email, password)
-      .then(() => {
-        apiClient.updatePassFlow(email, password);
-      })
-      .catch((e: InvalidCredentialsError) => {
-        console.log(e.code, e.message);
-        return null;
-      });
-    console.log('submited!');
-    getOrders().then(console.log).catch(console.error);
+    }
   }
 }
