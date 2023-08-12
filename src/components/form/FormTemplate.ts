@@ -28,7 +28,7 @@ export class Form {
   protected formFields: HTMLDivElement[] = [];
   private pageName: FormPages;
   protected redirectBtn: BaseComponent<'a'>;
-
+  public errAuthMessage: BaseComponent<'p'>;
   constructor(pageName: FormPages) {
     this.pageName = pageName;
     this.form = new BaseComponent({
@@ -41,7 +41,7 @@ export class Form {
       tagName: 'button',
       classNames: [`${pageName}__submit-btn`, 'btn', 'bg-green-500'],
       textContent: FormSubmitBtn[pageName],
-      attributes: { id: `${pageName}SubmitBtn`, disabled: '' },
+      attributes: { id: `${pageName}SubmitBtn` /* , disabled: '' */ },
     });
     const anotherPage = this.pageName === FormPages.login ? PageIds.RegistrationPage : PageIds.LoginPage;
     this.redirectBtn = new BaseComponent({
@@ -49,6 +49,11 @@ export class Form {
       classNames: [`${pageName}__redirect-btn`, 'btn', 'bg-blue-500'],
       textContent: FormRedirectBtn[pageName],
       attributes: { id: `${pageName}RedirectBtn`, 'data-navigo': '', href: `/${anotherPage}` },
+    });
+    this.errAuthMessage = new BaseComponent({
+      tagName: 'p',
+      classNames: ['err-auth-message', 'text-red-700', 'px-4', 'py-3', 'rounded'],
+      textContent: '',
     });
   }
 
@@ -77,6 +82,9 @@ export class Form {
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText);
     field.addInputValidation(validatorField, validationCb);
+    field.fieldInput.addListener('input', () => {
+      this.errAuthMessage.getNode().textContent = '';
+    });
     const fieldContainer = field.fieldContainer.getNode();
     this.formFields.push(fieldContainer);
     return this;
@@ -104,6 +112,7 @@ export class Form {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, false, labelText);
     field.fieldInput.addListener(eventName, eventHandler);
     const fieldContainer = field.fieldContainer.getNode();
+    fieldContainer.setAttribute('data-valid', 'true');
     this.formFields.push(fieldContainer);
     return this;
   }
@@ -118,6 +127,7 @@ export class Form {
       .getNode()
       .append(
         ...this.formFields,
+        this.errAuthMessage.getNode(),
         this.submitBtn.getNode(),
         this.createRedirectMessage().getNode(),
         this.redirectBtn.getNode(),

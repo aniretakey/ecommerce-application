@@ -44,7 +44,7 @@ export class FormFieldCreator {
     this.fieldContainer = new BaseComponent({
       tagName: 'div',
       classNames: [`${page}__${fieldName}-container`.toLowerCase(), 'form-field-container'],
-      attributes: { 'data-valid': '' },
+      attributes: { 'data-valid': 'false' },
     });
     this.fieldLabel = new BaseComponent({
       tagName: 'label',
@@ -86,7 +86,7 @@ export class FormFieldCreator {
       const errorMessage = validator.validate(validatorField, this.fieldInput.getNode().value, validationCb);
       if (errorMessage) {
         this.fieldError.getNode().textContent = errorMessage;
-        this.fieldContainer.setAttributes({ 'data-valid': '' });
+        this.fieldContainer.setAttributes({ 'data-valid': 'false' });
       } else {
         this.fieldError.getNode().textContent = '';
         this.fieldContainer.setAttributes({ 'data-valid': 'true' });
