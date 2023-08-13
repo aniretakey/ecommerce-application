@@ -83,6 +83,9 @@ export class Form {
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value);
     field.addInputValidation(validatorField, validationCb);
+    field.fieldInput.addListener('input', () => {
+      this.errAuthMessage.getNode().textContent = '';
+    });
     const fieldContainer = field.fieldContainer.getNode();
     this.formFields.push(fieldContainer);
     return this;
@@ -156,5 +159,14 @@ export class Form {
       textContent: RedirectMessage[this.pageName],
     });
     return p;
+  }
+
+  protected checkAllFieldsCorrectness(): boolean {
+    const fieldContainers = Array.from(document.querySelectorAll<HTMLDivElement>('.form-field-container'));
+    const hasInvalidFields = !!fieldContainers.find((field) => field.getAttribute('data-valid') === 'false');
+    if (hasInvalidFields) {
+      this.errAuthMessage.getNode().textContent = 'You must fill in all the fields of the form correctly';
+    }
+    return hasInvalidFields;
   }
 }

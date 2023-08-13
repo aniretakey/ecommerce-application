@@ -66,10 +66,7 @@ export class LoginForm extends Form {
 
   private submitLogin(e: Event): void {
     e.preventDefault();
-    const fieldContainers = Array.from(document.querySelectorAll<HTMLDivElement>('.form-field-container'));
-    if (fieldContainers.find((field) => field.getAttribute('data-valid') === 'false')) {
-      this.errAuthMessage.getNode().textContent = 'You must fill in all the fields of the form correctly';
-    } else {
+    if (!this.checkAllFieldsCorrectness()) {
       const email = safeQuerySelector<HTMLInputElement>('#loginEmail').value;
       const password = safeQuerySelector<HTMLInputElement>('#loginPassword').value;
       signIn(email, password)

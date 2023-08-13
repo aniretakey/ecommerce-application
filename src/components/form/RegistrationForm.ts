@@ -74,10 +74,14 @@ export class RegistrationForm extends Form {
         'click',
         this.showPassword.bind(this, '#registrationPassword'),
       )
-      .addSubmitListener(() => {
-        // TODO add submit handler and disable the button if there are errors
-        console.log('submited!');
-      })
       .buildForm();
+    this.submitBtn.getNode().addEventListener('click', this.submitRegistration.bind(this));
+  }
+
+  private submitRegistration(e: Event): void {
+    e.preventDefault();
+    if (!this.checkAllFieldsCorrectness()) {
+      // add registration handler here
+    }
   }
 }
