@@ -73,19 +73,30 @@ export const lastNameValidationCb: ValidationCb = (val: string, ctx: z.Refinemen
 export const countryValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkMinLength(val, ctx, MIN_LENGTH, FormFields.country);
+  checkMatch(val, ctx, /(^[а-яa-zА-ЯA-ZЁё]+$)/, 'Country name must contain only letters');
   checkMatch(val, ctx, /^(Russia|Россия)$/i, 'Sorry, we only deliver to Russia');
 };
 
 export const cityValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkMinLength(val, ctx, MIN_LENGTH, FormFields.city);
-  checkMatch(val, ctx, /(^[а-яa-zА-ЯA-ZЁё]+$)/, 'City name must contain only letters');
+  checkMatch(
+    val,
+    ctx,
+    /^[а-яa-zА-ЯA-ZЁё]+(-[а-яa-zА-ЯA-ZЁё]+)*$/,
+    'City name must contain only letters and not contain dashes in start and end',
+  );
 };
 
 export const streetValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkMinLength(val, ctx, MIN_LENGTH, FormFields.street);
-  checkMatch(val, ctx, /^[а-яa-zА-ЯA-Z0-9 ]*$/, 'Street name must contain only letters, numbers and spaces');
+  checkMatch(
+    val,
+    ctx,
+    /^[а-яa-zА-ЯA-ZЁё0-9]+( [а-яa-zА-ЯA-ZЁё0-9]+)*$/,
+    'Street name must contain only letters, numbers and spaces',
+  );
 };
 
 export const postalCodeValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {

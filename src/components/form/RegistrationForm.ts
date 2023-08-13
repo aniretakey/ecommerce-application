@@ -25,40 +25,46 @@ export class RegistrationForm extends Form {
       FormFields.firstName,
       'text',
       `${FormFields.firstName}*`,
-      validator.firstName,
+      validator.inputString,
       firstNameValidationCb,
     )
       .addNewValidatedField(
         FormFields.lastName,
         'text',
         `${FormFields.lastName}*`,
-        validator.lastName,
+        validator.inputString,
         lastNameValidationCb,
       )
-      .addNewDateField(FormFields.birthDate, 'date', `${FormFields.birthDate}*`, validator.birthDate, ageValidationCb)
+      .addNewDateField(FormFields.birthDate, 'date', `${FormFields.birthDate}*`, validator.inputString, ageValidationCb)
       .addNewValidatedField(
         FormFields.country,
         'text',
         `${FormFields.country}*`,
-        validator.country,
+        validator.inputString,
         countryValidationCb,
         'Russia',
       )
-      .addNewValidatedField(FormFields.city, 'text', `${FormFields.city}*`, validator.city, cityValidationCb)
-      .addNewValidatedField(FormFields.street, 'text', `${FormFields.street}*`, validator.street, streetValidationCb)
+      .addNewValidatedField(FormFields.city, 'text', `${FormFields.city}*`, validator.inputString, cityValidationCb)
+      .addNewValidatedField(
+        FormFields.street,
+        'text',
+        `${FormFields.street}*`,
+        validator.inputString,
+        streetValidationCb,
+      )
       .addNewValidatedField(
         FormFields.postalCode,
         'text',
         `${FormFields.postalCode}*`,
-        validator.postalCode,
+        validator.inputString,
         postalCodeValidationCb,
       )
-      .addNewValidatedField(FormFields.email, 'text', `${FormFields.email}*`, validator.email, emailValidationCb)
+      .addNewValidatedField(FormFields.email, 'text', `${FormFields.email}*`, validator.inputString, emailValidationCb)
       .addNewValidatedField(
         FormFields.password,
         'password',
         `${FormFields.password}*`,
-        validator.password,
+        validator.inputString,
         passwordValidationCb,
       )
       .addNewCtrlField(
