@@ -2,12 +2,10 @@ import { ValidationCb } from '@customTypes/types';
 import { z } from 'zod';
 
 class Validator {
-  public email: z.ZodString;
-  public password: z.ZodString;
+  public inputString: z.ZodString;
 
   constructor() {
-    this.email = z.string();
-    this.password = z.string();
+    this.inputString = z.string();
   }
 
   public validate<T extends z.ZodString>(field: T, value: string, validateCb?: ValidationCb): string | undefined {

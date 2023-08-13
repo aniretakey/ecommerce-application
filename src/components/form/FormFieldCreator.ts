@@ -40,6 +40,7 @@ export class FormFieldCreator {
     inputType: string,
     isErrMessRequired = true,
     labelText = `${fieldName}*`,
+    value?: string,
   ) {
     this.fieldContainer = new BaseComponent({
       tagName: 'div',
@@ -67,6 +68,9 @@ export class FormFieldCreator {
         attributes: { id: `${page}${fieldName}Error` },
         parentNode: this.fieldContainer.getNode(),
       });
+    }
+    if (value) {
+      this.fieldInput.getNode().value = value;
     }
   }
 

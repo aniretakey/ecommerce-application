@@ -60,8 +60,8 @@ export default class App {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
       });
-
       this.router.resolve();
+      this.router.navigate(`${window.location.hash.slice(2)}`);
     });
 
     window.addEventListener('hashchange', () => {
@@ -75,6 +75,5 @@ export default class App {
   public run(): void {
     this.header.render();
     // document.body.append(this.main);
-    this.router.navigate(`${window.location.hash.slice(2)}`);
   }
 }

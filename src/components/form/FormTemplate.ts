@@ -79,6 +79,21 @@ export class Form {
     labelText = `${fieldName}*`,
     validatorField: ZodString = z.string(),
     validationCb?: ValidationCb,
+    value?: string,
+  ): this {
+    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value);
+    field.addInputValidation(validatorField, validationCb);
+    const fieldContainer = field.fieldContainer.getNode();
+    this.formFields.push(fieldContainer);
+    return this;
+  }
+
+  protected addNewDateField(
+    fieldName: FormFields,
+    inputType = 'date',
+    labelText = `${fieldName}*`,
+    validatorField: ZodString = z.string(),
+    validationCb?: ValidationCb,
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText);
     field.addInputValidation(validatorField, validationCb);
