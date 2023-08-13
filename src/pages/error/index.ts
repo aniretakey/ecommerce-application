@@ -24,6 +24,7 @@ export default class Error extends Page {
     textContent: 'Home Page',
     attributes: {
       href: '/',
+      'data-navigo': '',
     },
   });
 

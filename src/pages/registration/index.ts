@@ -1,4 +1,6 @@
+import './registration-styles.css';
 import Page from '@utils/pageTemplate';
+import { RegistrationForm } from '@components/form/RegistrationForm';
 
 export default class Registration extends Page {
   constructor() {
@@ -7,7 +9,8 @@ export default class Registration extends Page {
 
   public render(): HTMLElement {
     const title = this.createHeaderTitle('Registration');
-    this.container.append(title);
+    const registrationForm = new RegistrationForm();
+    this.container.append(title, registrationForm.form.getNode());
     return this.container;
   }
 }

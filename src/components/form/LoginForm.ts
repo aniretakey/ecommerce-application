@@ -35,12 +35,18 @@ export class LoginForm extends Form {
   }
 
   private buildLoginForm(): void {
-    this.addNewValidatedField(FormFields.email, 'text', `${FormFields.email}*`, validator.email, emailValidationCb)
+    this.addNewValidatedField(
+      FormFields.email,
+      'text',
+      `${FormFields.email}*`,
+      validator.inputString,
+      emailValidationCb,
+    )
       .addNewValidatedField(
         FormFields.password,
         'password',
         `${FormFields.password}*`,
-        validator.password,
+        validator.inputString,
         passwordValidationCb,
       )
       .addNewCtrlField(

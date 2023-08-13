@@ -19,6 +19,15 @@ export function checkMinLength(val: string, ctx: z.RefinementCtx, minLength: num
   }
 }
 
+export function checkMaxLength(val: string, ctx: z.RefinementCtx, maxLength: number, fieldName: FormFields): void {
+  if (val.length > maxLength) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `${fieldName} must have no more than ${maxLength} characters long`,
+    });
+  }
+}
+
 export function checkMatch(val: string, ctx: z.RefinementCtx, regexp: RegExp, message: string): void {
   if (!val.match(regexp)) {
     ctx.addIssue({
