@@ -85,8 +85,8 @@ export const cityValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx
   checkMatch(
     val,
     ctx,
-    /^[а-яa-zА-ЯA-ZЁё]+([- ][а-яa-zА-ЯA-ZЁё]+)*$/,
-    'City name must contain only letters and not contain spaces and dashes in start and end',
+    /^[а-яa-zА-ЯA-ZЁё]+([ ][а-яa-zА-ЯA-ZЁё]+)*$/,
+    'City name must contain only letters and not contain spaces in start and end',
   );
 };
 
