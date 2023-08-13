@@ -3,9 +3,9 @@ import { emailValidationCb, passwordValidationCb } from '@utils/customValidation
 import { validator } from '@utils/validator';
 import { Form } from '@components/form/FormTemplate';
 import { signIn } from '@utils/apiRequests';
-import { apiClient } from '@utils/ApiClient';
 import { InvalidCredentialsError } from '@commercetools/platform-sdk';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { apiClient } from '@utils/ApiClient';
 
 /**
  * ```html
@@ -67,8 +67,8 @@ export class LoginForm extends Form {
       const email = safeQuerySelector<HTMLInputElement>('#loginEmail').value;
       const password = safeQuerySelector<HTMLInputElement>('#loginPassword').value;
       signIn(email, password)
-        .then(() => {
-          apiClient.updatePassFlow(email, password);
+        .then(async () => {
+          await apiClient.getNewPassFlowToken(email, password).catch((err: Error) => console.log(err.message));
           window.location.hash = '#/';
         })
         .catch((e: InvalidCredentialsError) => {

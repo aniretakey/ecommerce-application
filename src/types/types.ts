@@ -11,3 +11,11 @@ export const enum PageIds {
   BasketPage = 'basket-page',
   UserProfilePage = 'profile-page',
 }
+
+export interface TokenResponse {
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  refresh_token: string;
+  token_type: string;
+}
