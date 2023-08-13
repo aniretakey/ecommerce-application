@@ -61,13 +61,15 @@ export const emailValidationCb: ValidationCb = (val: string, ctx: z.RefinementCt
 export const firstNameValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkMinLength(val, ctx, MIN_LENGTH, FormFields.firstName);
+  checkMatch(val, ctx, /^[^\s].*$/, 'First name must not starts with whitespaces');
   checkMatch(val, ctx, /(^[а-яa-zА-ЯA-ZЁё]+$)/, 'First name must contain only letters');
 };
 
 export const lastNameValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
   checkMinLength(val, ctx, MIN_LENGTH, FormFields.lastName);
-  checkMatch(val, ctx, /(^[а-яa-zА-ЯA-ZЁё]+$)/, 'Last name must contain only letters');
+  checkMatch(val, ctx, /^[^\s].*$/, 'Last name must not starts with whitespaces');
+  checkMatch(val, ctx, /(^[а-яa-zА-ЯA-ZЁё ]+$)/, 'Last name must contain only letters');
 };
 
 export const countryValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
@@ -83,8 +85,8 @@ export const cityValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx
   checkMatch(
     val,
     ctx,
-    /^[а-яa-zА-ЯA-ZЁё]+(-[а-яa-zА-ЯA-ZЁё]+)*$/,
-    'City name must contain only letters and not contain dashes in start and end',
+    /^[а-яa-zА-ЯA-ZЁё]+([- ][а-яa-zА-ЯA-ZЁё]+)*$/,
+    'City name must contain only letters and not contain spaces and dashes in start and end',
   );
 };
 
@@ -94,8 +96,9 @@ export const streetValidationCb: ValidationCb = (val: string, ctx: z.RefinementC
   checkMatch(
     val,
     ctx,
-    /^[а-яa-zА-ЯA-ZЁё0-9]+( [а-яa-zА-ЯA-ZЁё0-9]+)*$/,
-    'Street name must contain only letters, numbers and spaces',
+    // /^[а-яa-zА-ЯA-ZЁё0-9]+( [а-яa-zА-ЯA-ZЁё0-9]+)*$/,
+    /^[^\s].*$/,
+    'Street name must not starts with whitespaces',
   );
 };
 
