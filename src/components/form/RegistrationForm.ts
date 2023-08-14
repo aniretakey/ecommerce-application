@@ -35,7 +35,13 @@ export class RegistrationForm extends Form {
         validator.inputString,
         lastNameValidationCb,
       )
-      .addNewDateField(FormFields.birthDate, 'date', `${FormFields.birthDate}*`, validator.inputString, ageValidationCb)
+      .addNewValidatedField(
+        FormFields.birthDate,
+        'date',
+        `${FormFields.birthDate}*`,
+        validator.inputString,
+        ageValidationCb,
+      )
       .addNewValidatedField(
         FormFields.country,
         'text',

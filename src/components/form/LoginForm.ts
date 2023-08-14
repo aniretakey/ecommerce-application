@@ -76,7 +76,7 @@ export class LoginForm extends Form {
         })
         .catch((e: InvalidCredentialsError) => {
           console.log(e.code, e.message);
-          this.errAuthMessage.getNode().textContent = 'The account was not found. Check the correctness of the data';
+          this.errAuthMessage.setTextContent('The account was not found. Check the correctness of the data');
           return null;
         });
     }
