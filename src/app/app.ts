@@ -8,8 +8,9 @@ import Login from '@pages/login';
 import About from '@pages/about';
 import Error from '@pages/error';
 import Basket from '@pages/basket';
+import UserProfile from '@pages/user-profile';
 
-const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page'];
+const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page', 'profile-page'];
 
 export default class App {
   private static container: HTMLElement = document.body;
@@ -72,6 +73,16 @@ export default class App {
         const BasketPage = new Basket().render();
         renderNewPage(this.main.main, BasketPage);
       });
+
+      this.router.on(`/profile-page`, () => {
+        if (this.isAuthorizedUser()) {
+          const UserProfilePage = new UserProfile().render();
+          renderNewPage(this.main.main, UserProfilePage);
+        } else {
+          this.router.navigate('/');
+        }
+      });
+
       this.router.on(`/error-page`, () => {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
