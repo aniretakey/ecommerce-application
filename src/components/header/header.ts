@@ -76,6 +76,7 @@ export default class Header {
 
   public setEndSubListLink(isAuthorizedUser: boolean): void {
     const endSubList = safeQuerySelector('.nav__sublist-end');
+    endSubList.innerHTML = '';
     const endSubListLinks = isAuthorizedUser
       ? navButtons.endList.endSubList.isAuthorized
       : navButtons.endList.endSubList.isNotAuthorized;

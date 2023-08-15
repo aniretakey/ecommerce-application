@@ -23,6 +23,7 @@ export default class App {
     this.main = new Main();
     this.router = new Navigo('/', { hash: true, strategy: 'ALL' }); // { hash: true }, strategy: 'ALL'
 
+    // eslint-disable-next-line max-lines-per-function
     window.addEventListener('load', () => {
       function renderNewPage(mainHTML: BaseComponent<'main'>, newPage: HTMLElement | string): void {
         mainHTML.clearInnerHTML();
@@ -48,10 +49,21 @@ export default class App {
         renderNewPage(this.main.main, AboutPage);
       });
 
-      this.router.on('/login-page', () => {
-        const LoginPage = new Login().render();
-        renderNewPage(this.main.main, LoginPage);
-      });
+      this.router.on(
+        '/login-page',
+        () => {
+          const LoginPage = new Login().render();
+          renderNewPage(this.main.main, LoginPage);
+        },
+        {
+          leave: (done) => {
+            if (this.isAuthorizedUser()) {
+              this.header.setEndSubListLink(true);
+            }
+            done();
+          },
+        },
+      );
       this.router.on(`/basket-page`, () => {
         const BasketPage = new Basket().render();
         renderNewPage(this.main.main, BasketPage);
@@ -75,5 +87,9 @@ export default class App {
   public run(): void {
     this.header.render();
     // document.body.append(this.main);
+  }
+
+  private isAuthorizedUser(): boolean {
+    return Boolean(localStorage.getItem('comforto-access-token'));
   }
 }
