@@ -100,7 +100,7 @@ export default class App {
   }
 
   public run(): void {
-    this.header.render();
+    this.header.render(this.isAuthorizedUser());
     // document.body.append(this.main);
   }
 

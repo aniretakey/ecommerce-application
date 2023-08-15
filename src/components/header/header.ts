@@ -68,8 +68,6 @@ export default class Header {
       endList.prepend(this.createNavListItem(link));
     });
 
-    this.setEndSubListLink(false);
-
     buregerIcon.addEventListener('click', () => {
       startList.classList.toggle('hidden');
     });
@@ -124,7 +122,8 @@ export default class Header {
     return linkElement.getNode();
   }
 
-  public render(): void {
+  public render(isAuthorizedUser: boolean): void {
     this.createNav();
+    this.setEndSubListLink(isAuthorizedUser);
   }
 }
