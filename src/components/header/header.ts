@@ -6,23 +6,23 @@ import { renderNavUI, renderBagSVG } from './headerUI';
 
 const endSubListLinks = {
   isAuthorized: [
-    { id: PageIds.UserProfilePage, header: 'User Profile' },
-    { id: PageIds.MainPage, header: 'Logout' },
+    { id: PageIds.UserProfilePage, href: PageIds.UserProfilePage, header: 'User Profile' },
+    { id: 'logout', href: '', header: 'Logout' },
   ],
   isNotAuthorized: [
-    { id: PageIds.RegistrationPage, header: 'Registration' },
-    { id: PageIds.LoginPage, header: 'Login' },
+    { id: PageIds.RegistrationPage, href: PageIds.RegistrationPage, header: 'Registration' },
+    { id: PageIds.LoginPage, href: PageIds.LoginPage, header: 'Login' },
   ],
 };
 
 const navButtons = {
   mainList: [
-    { id: '/', header: 'Main' },
-    { id: PageIds.CatalogPage, header: 'Catalog' },
-    { id: PageIds.AboutPage, header: 'About' },
+    { id: PageIds.MainPage, href: '', header: 'Main' },
+    { id: PageIds.CatalogPage, href: PageIds.CatalogPage, header: 'Catalog' },
+    { id: PageIds.AboutPage, href: PageIds.AboutPage, header: 'About' },
   ],
   endList: {
-    baskate: [{ id: PageIds.BasketPage, header: renderBagSVG() }],
+    baskate: [{ id: PageIds.BasketPage, href: PageIds.BasketPage, header: renderBagSVG() }],
     endSubList: endSubListLinks,
   },
 };
@@ -86,20 +86,20 @@ export default class Header {
     });
   }
 
-  private createNavListItem(link: { id: string; header: string }): HTMLLIElement {
+  private createNavListItem(link: { id: string; href: string; header: string }): HTMLLIElement {
     const listItem = document.createElement('li');
     const linkElement = this.createNavLink(link);
     listItem.append(linkElement);
     return listItem;
   }
 
-  private createNavLink(link: { id: string; header: string }): HTMLAnchorElement {
+  private createNavLink(link: { id: string; href: string; header: string }): HTMLAnchorElement {
     const linkElement = new BaseComponent({
       tagName: 'a',
       classNames: ['nav-link'],
       textContent: link.header,
       attributes: {
-        href: `/${link.id}`,
+        href: `/${link.href}`,
         id: link.id,
         'data-navigo': '',
       },
