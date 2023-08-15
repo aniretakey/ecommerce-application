@@ -3,6 +3,7 @@ import { PageIds } from '@customTypes/types';
 import './style.css';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { renderNavUI, renderBagSVG } from './headerUI';
+import { apiClient } from '@utils/ApiClient';
 
 const endSubListLinks = {
   isAuthorized: [
@@ -84,6 +85,13 @@ export default class Header {
     endSubListLinks.forEach((link) => {
       endSubList.append(this.createNavListItem(link));
     });
+
+    if (isAuthorizedUser) {
+      safeQuerySelector(`#logout`).addEventListener('click', () => {
+        apiClient.updateClientCredentialsFlow();
+        this.setEndSubListLink(false);
+      });
+    }
   }
 
   private createNavListItem(link: { id: string; href: string; header: string }): HTMLLIElement {
