@@ -2,6 +2,10 @@ import { FormFields, FormPages } from '@customTypes/enums';
 import { emailValidationCb, passwordValidationCb } from '@utils/customValidationCb';
 import { validator } from '@utils/validator';
 import { Form } from '@components/form/FormTemplate';
+import { signIn } from '@utils/apiRequests';
+import { InvalidCredentialsError } from '@commercetools/platform-sdk';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { apiClient } from '@utils/ApiClient';
 
 /**
  * ```html
@@ -56,10 +60,25 @@ export class LoginForm extends Form {
         'click',
         this.showPassword.bind(this, '#loginPassword'),
       )
-      .addSubmitListener(() => {
-        // TODO add submit handler and disable the button if there are errors
-        console.log('submited!');
-      })
       .buildForm();
+    this.submitBtn.getNode().addEventListener('click', this.submitLogin.bind(this));
+  }
+
+  private submitLogin(e: Event): void {
+    e.preventDefault();
+    if (!this.checkAllFieldsCorrectness()) {
+      const email = safeQuerySelector<HTMLInputElement>('#loginEmail').value;
+      const password = safeQuerySelector<HTMLInputElement>('#loginPassword').value;
+      signIn(email, password)
+        .then(async () => {
+          await apiClient.getNewPassFlowToken(email, password).catch((err: Error) => console.log(err.message));
+          window.location.hash = '#/';
+        })
+        .catch((e: InvalidCredentialsError) => {
+          console.log(e.code, e.message);
+          this.errAuthMessage.setTextContent('The account was not found. Check the correctness of the data');
+          return null;
+        });
+    }
   }
 }

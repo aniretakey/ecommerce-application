@@ -1,5 +1,6 @@
 import { FormFields, FormPages } from '@customTypes/enums';
 import { ValidationCb } from '@customTypes/types';
+import { InputComponent } from '@utils/InputComponent';
 import BaseComponent from '@utils/baseComponent';
 import { validator } from '@utils/validator';
 import { ZodString } from 'zod';
@@ -31,7 +32,7 @@ const inputclassNames = [
 export class FormFieldCreator {
   public fieldContainer: BaseComponent<'div'>;
   public fieldLabel: BaseComponent<'label'>;
-  public fieldInput: BaseComponent<'input'>;
+  public fieldInput: InputComponent;
   public fieldError: BaseComponent<'p'> | null = null;
 
   constructor(
@@ -45,7 +46,7 @@ export class FormFieldCreator {
     this.fieldContainer = new BaseComponent({
       tagName: 'div',
       classNames: [`${page}__${fieldName}-container`.toLowerCase(), 'form-field-container'],
-      attributes: { 'data-valid': '' },
+      attributes: { 'data-valid': 'false' },
     });
     this.fieldLabel = new BaseComponent({
       tagName: 'label',
@@ -54,12 +55,12 @@ export class FormFieldCreator {
       attributes: { for: `${page}${fieldName}` },
       parentNode: this.fieldContainer.getNode(),
     });
-    this.fieldInput = new BaseComponent({
+    this.fieldInput = new InputComponent({
       tagName: 'input',
       classNames: [`${page}__${fieldName}-input`.toLowerCase(), ...inputclassNames],
       attributes: { type: inputType, id: `${page}${fieldName}` },
       parentNode: this.fieldContainer.getNode(),
-    });
+    }).setValue(value);
     if (isErrMessRequired) {
       this.fieldError = new BaseComponent({
         tagName: 'p',
@@ -68,9 +69,6 @@ export class FormFieldCreator {
         attributes: { id: `${page}${fieldName}Error` },
         parentNode: this.fieldContainer.getNode(),
       });
-    }
-    if (value) {
-      this.fieldInput.getNode().value = value;
     }
   }
 
@@ -87,12 +85,12 @@ export class FormFieldCreator {
     validationCb?: ValidationCb,
   ): this {
     if (this.fieldError) {
-      const errorMessage = validator.validate(validatorField, this.fieldInput.getNode().value, validationCb);
+      const errorMessage = validator.validate(validatorField, this.fieldInput.getValue(), validationCb);
       if (errorMessage) {
-        this.fieldError.getNode().textContent = errorMessage;
-        this.fieldContainer.setAttributes({ 'data-valid': '' });
+        this.fieldError.setTextContent(errorMessage);
+        this.fieldContainer.setAttributes({ 'data-valid': 'false' });
       } else {
-        this.fieldError.getNode().textContent = '';
+        this.fieldError.setTextContent('');
         this.fieldContainer.setAttributes({ 'data-valid': 'true' });
       }
     }

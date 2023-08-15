@@ -57,6 +57,10 @@ export default class BaseComponent<K extends keyof HTMLElementTagNameMap> {
     Object.entries(attributes).forEach(([prop, value]) => this.node.setAttribute(prop, value));
   }
 
+  public setTextContent(text: string): void {
+    this.node.textContent = text;
+  }
+
   public addListener<T extends keyof HTMLElementEventMap>(
     eventName: T,
     callback: (event: Event) => void,
