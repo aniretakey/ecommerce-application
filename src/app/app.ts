@@ -52,8 +52,12 @@ export default class App {
       this.router.on(
         '/login-page',
         () => {
-          const LoginPage = new Login().render();
-          renderNewPage(this.main.main, LoginPage);
+          if (this.isAuthorizedUser()) {
+            this.router.navigate('/');
+          } else {
+            const LoginPage = new Login().render();
+            renderNewPage(this.main.main, LoginPage);
+          }
         },
         {
           leave: (done) => {
