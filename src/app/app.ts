@@ -8,8 +8,9 @@ import Login from '@pages/login';
 import About from '@pages/about';
 import Error from '@pages/error';
 import Basket from '@pages/basket';
+import UserProfile from '@pages/user-profile';
 
-const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page'];
+const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page', 'profile-page'];
 
 export default class App {
   private static container: HTMLElement = document.body;
@@ -23,6 +24,7 @@ export default class App {
     this.main = new Main();
     this.router = new Navigo('/', { hash: true, strategy: 'ALL' }); // { hash: true }, strategy: 'ALL'
 
+    // eslint-disable-next-line max-lines-per-function
     window.addEventListener('load', () => {
       function renderNewPage(mainHTML: BaseComponent<'main'>, newPage: HTMLElement | string): void {
         mainHTML.clearInnerHTML();
@@ -48,14 +50,39 @@ export default class App {
         renderNewPage(this.main.main, AboutPage);
       });
 
-      this.router.on('/login-page', () => {
-        const LoginPage = new Login().render();
-        renderNewPage(this.main.main, LoginPage);
-      });
+      this.router.on(
+        '/login-page',
+        () => {
+          if (this.isAuthorizedUser()) {
+            this.router.navigate('/');
+          } else {
+            const LoginPage = new Login().render();
+            renderNewPage(this.main.main, LoginPage);
+          }
+        },
+        {
+          leave: (done) => {
+            if (this.isAuthorizedUser()) {
+              this.header.setEndSubListLink(true);
+            }
+            done();
+          },
+        },
+      );
       this.router.on(`/basket-page`, () => {
         const BasketPage = new Basket().render();
         renderNewPage(this.main.main, BasketPage);
       });
+
+      this.router.on(`/profile-page`, () => {
+        if (this.isAuthorizedUser()) {
+          const UserProfilePage = new UserProfile().render();
+          renderNewPage(this.main.main, UserProfilePage);
+        } else {
+          this.router.navigate('/');
+        }
+      });
+
       this.router.on(`/error-page`, () => {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
@@ -73,7 +100,11 @@ export default class App {
   }
 
   public run(): void {
-    this.header.render();
+    this.header.render(this.isAuthorizedUser());
     // document.body.append(this.main);
+  }
+
+  private isAuthorizedUser(): boolean {
+    return Boolean(localStorage.getItem('comforto-access-token'));
   }
 }

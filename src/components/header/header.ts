@@ -3,26 +3,27 @@ import { PageIds } from '@customTypes/types';
 import './style.css';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { renderNavUI, renderBagSVG } from './headerUI';
+import { apiClient } from '@utils/ApiClient';
 
 const endSubListLinks = {
   isAuthorized: [
-    { id: PageIds.UserProfilePage, header: 'User Profile' },
-    { id: PageIds.MainPage, header: 'Logout' },
+    { id: PageIds.UserProfilePage, href: PageIds.UserProfilePage, header: 'User Profile' },
+    { id: 'logout', href: '', header: 'Logout' },
   ],
   isNotAuthorized: [
-    { id: PageIds.RegistrationPage, header: 'Registration' },
-    { id: PageIds.LoginPage, header: 'Login' },
+    { id: PageIds.RegistrationPage, href: PageIds.RegistrationPage, header: 'Registration' },
+    { id: PageIds.LoginPage, href: PageIds.LoginPage, header: 'Login' },
   ],
 };
 
 const navButtons = {
   mainList: [
-    { id: '/', header: 'Main' },
-    { id: PageIds.CatalogPage, header: 'Catalog' },
-    { id: PageIds.AboutPage, header: 'About' },
+    { id: PageIds.MainPage, href: '', header: 'Main' },
+    { id: PageIds.CatalogPage, href: PageIds.CatalogPage, header: 'Catalog' },
+    { id: PageIds.AboutPage, href: PageIds.AboutPage, header: 'About' },
   ],
   endList: {
-    baskate: [{ id: PageIds.BasketPage, header: renderBagSVG() }],
+    baskate: [{ id: PageIds.BasketPage, href: PageIds.BasketPage, header: renderBagSVG() }],
     endSubList: endSubListLinks,
   },
 };
@@ -67,8 +68,6 @@ export default class Header {
       endList.prepend(this.createNavListItem(link));
     });
 
-    this.setEndSubListLink(false);
-
     buregerIcon.addEventListener('click', () => {
       startList.classList.toggle('hidden');
     });
@@ -76,6 +75,7 @@ export default class Header {
 
   public setEndSubListLink(isAuthorizedUser: boolean): void {
     const endSubList = safeQuerySelector('.nav__sublist-end');
+    endSubList.innerHTML = '';
     const endSubListLinks = isAuthorizedUser
       ? navButtons.endList.endSubList.isAuthorized
       : navButtons.endList.endSubList.isNotAuthorized;
@@ -83,22 +83,29 @@ export default class Header {
     endSubListLinks.forEach((link) => {
       endSubList.append(this.createNavListItem(link));
     });
+
+    if (isAuthorizedUser) {
+      safeQuerySelector(`#logout`).addEventListener('click', () => {
+        apiClient.updateClientCredentialsFlow();
+        this.setEndSubListLink(false);
+      });
+    }
   }
 
-  private createNavListItem(link: { id: string; header: string }): HTMLLIElement {
+  private createNavListItem(link: { id: string; href: string; header: string }): HTMLLIElement {
     const listItem = document.createElement('li');
     const linkElement = this.createNavLink(link);
     listItem.append(linkElement);
     return listItem;
   }
 
-  private createNavLink(link: { id: string; header: string }): HTMLAnchorElement {
+  private createNavLink(link: { id: string; href: string; header: string }): HTMLAnchorElement {
     const linkElement = new BaseComponent({
       tagName: 'a',
       classNames: ['nav-link'],
       textContent: link.header,
       attributes: {
-        href: `/${link.id}`,
+        href: `/${link.href}`,
         id: link.id,
         'data-navigo': '',
       },
@@ -115,7 +122,8 @@ export default class Header {
     return linkElement.getNode();
   }
 
-  public render(): void {
+  public render(isAuthorizedUser: boolean): void {
     this.createNav();
+    this.setEndSubListLink(isAuthorizedUser);
   }
 }
