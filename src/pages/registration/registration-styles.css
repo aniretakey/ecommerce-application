@@ -84,6 +84,16 @@ h1 {
   width: fit-content;
 }
 
+.success-message {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#ok-btn {
+  display: block;
+  margin: 10px auto;
+}
+
 .error-message {
   color: red;
   margin-top: 0;
