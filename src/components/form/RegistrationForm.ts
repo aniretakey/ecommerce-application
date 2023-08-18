@@ -46,6 +46,8 @@ export class RegistrationForm extends Form {
         validator.inputString,
         ageValidationCb,
       )
+      .addNewLabel('shipping-address', 'Shipping Address')
+      .addNewCtrlField(FormFields.saveOneAddress, 'checkbox', 'Use the same address for billing and shipping')
       .addNewValidatedField(
         FormFields.country,
         'text',
@@ -53,14 +55,25 @@ export class RegistrationForm extends Form {
         validator.inputString,
         countryValidationCb,
         'Russia',
+        'shipping',
       )
-      .addNewValidatedField(FormFields.city, 'text', `${FormFields.city}*`, validator.inputString, cityValidationCb)
+      .addNewValidatedField(
+        FormFields.city,
+        'text',
+        `${FormFields.city}*`,
+        validator.inputString,
+        cityValidationCb,
+        '',
+        'shipping',
+      )
       .addNewValidatedField(
         FormFields.street,
         'text',
         `${FormFields.street}*`,
         validator.inputString,
         streetValidationCb,
+        '',
+        'shipping',
       )
       .addNewValidatedField(
         FormFields.postalCode,
@@ -68,7 +81,48 @@ export class RegistrationForm extends Form {
         `${FormFields.postalCode}*`,
         validator.inputString,
         postalCodeValidationCb,
+        '',
+        'shipping',
       )
+      .addNewCtrlField(FormFields.setDefaultShipping, 'checkbox', 'Set as default shipping address')
+      .addNewLabel('billing-address', 'Billing Address')
+      .addNewValidatedField(
+        FormFields.country,
+        'text',
+        `${FormFields.country}*`,
+        validator.inputString,
+        countryValidationCb,
+        'Russia',
+        'billing',
+      )
+      .addNewValidatedField(
+        FormFields.city,
+        'text',
+        `${FormFields.city}*`,
+        validator.inputString,
+        cityValidationCb,
+        '',
+        'billing',
+      )
+      .addNewValidatedField(
+        FormFields.street,
+        'text',
+        `${FormFields.street}*`,
+        validator.inputString,
+        streetValidationCb,
+        '',
+        'billing',
+      )
+      .addNewValidatedField(
+        FormFields.postalCode,
+        'text',
+        `${FormFields.postalCode}*`,
+        validator.inputString,
+        postalCodeValidationCb,
+        '',
+        'billing',
+      )
+      .addNewCtrlField(FormFields.setDefaultBilling, 'checkbox', 'Set as default billing address', 'change')
       .addNewValidatedField(FormFields.email, 'text', `${FormFields.email}*`, validator.inputString, emailValidationCb)
       .addNewValidatedField(
         FormFields.password,
