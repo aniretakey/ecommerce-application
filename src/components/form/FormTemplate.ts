@@ -80,8 +80,9 @@ export class Form {
     validatorField: ZodString = z.string(),
     validationCb?: ValidationCb,
     value?: string,
+    additionalName?: string,
   ): this {
-    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value);
+    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value, additionalName);
     field.addInputValidation(validatorField, validationCb);
     field.fieldInput.addListener('input', () => {
       this.errAuthMessage.setTextContent('');
@@ -107,11 +108,13 @@ export class Form {
     fieldName: FormFields,
     inputType = 'checkbox',
     labelText = ``,
-    eventName: keyof HTMLElementEventMap,
-    eventHandler: (e: Event) => void,
+    eventName?: keyof HTMLElementEventMap,
+    eventHandler?: (e: Event) => void,
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, false, labelText);
-    field.fieldInput.addListener(eventName, eventHandler);
+    if (eventName && eventHandler) {
+      field.fieldInput.addListener(eventName, eventHandler);
+    }
     const fieldContainer = field.fieldContainer.getNode();
     fieldContainer.setAttribute('data-valid', 'true');
     this.formFields.push(fieldContainer);
