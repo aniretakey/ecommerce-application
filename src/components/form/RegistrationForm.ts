@@ -158,6 +158,10 @@ export class RegistrationForm extends Form {
       )
       .buildForm();
     this.submitBtn.getNode().addEventListener('click', this.submitRegistration.bind(this));
+    const shippingCountryField = safeQuerySelector('.registration__country-shipping-container', this.form.getNode());
+    const billingCountryField = safeQuerySelector('.registration__country-billing-container', this.form.getNode());
+    shippingCountryField.setAttribute('data-valid', 'true');
+    billingCountryField.setAttribute('data-valid', 'true');
   }
 
   private submitRegistration(e: Event): void {

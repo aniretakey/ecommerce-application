@@ -9,7 +9,7 @@ import About from '@pages/about';
 import Error from '@pages/error';
 import Basket from '@pages/basket';
 import UserProfile from '@pages/user-profile';
-import { safeQuerySelector } from '@utils/safeQuerySelector';
+// import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page', 'profile-page'];
 
@@ -44,8 +44,6 @@ export default class App {
       this.router.on('/registration-page', () => {
         const RegistrationPage = new Registration().render();
         renderNewPage(this.main.main, RegistrationPage);
-        const CountryField = safeQuerySelector('.registration__country-container');
-        CountryField.setAttribute('data-valid', 'true');
       });
 
       this.router.on('/about-page', () => {
