@@ -13,9 +13,14 @@ import {
   ageValidationCb,
 } from '@utils/customValidationCb';
 import { signUp } from '@utils/apiRequests';
-import { InvalidCredentialsError } from '@commercetools/platform-sdk';
+import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commercetools/platform-sdk';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
+import { DefaultAddresses } from '@customTypes/types';
+
+const COUNTRY_CODE: Record<string, string> = {
+  Russia: 'RU',
+};
 
 export class RegistrationForm extends Form {
   constructor() {
@@ -47,7 +52,20 @@ export class RegistrationForm extends Form {
         ageValidationCb,
       )
       .addNewLabel('shipping-address', 'Shipping Address')
-      .addNewCtrlField(FormFields.saveOneAddress, 'checkbox', 'Use the same address for billing and shipping')
+      .addNewCtrlField(
+        FormFields.saveOneAddress,
+        'checkbox',
+        'Use the same address for billing and shipping',
+        'change',
+        (e) => {
+          const target = e.target;
+          if (target instanceof HTMLInputElement) {
+            const isChecked = target.checked;
+            this.disabledBillingAddressFields(isChecked);
+            this.setValidAttrOfBillingAddressFields(isChecked);
+          }
+        },
+      )
       .addNewValidatedField(
         FormFields.country,
         'text',
@@ -150,17 +168,26 @@ export class RegistrationForm extends Form {
       const firstName = safeQuerySelector<HTMLInputElement>('#registrationFirst-name').value;
       const lastName = safeQuerySelector<HTMLInputElement>('#registrationLast-name').value;
       const birthDate = safeQuerySelector<HTMLInputElement>('#registrationBirth-date').value;
-      const country = 'RU';
-      const city = safeQuerySelector<HTMLInputElement>('#registrationCity').value;
-      const street = safeQuerySelector<HTMLInputElement>('#registrationStreet').value;
-      const postalCode = safeQuerySelector<HTMLInputElement>('#registrationPostal-code').value;
-
-      signUp(email, password, firstName, lastName, birthDate, country, city, street, postalCode)
+      const isOneAddress = safeQuerySelector<HTMLInputElement>(
+        '.registration__save-one-address-container input',
+      ).checked;
+      const addresses: BaseAddress[] = this.getAddresses(isOneAddress);
+      const defaultAddresses = this.getDefaultAddresses(isOneAddress);
+      const customer: MyCustomerDraft = {
+        email,
+        password,
+        firstName,
+        lastName,
+        dateOfBirth: birthDate,
+        addresses,
+        ...defaultAddresses,
+      };
+      signUp(customer)
         .then(async () => {
           await apiClient.getNewPassFlowToken(email, password).catch((err: Error) => console.log(err.message));
           const registrPage = safeQuerySelector<HTMLFormElement>('#registration');
           registrPage.innerHTML = `<h3 class='success-message'>You are succesfully registered!</h3>
-    <button class='btn' id='ok-btn'>Ok</button>`;
+      <button class='btn' id='ok-btn'>Ok</button>`;
           const okBtn = safeQuerySelector<HTMLButtonElement>('#ok-btn');
           okBtn.addEventListener('click', () => {
             window.location.hash = '#/';
@@ -171,5 +198,90 @@ export class RegistrationForm extends Form {
           return null;
         });
     }
+  }
+
+  private getAddresses(isOneAddress: boolean): BaseAddress[] {
+    const addresses: BaseAddress[] = [];
+
+    const shippingAddressFields = this.getAddressFields('shipping');
+    const countryName = shippingAddressFields.country.value;
+    const countryCode = COUNTRY_CODE[countryName];
+    if (!countryCode) {
+      throw new Error('countryCode does not exist');
+    }
+    const shippingAddress: BaseAddress = {
+      country: countryCode,
+      city: shippingAddressFields.city.value,
+      streetName: shippingAddressFields.street.value,
+      postalCode: shippingAddressFields.postalCode.value,
+    };
+    addresses.push(shippingAddress);
+    if (!isOneAddress) {
+      const billingAddressFields = this.getAddressFields('billing');
+      const billingAddress: BaseAddress = {
+        country: countryCode,
+        city: billingAddressFields.city.value,
+        streetName: billingAddressFields.street.value,
+        postalCode: billingAddressFields.postalCode.value,
+      };
+      addresses.push(billingAddress);
+    }
+
+    return addresses;
+  }
+
+  private getDefaultAddresses(isOneAddress: boolean): DefaultAddresses {
+    const defaultAddresses: DefaultAddresses = {};
+    const iSDefaultShippingAddress = safeQuerySelector<HTMLInputElement>(
+      '.registration__set-default-shipping-container input',
+    ).checked;
+    const iSDefaultBillingAddress = safeQuerySelector<HTMLInputElement>(
+      '.registration__set-default-billing-container input',
+    ).checked;
+    if (iSDefaultShippingAddress) {
+      defaultAddresses.defaultShippingAddress = 0;
+      if (isOneAddress) {
+        defaultAddresses.defaultBillingAddress = 0;
+      }
+    }
+    if (!isOneAddress && iSDefaultBillingAddress) {
+      defaultAddresses.defaultBillingAddress = 1;
+    }
+    return defaultAddresses;
+  }
+
+  private disabledBillingAddressFields(isDisabled: boolean): void {
+    const billingAddressFields = this.getAddressFields('billing');
+    Object.values(billingAddressFields).forEach((field) => {
+      field.disabled = isDisabled;
+    });
+  }
+
+  private setValidAttrOfBillingAddressFields(isDisabled: boolean): void {
+    const { city, street, postalCode } = this.getAddressFields('billing');
+    city.parentElement?.setAttribute('data-valid', `${isDisabled}`);
+    street.parentElement?.setAttribute('data-valid', `${isDisabled}`);
+    postalCode.parentElement?.setAttribute('data-valid', `${isDisabled}`);
+    city.value = '';
+    street.value = '';
+    postalCode.value = '';
+  }
+
+  private getAddressFields(addressType: string): {
+    country: HTMLInputElement;
+    city: HTMLInputElement;
+    street: HTMLInputElement;
+    postalCode: HTMLInputElement;
+    defaultAddress: HTMLInputElement;
+  } {
+    const country = safeQuerySelector<HTMLInputElement>(`.registration__country-${addressType}-container input`);
+    const city = safeQuerySelector<HTMLInputElement>(`.registration__city-${addressType}-container input`);
+    const street = safeQuerySelector<HTMLInputElement>(`.registration__street-${addressType}-container input`);
+    const postalCode = safeQuerySelector<HTMLInputElement>(`.registration__postal-code-${addressType}-container input`);
+    const defaultAddress = safeQuerySelector<HTMLInputElement>(
+      `.registration__set-default-${addressType}-container input`,
+    );
+
+    return { country, city, street, postalCode, defaultAddress };
   }
 }
