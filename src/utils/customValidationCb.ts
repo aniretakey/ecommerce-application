@@ -1,11 +1,7 @@
 import { z } from 'zod';
-import { FormFields } from '@customTypes/enums';
+import { FormFields, MIN_LENGTH, MIN_PASSWORD_LENGTH, POSTAL_CODE_LENGTH } from '@customTypes/enums';
 import { ValidationCb } from '@customTypes/types';
 import { checkMandatory, checkMatch, checkMinLength, checkMaxLength, checkWhitespaces } from './validationHelper';
-
-const MIN_PASSWORD_LENGTH = 8;
-const MIN_LENGTH = 1;
-const POSTAL_CODE_LENGTH = 6;
 
 export const passwordValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);

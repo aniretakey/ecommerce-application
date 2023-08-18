@@ -1,3 +1,7 @@
+export const MIN_PASSWORD_LENGTH = 8;
+export const MIN_LENGTH = 1;
+export const POSTAL_CODE_LENGTH = 6;
+
 export enum FormFields {
   email = 'Email',
   password = 'Password',
