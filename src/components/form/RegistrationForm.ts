@@ -16,7 +16,7 @@ import { signUp } from '@utils/apiRequests';
 import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commercetools/platform-sdk';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
-import { DefaultAddresses } from '@customTypes/types';
+import { DefaultAddresses, Addresses } from '@customTypes/types';
 
 const COUNTRY_CODE: Record<string, string> = {
   Russia: 'RU',
@@ -167,28 +167,26 @@ export class RegistrationForm extends Form {
   private submitRegistration(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      const email = safeQuerySelector<HTMLInputElement>('#registrationEmail').value;
-      const password = safeQuerySelector<HTMLInputElement>('#registrationPassword').value;
-      const firstName = safeQuerySelector<HTMLInputElement>('#registrationFirst-name').value;
-      const lastName = safeQuerySelector<HTMLInputElement>('#registrationLast-name').value;
-      const birthDate = safeQuerySelector<HTMLInputElement>('#registrationBirth-date').value;
+      const userInfo = this.getUserInfo();
       const isOneAddress = safeQuerySelector<HTMLInputElement>(
         '.registration__save-one-address-container input',
       ).checked;
       const addresses: BaseAddress[] = this.getAddresses(isOneAddress);
+      const shippingAddresses = [0];
+      const billingAddresses = isOneAddress ? [0] : [1];
       const defaultAddresses = this.getDefaultAddresses(isOneAddress);
-      const customer: MyCustomerDraft = {
-        email,
-        password,
-        firstName,
-        lastName,
-        dateOfBirth: birthDate,
+      const customer: MyCustomerDraft & Addresses = {
+        ...userInfo,
         addresses,
+        billingAddresses,
+        shippingAddresses,
         ...defaultAddresses,
       };
       signUp(customer)
         .then(async () => {
-          await apiClient.getNewPassFlowToken(email, password).catch((err: Error) => console.log(err.message));
+          await apiClient
+            .getNewPassFlowToken(userInfo.email, userInfo.password)
+            .catch((err: Error) => console.log(err.message));
           const registrPage = safeQuerySelector<HTMLFormElement>('#registration');
           registrPage.innerHTML = `<h3 class='success-message'>You are succesfully registered!</h3>
       <button class='btn' id='ok-btn'>Ok</button>`;
@@ -202,6 +200,16 @@ export class RegistrationForm extends Form {
           return null;
         });
     }
+  }
+
+  private getUserInfo(): MyCustomerDraft {
+    const email = safeQuerySelector<HTMLInputElement>('#registrationEmail').value;
+    const password = safeQuerySelector<HTMLInputElement>('#registrationPassword').value;
+    const firstName = safeQuerySelector<HTMLInputElement>('#registrationFirst-name').value;
+    const lastName = safeQuerySelector<HTMLInputElement>('#registrationLast-name').value;
+    const birthDate = safeQuerySelector<HTMLInputElement>('#registrationBirth-date').value;
+
+    return { email, password, firstName, lastName, dateOfBirth: birthDate };
   }
 
   private getAddresses(isOneAddress: boolean): BaseAddress[] {

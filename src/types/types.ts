@@ -24,3 +24,8 @@ export interface DefaultAddresses {
   defaultShippingAddress?: number;
   defaultBillingAddress?: number;
 }
+
+export interface Addresses {
+  billingAddresses: number[];
+  shippingAddresses: number[];
+}
