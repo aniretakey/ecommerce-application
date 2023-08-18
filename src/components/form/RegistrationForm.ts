@@ -12,6 +12,10 @@ import {
   postalCodeValidationCb,
   ageValidationCb,
 } from '@utils/customValidationCb';
+import { signUp } from '@utils/apiRequests';
+import { InvalidCredentialsError } from '@commercetools/platform-sdk';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { apiClient } from '@utils/ApiClient';
 
 export class RegistrationForm extends Form {
   constructor() {
@@ -87,7 +91,31 @@ export class RegistrationForm extends Form {
   private submitRegistration(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      // add registration handler here
+      const email = safeQuerySelector<HTMLInputElement>('#registrationEmail').value;
+      const password = safeQuerySelector<HTMLInputElement>('#registrationPassword').value;
+      const firstName = safeQuerySelector<HTMLInputElement>('#registrationFirst-name').value;
+      const lastName = safeQuerySelector<HTMLInputElement>('#registrationLast-name').value;
+      const birthDate = safeQuerySelector<HTMLInputElement>('#registrationBirth-date').value;
+      const country = 'RU';
+      const city = safeQuerySelector<HTMLInputElement>('#registrationCity').value;
+      const street = safeQuerySelector<HTMLInputElement>('#registrationStreet').value;
+      const postalCode = safeQuerySelector<HTMLInputElement>('#registrationPostal-code').value;
+
+      signUp(email, password, firstName, lastName, birthDate, country, city, street, postalCode)
+        .then(async () => {
+          await apiClient.getNewPassFlowToken(email, password).catch((err: Error) => console.log(err.message));
+          const registrPage = safeQuerySelector<HTMLFormElement>('#registration');
+          registrPage.innerHTML = `<h3 class='success-message'>You are succesfully registered!</h3>
+    <button class='btn' id='ok-btn'>Ok</button>`;
+          const okBtn = safeQuerySelector<HTMLButtonElement>('#ok-btn');
+          okBtn.addEventListener('click', () => {
+            window.location.hash = '#/';
+          });
+        })
+        .catch((e: InvalidCredentialsError) => {
+          this.errAuthMessage.setTextContent(e.message);
+          return null;
+        });
     }
   }
 }
