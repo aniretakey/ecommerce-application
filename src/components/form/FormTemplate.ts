@@ -118,6 +118,21 @@ export class Form {
     return this;
   }
 
+  protected addNewLabel(className: string, text: string): this {
+    const container = new BaseComponent({
+      tagName: 'div',
+      classNames: [`${this.pageName}__label-${className}`.toLowerCase()],
+    });
+    const label = new BaseComponent({
+      tagName: 'label',
+      classNames: ['block', 'text-gray-700', 'text-m', 'font-bold', 'my-4'],
+      textContent: `${text}`,
+    });
+    container.append(label);
+    this.formFields.push(container.getNode());
+    return this;
+  }
+
   public showPassword(passwordSelector: string): void {
     const passwordInput = safeQuerySelector<HTMLInputElement>(passwordSelector); //'#loginPassword'
     passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
