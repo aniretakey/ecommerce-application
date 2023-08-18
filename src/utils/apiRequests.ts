@@ -24,31 +24,6 @@ export const getCustomer = (): Promise<ClientResponse<Customer>> => {
   return apiClient.apiRoot.me().get().execute();
 };
 
-export const signUp = (
-  email: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  dateOfBirth: string,
-  country: string,
-  city: string,
-  streetName: string,
-  postalCode: string,
-): Promise<ClientResponse<CustomerSignInResult>> => {
-  const signUpBody: MyCustomerDraft = {
-    email,
-    password,
-    firstName,
-    lastName,
-    dateOfBirth,
-    addresses: [
-      {
-        country,
-        city,
-        streetName,
-        postalCode,
-      },
-    ],
-  };
-  return apiClient.apiRoot.me().signup().post({ body: signUpBody }).execute();
+export const signUp = (customer: MyCustomerDraft): Promise<ClientResponse<CustomerSignInResult>> => {
+  return apiClient.apiRoot.me().signup().post({ body: customer }).execute();
 };
