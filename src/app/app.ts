@@ -9,7 +9,6 @@ import About from '@pages/about';
 import Error from '@pages/error';
 import Basket from '@pages/basket';
 import UserProfile from '@pages/user-profile';
-import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 const pagesList = ['', 'catalog-page', 'about-page', 'registration-page', 'login-page', 'basket-page', 'profile-page'];
 
@@ -23,7 +22,7 @@ export default class App {
   constructor() {
     this.header = new Header();
     this.main = new Main();
-    this.router = new Navigo('/', { hash: true, strategy: 'ALL' }); // { hash: true }, strategy: 'ALL'
+    this.router = new Navigo('/', { hash: true, strategy: 'ALL' });
 
     // eslint-disable-next-line max-lines-per-function
     window.addEventListener('load', () => {
@@ -44,8 +43,6 @@ export default class App {
       this.router.on('/registration-page', () => {
         const RegistrationPage = new Registration().render();
         renderNewPage(this.main.main, RegistrationPage);
-        const CountryField = safeQuerySelector('.registration__country-container');
-        CountryField.setAttribute('data-valid', 'true');
       });
 
       this.router.on('/about-page', () => {
@@ -104,7 +101,6 @@ export default class App {
 
   public run(): void {
     this.header.render(this.isAuthorizedUser());
-    // document.body.append(this.main);
   }
 
   private isAuthorizedUser(): boolean {

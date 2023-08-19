@@ -9,6 +9,9 @@ export enum FormFields {
   country = 'Country',
   postalCode = 'Postal-code',
   showPw = 'show-pw',
+  saveOneAddress = 'save-one-address',
+  setDefaultShipping = 'set-default-shipping',
+  setDefaultBilling = 'set-default-billing',
 }
 
 export enum FormPages {
