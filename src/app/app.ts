@@ -40,10 +40,25 @@ export default class App {
         renderNewPage(this.main.main, CatalogPage);
       });
 
-      this.router.on('/registration-page', () => {
-        const RegistrationPage = new Registration().render();
-        renderNewPage(this.main.main, RegistrationPage);
-      });
+      this.router.on(
+        '/registration-page',
+        () => {
+          if (this.isAuthorizedUser()) {
+            this.router.navigate('/');
+          } else {
+            const RegistrationPage = new Registration().render();
+            renderNewPage(this.main.main, RegistrationPage);
+          }
+        },
+        {
+          leave: (done) => {
+            if (this.isAuthorizedUser()) {
+              this.header.setEndSubListLink(true);
+            }
+            done();
+          },
+        },
+      );
 
       this.router.on('/about-page', () => {
         const AboutPage = new About().render();
@@ -81,6 +96,10 @@ export default class App {
         } else {
           this.router.navigate('/');
         }
+      });
+
+      this.router.on(`/logout`, () => {
+        this.router.navigate('');
       });
 
       this.router.on(`/error-page`, () => {
