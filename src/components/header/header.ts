@@ -8,7 +8,7 @@ import { apiClient } from '@utils/ApiClient';
 const endSubListLinks = {
   isAuthorized: [
     { id: PageIds.UserProfilePage, href: PageIds.UserProfilePage, header: 'User Profile' },
-    { id: 'logout', href: '', header: 'Logout' },
+    { id: 'logout', href: 'logout', header: 'Logout' },
   ],
   isNotAuthorized: [
     { id: PageIds.RegistrationPage, href: PageIds.RegistrationPage, header: 'Registration' },
