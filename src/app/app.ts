@@ -98,6 +98,10 @@ export default class App {
         }
       });
 
+      this.router.on(`/logout`, () => {
+        this.router.navigate('');
+      });
+
       this.router.on(`/error-page`, () => {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
