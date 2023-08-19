@@ -12,7 +12,7 @@ import {
   postalCodeValidationCb,
   ageValidationCb,
 } from '@utils/customValidationCb';
-import { signUp } from '@utils/apiRequests';
+import { signUp, signIn } from '@utils/apiRequests';
 import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commercetools/platform-sdk';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
@@ -183,17 +183,14 @@ export class RegistrationForm extends Form {
         ...defaultAddresses,
       };
       signUp(customer)
+        .then(() => {
+          return signIn(userInfo.email, userInfo.password);
+        })
         .then(async () => {
           await apiClient
             .getNewPassFlowToken(userInfo.email, userInfo.password)
             .catch((err: Error) => console.log(err.message));
-          const registrPage = safeQuerySelector<HTMLFormElement>('#registration');
-          registrPage.innerHTML = `<h3 class='success-message'>You are succesfully registered!</h3>
-      <button class='btn' id='ok-btn'>Ok</button>`;
-          const okBtn = safeQuerySelector<HTMLButtonElement>('#ok-btn');
-          okBtn.addEventListener('click', () => {
-            window.location.hash = '#/';
-          });
+          window.location.hash = '#/';
         })
         .catch((e: InvalidCredentialsError) => {
           this.errAuthMessage.setTextContent(e.message);
