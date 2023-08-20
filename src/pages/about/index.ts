@@ -18,7 +18,7 @@ export default class About extends Page {
 
     const aboutMeBtn = new BaseComponent({
       tagName: 'button',
-      classNames: ['btn', 'bg-green-500'],
+      classNames: ['btn', 'btn-primary'],
       textContent: 'Customer Info',
     });
     aboutMeBtn.getNode().addEventListener('click', () => {
