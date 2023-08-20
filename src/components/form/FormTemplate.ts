@@ -80,8 +80,9 @@ export class Form {
     validatorField: ZodString = z.string(),
     validationCb?: ValidationCb,
     value?: string,
+    additionalName?: string,
   ): this {
-    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value);
+    const field = new FormFieldCreator(this.pageName, fieldName, inputType, true, labelText, value, additionalName);
     field.addInputValidation(validatorField, validationCb);
     field.fieldInput.addListener('input', () => {
       this.errAuthMessage.setTextContent('');
@@ -107,14 +108,31 @@ export class Form {
     fieldName: FormFields,
     inputType = 'checkbox',
     labelText = ``,
-    eventName: keyof HTMLElementEventMap,
-    eventHandler: (e: Event) => void,
+    eventName?: keyof HTMLElementEventMap,
+    eventHandler?: (e: Event) => void,
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, false, labelText);
-    field.fieldInput.addListener(eventName, eventHandler);
+    if (eventName && eventHandler) {
+      field.fieldInput.addListener(eventName, eventHandler);
+    }
     const fieldContainer = field.fieldContainer.getNode();
     fieldContainer.setAttribute('data-valid', 'true');
     this.formFields.push(fieldContainer);
+    return this;
+  }
+
+  protected addNewLabel(className: string, text: string): this {
+    const container = new BaseComponent({
+      tagName: 'div',
+      classNames: [`${this.pageName}__label-${className}`.toLowerCase()],
+    });
+    const label = new BaseComponent({
+      tagName: 'label',
+      classNames: ['block', 'text-gray-700', 'text-m', 'font-bold', 'my-4'],
+      textContent: `${text}`,
+    });
+    container.append(label);
+    this.formFields.push(container.getNode());
     return this;
   }
 

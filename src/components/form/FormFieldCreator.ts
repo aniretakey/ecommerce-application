@@ -42,10 +42,14 @@ export class FormFieldCreator {
     isErrMessRequired = true,
     labelText = `${fieldName}*`,
     value?: string,
+    additionalName?: string,
   ) {
     this.fieldContainer = new BaseComponent({
       tagName: 'div',
-      classNames: [`${page}__${fieldName}-container`.toLowerCase(), 'form-field-container'],
+      classNames: [
+        `${page}__${fieldName}${additionalName ? '-' + additionalName : ''}-container`.toLowerCase(),
+        'form-field-container',
+      ],
       attributes: { 'data-valid': 'false' },
     });
     this.fieldLabel = new BaseComponent({
@@ -58,7 +62,7 @@ export class FormFieldCreator {
     this.fieldInput = new InputComponent({
       tagName: 'input',
       classNames: [`${page}__${fieldName}-input`.toLowerCase(), ...inputclassNames],
-      attributes: { type: inputType, id: `${page}${fieldName}` },
+      attributes: { type: inputType, id: `${page}${fieldName}${additionalName ? '-' + additionalName : ''}` },
       parentNode: this.fieldContainer.getNode(),
     }).setValue(value);
     if (isErrMessRequired) {
