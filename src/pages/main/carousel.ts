@@ -8,24 +8,24 @@ import carouselImg7 from '@assets/img/main/carousel7.jpg';
 
 export function renderProductsCarousel(): string {
   return `<div class="carousel-item">
-        <img src=${carouselImg1} alt="Pizza" />
+        <img src=${carouselImg1} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg2} alt="Pizza" />
+        <img src=${carouselImg2} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg3} alt="Pizza" />
+        <img src=${carouselImg3} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg4} alt="Pizza" />
+        <img src=${carouselImg4} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg5} alt="Pizza" />
+        <img src=${carouselImg5} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg6} alt="Pizza" />
+        <img src=${carouselImg6} alt="Photo of furniture" />
       </div>
       <div class="carousel-item">
-        <img src=${carouselImg7} alt="Pizza" />
+        <img src=${carouselImg7} alt="Photo of furniture" />
       </div>`;
 }
