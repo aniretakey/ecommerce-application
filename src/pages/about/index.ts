@@ -25,11 +25,11 @@ export default class About extends Page {
       getCustomer()
         .then((data) => {
           console.log(data);
-          greeting.getNode().textContent += `My name is  ${data.body.firstName}`;
+          greeting.getNode().textContent = `My name is  ${data.body.firstName}`;
         })
         .catch((err) => {
           console.log(err);
-          greeting.getNode().textContent += `Please, sign In`;
+          greeting.getNode().textContent = `Please, sign In`;
         });
     });
 
