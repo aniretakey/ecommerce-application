@@ -1,11 +1,13 @@
 import { z } from 'zod';
-import { FormFields } from '@customTypes/enums';
+import {
+  FormFields,
+  MAX_POSTAL_CODE_LENGTH,
+  MIN_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  MIN_POSTAL_CODE_LENGTH,
+} from '@customTypes/enums';
 import { ValidationCb } from '@customTypes/types';
 import { checkMandatory, checkMatch, checkMinLength, checkMaxLength, checkWhitespaces } from './validationHelper';
-
-const MIN_PASSWORD_LENGTH = 8;
-const MIN_LENGTH = 1;
-const POSTAL_CODE_LENGTH = 6;
 
 export const passwordValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMandatory(val, ctx);
@@ -105,8 +107,8 @@ export const streetValidationCb: ValidationCb = (val: string, ctx: z.RefinementC
 export const postalCodeValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {
   checkMatch(val, ctx, /^[0-9]*$/, 'Postal code must contain only numbers');
   checkMandatory(val, ctx);
-  checkMinLength(val, ctx, 6, FormFields.postalCode);
-  checkMaxLength(val, ctx, POSTAL_CODE_LENGTH, FormFields.postalCode);
+  checkMinLength(val, ctx, MIN_POSTAL_CODE_LENGTH, FormFields.postalCode);
+  checkMaxLength(val, ctx, MAX_POSTAL_CODE_LENGTH, FormFields.postalCode);
 };
 
 export const ageValidationCb: ValidationCb = (val: string, ctx: z.RefinementCtx) => {

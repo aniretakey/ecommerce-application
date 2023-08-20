@@ -24,7 +24,6 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 [<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/ff6eb911-01ba-44fd-bb45-8c171b7a5f44" alt="prettier" height="28px">](https://prettier.io/)
 [<image src="https://github.com/aniretakey/ecommerce-application/assets/98079971/d3a69683-701e-4b0b-88fd-f6beeeb54b7d" alt="commercetools" height="28px">](https://commercetools.com/)
 
-
 ## Getting Started
 
 1. Clone the repository on your computer
@@ -64,3 +63,5 @@ The application was created as part of the [JavaScript/Front-end 2023Q1 course](
 - `npm run format` - fix code formatting with Prettier
 
 - `npm run test` - run the process of executing tests and generating test outcome reports using Jest
+
+- `npm run cover` - run the process of executing tests and generating a code coverage report
