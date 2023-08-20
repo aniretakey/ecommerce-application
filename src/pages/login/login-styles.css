@@ -19,6 +19,7 @@
   position: absolute;
   z-index: -1;
   opacity: 0;
+  max-width: 100px;
 }
 .login__show-pw-label::before {
   content: '';
@@ -47,4 +48,9 @@
 
 .login__show-pw-label:has(+ #loginshow-pw:checked)::after {
   opacity: 1;
+}
+
+.login__email-container,
+.login__password-container {
+  width: 250px;
 }

@@ -8,7 +8,7 @@ export default abstract class Page {
   }
 
   protected createHeaderTitle(text: string): HTMLElement {
-    const title = document.createElement('h1');
+    const title = document.createElement('h3');
     title.innerText = text;
     return title;
   }

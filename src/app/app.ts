@@ -32,7 +32,8 @@ export default class App {
       }
 
       this.router.on('', () => {
-        renderNewPage(this.main.main, 'main');
+        renderNewPage(this.main.main, '');
+        this.main.render();
       });
 
       this.router.on('/catalog-page', () => {

@@ -17,3 +17,21 @@
   visibility: hidden;
   opacity: 0;
 }
+
+.nav__sublist-end {
+  width: 130px;
+}
+
+.nav-link {
+  margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    padding: 8px;
+  }
+}
+
+.navbar__link-logo {
+  @media screen and (max-width: 768px) {
+    padding: 0 5px 0 0;
+  }
+}

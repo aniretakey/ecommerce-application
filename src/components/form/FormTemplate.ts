@@ -39,14 +39,14 @@ export class Form {
 
     this.submitBtn = new BaseComponent({
       tagName: 'button',
-      classNames: [`${pageName}__submit-btn`, 'btn', 'bg-green-500'],
+      classNames: [`${pageName}__submit-btn`, 'btn', 'btn-primary'],
       textContent: FormSubmitBtn[pageName],
       attributes: { id: `${pageName}SubmitBtn` },
     });
     const anotherPage = this.pageName === FormPages.login ? PageIds.RegistrationPage : PageIds.LoginPage;
     this.redirectBtn = new BaseComponent({
       tagName: 'a',
-      classNames: [`${pageName}__redirect-btn`, 'btn', 'bg-blue-500'],
+      classNames: [`${pageName}__redirect-btn`, 'btn'],
       textContent: FormRedirectBtn[pageName],
       attributes: { id: `${pageName}RedirectBtn`, 'data-navigo': '', href: `/${anotherPage}` },
     });
