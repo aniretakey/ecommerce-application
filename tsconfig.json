@@ -16,7 +16,6 @@
       "@utils/*": ["utils/*"],
       "@assets/*": ["assets/*"],
       "@app/*": ["app/*"],
-      "@router/*": ["router/*"],
       "@pages/*": ["pages/*"]
     }
   }
