@@ -35,7 +35,7 @@ export const getProducts = (): Promise<ClientResponse<ProductPagedQueryResponse>
     .products()
     .get({
       queryArgs: {
-        withTotal: true,
+        limit: 6,
       },
     })
     .execute();
