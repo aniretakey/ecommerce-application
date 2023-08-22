@@ -38,3 +38,11 @@ export enum FormRedirectBtn {
   login = 'Sign Up',
   registration = 'Sign In',
 }
+
+export enum UserProfileButtons {
+  editPersonalInfo = 'edit-personal-info-btn',
+  editPassword = 'edit-password-btn',
+  addAddress = 'add-address-btn',
+  editAddress = 'edit-address-btn',
+  deleteAddress = 'delete-address-btn',
+}
