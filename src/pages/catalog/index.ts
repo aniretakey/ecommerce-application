@@ -3,6 +3,7 @@ import { getProducts } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { CatalogItem } from '@utils/catalogItem';
 import Page from '@utils/pageTemplate';
+import './catalog-style.css';
 
 export default class Catalog extends Page {
   constructor() {
@@ -15,7 +16,7 @@ export default class Catalog extends Page {
 
     const catalogWrapper = new BaseComponent({
       tagName: 'div',
-      classNames: ['grid', 'grid-cols-3', 'grid-rows-8', 'gap-4'],
+      classNames: [/* 'grid', 'grid-cols-3', 'grid-rows-8', 'gap-4' */ 'catalog-wrapper', 'justify-items-center'],
     });
     getProducts()
       .then((data) => {
@@ -31,10 +32,11 @@ export default class Catalog extends Page {
   private createItems(results: Product[], catalogWrapper: BaseComponent<'div'>): void {
     if (results.length > 1) {
       results.forEach((item) => {
+        //  console.log(item);
         const product = item.masterData.current;
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';
-        const category = 'Category';
+        const categories = ['Furniture', 'Living room', 'Coffee tables'];
         const prices = product.masterVariant.prices ?? [];
         let price = 0;
         let discount;
@@ -49,7 +51,7 @@ export default class Catalog extends Page {
         }
         catalogWrapper
           .getNode()
-          .append(new CatalogItem(imgSrc, category, name, description, price, discount).card.getNode());
+          .append(new CatalogItem(imgSrc, categories, name, description, price, discount).card.getNode());
       });
     }
   }
