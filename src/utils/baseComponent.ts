@@ -33,7 +33,7 @@ export default class BaseComponent<K extends keyof HTMLElementTagNameMap> {
     this.node.append(child.getNode());
   }
 
-  public appendChildren(children: BaseComponent<K>[]): void {
+  public appendChildren(children: BaseComponent<keyof HTMLElementTagNameMap>[]): void {
     children.forEach((el) => {
       this.append(el);
     });
