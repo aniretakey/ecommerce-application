@@ -1,3 +1,4 @@
+import './user-profile-style.css';
 import Page from '@utils/pageTemplate';
 import { getCustomer } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
@@ -6,6 +7,7 @@ import { getBadge, getDeleteIcon, getEditIcon } from './user-profile-ui';
 import { UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
+import { EditPasswordForm } from '@components/form/EditPasswordForm';
 
 const classNames = {
   infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-md:flex-col'],
@@ -83,7 +85,7 @@ export default class UserProfile extends Page {
     });
     container.append(title);
     editInfoBtn.addListener('click', this.openEditPersonalInfoFrom.bind(this));
-    editPasswordBtn.addListener('click', () => console.log('open modal for edit password'));
+    editPasswordBtn.addListener('click', this.openEditPasswordForm.bind(this));
     Object.values(this.personalInfo).forEach((field) => {
       const fieldElement = this.createFieldInfo(field.textContent, field.element);
       container.append(fieldElement);
@@ -226,6 +228,15 @@ export default class UserProfile extends Page {
       email: this.userInfo.email ?? '',
     };
     const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, personalInfo);
+    const modal = new ModalWindow();
+    modal.buildModal(form.form);
+  }
+
+  private openEditPasswordForm(): void {
+    if (!this.userInfo) {
+      throw new Error('No user data');
+    }
+    const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
     const modal = new ModalWindow();
     modal.buildModal(form.form);
   }
