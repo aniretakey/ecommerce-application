@@ -30,6 +30,13 @@ export interface Addresses {
   shippingAddresses: number[];
 }
 
+export interface AddressTypes {
+  isDefaultBillingAddress: boolean;
+  isDefaultShippingAddress: boolean;
+  isBillingAddress: boolean;
+  isShippingAddress: boolean;
+}
+
 export interface PersonalInfo {
   firstName: string;
   lastName: string;

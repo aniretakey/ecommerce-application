@@ -8,6 +8,7 @@ import { UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 import { EditPasswordForm } from '@components/form/EditPasswordForm';
+import { AddressTypes } from '@customTypes/types';
 
 const classNames = {
   infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-md:flex-col'],
@@ -182,32 +183,44 @@ export default class UserProfile extends Page {
         <td>${address.city}</td>
         <td>${address.streetName}</td>
         <td>${address.postalCode}</td>
-        <td>${this.getAddressTypes(address.id, data)}</td>
+        <td>${this.getAddressTypesBadge(address.id, data)}</td>
         <td><button>${this.getEditButtons()}</button></td>`;
       this.tableBody.append(tableRow);
     });
   }
 
-  private getAddressTypes(id: string, data: Customer): string {
-    const { defaultBillingAddressId, defaultShippingAddressId, billingAddressIds, shippingAddressIds } = data;
+  private getAddressTypesBadge(id: string, data: Customer): string {
+    const addressTypes = this.getAddressTypes(id, data);
     let result = `<div class="${classNames.addressTypes.join(' ')}">`;
 
-    if (id === defaultBillingAddressId) {
+    if (addressTypes.isDefaultBillingAddress) {
       result += getBadge('Default Billing', true);
     }
 
-    if (id === defaultShippingAddressId) {
+    if (addressTypes.isDefaultShippingAddress) {
       result += getBadge('Default Shipping', true);
     }
 
-    if (billingAddressIds && billingAddressIds.includes(id)) {
+    if (addressTypes.isBillingAddress) {
       result += getBadge('Billing');
     }
 
-    if (shippingAddressIds && shippingAddressIds.includes(id)) {
+    if (addressTypes.isShippingAddress) {
       result += getBadge('Shipping');
     }
     result += '</div>';
+    return result;
+  }
+
+  private getAddressTypes(id: string, data: Customer): AddressTypes {
+    const { defaultBillingAddressId, defaultShippingAddressId, billingAddressIds, shippingAddressIds } = data;
+    const result = {
+      isDefaultBillingAddress: id === defaultBillingAddressId,
+      isDefaultShippingAddress: id === defaultShippingAddressId,
+      isBillingAddress: !!billingAddressIds && billingAddressIds.includes(id),
+      isShippingAddress: !!shippingAddressIds && shippingAddressIds.includes(id),
+    };
+
     return result;
   }
 
