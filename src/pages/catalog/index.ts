@@ -1,9 +1,6 @@
-import { Product } from '@commercetools/platform-sdk';
-import { getProducts } from '@utils/apiRequests';
-import BaseComponent from '@utils/baseComponent';
-import { CatalogItem } from '@utils/catalogItem';
 import Page from '@utils/pageTemplate';
 import './catalog-style.css';
+import { CatalogView } from './CatalogView';
 
 export default class Catalog extends Page {
   constructor() {
@@ -12,11 +9,11 @@ export default class Catalog extends Page {
 
   public render(): HTMLElement {
     const title = this.createHeaderTitle('Catalog');
-    this.container.append(title);
 
+    /*   this.getCategoriesArray();
     const catalogWrapper = new BaseComponent({
       tagName: 'div',
-      classNames: [/* 'grid', 'grid-cols-3', 'grid-rows-8', 'gap-4' */ 'catalog-wrapper', 'justify-items-center'],
+      classNames: [ 'catalog-wrapper', 'justify-items-center'],
     });
     getProducts()
       .then((data) => {
@@ -25,8 +22,15 @@ export default class Catalog extends Page {
       })
       .catch(console.log);
     this.container.append(catalogWrapper.getNode());
+ */
 
+    const catalogWrapper = new CatalogView();
+    this.container.append(title, catalogWrapper.catalogWrapper.getNode());
     return this.container;
+  }
+
+  /*  private getCategoriesArray() {
+    getCategories().then(console.log).catch(console.error);
   }
 
   private createItems(results: Product[], catalogWrapper: BaseComponent<'div'>): void {
@@ -54,5 +58,5 @@ export default class Catalog extends Page {
           .append(new CatalogItem(imgSrc, categories, name, description, price, discount).card.getNode());
       });
     }
-  }
+  }*/
 }

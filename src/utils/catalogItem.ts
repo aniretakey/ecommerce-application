@@ -8,9 +8,9 @@ export class CatalogItem {
   private priceContainer: BaseComponent<'div'>;
   private name: BaseComponent<'h5'>;
   private description: BaseComponent<'p'>;
-  private price: BaseComponent<'p'>;
+  /*   private price: BaseComponent<'p'>;
   private discount: BaseComponent<'p'>;
-
+ */
   constructor(
     imgSrc: string,
     categories: string[] = [],
@@ -36,9 +36,9 @@ export class CatalogItem {
     this.description = new BaseComponent({ tagName: 'p', classNames: ['description'] });
     this.description.setTextContent(description);
     this.priceContainer = new BaseComponent({ tagName: 'div', classNames: ['flex', 'justify-between'] });
-    this.price = new BaseComponent({ tagName: 'p', classNames: ['price', 'text-primary'] });
+    /*  this.price = new BaseComponent({ tagName: 'p', classNames: ['price', 'text-primary'] });
     this.discount = new BaseComponent({ tagName: 'p', classNames: ['discount', 'text-accent', 'text-end'] });
-    this.priceContainer.appendChildren([this.price, this.discount]);
+    this.priceContainer.appendChildren([this.price, this.discount]); */
     this.displayPrice(price, discount);
     this.cardBody.appendChildren([this.name, this.description, this.priceContainer, this.categories]);
     this.buildItem();
@@ -53,7 +53,7 @@ export class CatalogItem {
     categories.forEach((item) => {
       const category = new BaseComponent({
         tagName: 'p',
-        classNames: ['badge', 'badge-outline', 'badge-md'],
+        classNames: ['badge', 'badge-outline', 'badge-md', 'grow-0'],
         textContent: item,
       });
       this.categories.append(category);
@@ -62,10 +62,12 @@ export class CatalogItem {
   }
 
   private displayPrice(price: number, discount?: number): this {
-    this.price.setTextContent(`₽${price / 100}`);
+    const priceView = new BaseComponent({ tagName: 'p', classNames: ['price', 'text-primary'] });
+    const discountView = new BaseComponent({ tagName: 'p', classNames: ['discount', 'text-accent', 'text-end'] });
+    priceView.setTextContent(`₽${price / 100}`);
     if (discount) {
-      this.price.addClass(['line-through', 'opacity-50']);
-      this.discount.setTextContent(`₽${discount / 100}`);
+      priceView.addClass(['line-through', 'opacity-50']);
+      discountView.setTextContent(`₽${discount / 100}`);
       /* const saleBaidge = */ new BaseComponent({
         tagName: 'div',
         classNames: ['badge', 'badge-accent', 'badge-lg'],
@@ -73,6 +75,7 @@ export class CatalogItem {
         textContent: 'Sale',
       });
     }
+    this.priceContainer.appendChildren([priceView, discountView]);
     return this;
   }
 
