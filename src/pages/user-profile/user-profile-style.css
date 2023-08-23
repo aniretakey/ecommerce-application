@@ -55,6 +55,8 @@ input[type='checkbox'] {
   margin: 3px 5px;
 }
 
+.userprofile__set-shipping-container,
+.userprofile__set-billing-container,
 .userprofile__set-default-shipping-container,
 .userprofile__set-default-billing-container {
   flex-direction: row-reverse;

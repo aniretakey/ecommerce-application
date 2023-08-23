@@ -57,7 +57,7 @@ export class EditAddressForm extends Form {
         addressInfo ? addressInfo.postalCode : '',
       )
       .addNewCtrlField(
-        FormFields.setDefaultShipping,
+        FormFields.setShipping,
         'checkbox',
         'Set as shipping address',
         undefined,
@@ -65,7 +65,7 @@ export class EditAddressForm extends Form {
         addressInfo?.isShippingAddress ?? false,
       )
       .addNewCtrlField(
-        FormFields.setDefaultBilling,
+        FormFields.setBilling,
         'checkbox',
         'Set as billing address',
         undefined,

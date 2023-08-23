@@ -17,6 +17,8 @@ export enum FormFields {
   saveOneAddress = 'save-one-address',
   setDefaultShipping = 'set-default-shipping',
   setDefaultBilling = 'set-default-billing',
+  setShipping = 'set-shipping',
+  setBilling = 'set-billing',
 }
 
 export enum FormPages {
