@@ -26,7 +26,7 @@ export class CatalogCard {
 
     this.name = new BaseComponent({
       tagName: 'h5',
-      classNames: ['card-title', 'text-start', 'm-0', 'justify-between' /* 'loading', 'loading-dots' */],
+      classNames: ['card-title', 'text-start', 'm-0', 'justify-between'],
     });
 
     this.description = new BaseComponent({ tagName: 'p', classNames: ['description'] });
@@ -49,7 +49,15 @@ export class CatalogCard {
     categories.forEach((item) => {
       const category = new BaseComponent({
         tagName: 'p',
-        classNames: ['badge', 'badge-outline', 'badge-md', 'grow-0'],
+        classNames: [
+          'badge',
+          'badge-outline',
+          'badge-md',
+          'grow-0',
+          'category-badge',
+          'hover:text-white',
+          'hover:bg-primary',
+        ],
         textContent: item,
       });
       this.categories.append(category);

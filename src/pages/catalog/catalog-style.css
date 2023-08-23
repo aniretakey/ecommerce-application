@@ -32,3 +32,8 @@
   font-weight: 700;
   font-size: 18px;
 }
+
+.category-badge {
+  cursor: pointer;
+  transition: 0.3s;
+}
