@@ -36,10 +36,3 @@ export interface AddressTypes {
   isBillingAddress: boolean;
   isShippingAddress: boolean;
 }
-
-export interface PersonalInfo {
-  firstName: string;
-  lastName: string;
-  email: string;
-  dateOfBirth: string;
-}

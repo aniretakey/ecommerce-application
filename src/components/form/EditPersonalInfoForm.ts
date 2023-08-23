@@ -7,13 +7,13 @@ import {
   lastNameValidationCb,
   ageValidationCb,
 } from '@utils/customValidationCb';
-import { PersonalInfo } from '@customTypes/types';
+import { Customer } from '@commercetools/platform-sdk';
 
 export class EditPersonalInfoFrom extends Form {
   private userId;
   private userVersion;
 
-  constructor(userId: string, userVersion: number, personalInfo: PersonalInfo) {
+  constructor(userId: string, userVersion: number, personalInfo: Customer) {
     super(FormPages.userProfile, false);
     this.userId = userId;
     this.userVersion = userVersion;
@@ -21,7 +21,7 @@ export class EditPersonalInfoFrom extends Form {
     this.formFields.forEach((field) => field.setAttribute('data-valid', 'true'));
   }
 
-  private buildEditPersonalInfoFrom(personalInfo: PersonalInfo): void {
+  private buildEditPersonalInfoFrom(personalInfo: Customer): void {
     this.addNewValidatedField(
       FormFields.firstName,
       'text',
@@ -55,13 +55,15 @@ export class EditPersonalInfoFrom extends Form {
         personalInfo.email,
       )
       .buildForm();
-    this.submitBtn.getNode().addEventListener('click', this.editPersonalInfo.bind(this));
+    this.submitBtn.addListener('click', this.editPersonalInfo.bind(this));
   }
 
   private editPersonalInfo(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      console.log(`edit personal info for user: id - ${this.userId} version - ${this.userVersion}`);
+      // TODO: update personal info
+    } else {
+      e.stopImmediatePropagation();
     }
   }
 }

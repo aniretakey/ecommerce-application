@@ -44,7 +44,7 @@ export class EditPasswordForm extends Form {
       )
       .addNewCtrlField(FormFields.showPw, 'checkbox', 'Show Password', 'click', this.showPasswords.bind(this))
       .buildForm();
-    this.submitBtn.getNode().addEventListener('click', this.editPassword.bind(this));
+    this.submitBtn.addListener('click', this.editPassword.bind(this));
   }
 
   private showPasswords(): void {
@@ -57,7 +57,9 @@ export class EditPasswordForm extends Form {
   private editPassword(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      console.log(`edit password for user: id - ${this.userId} version - ${this.userVersion}`);
+      // TODO: update password
+    } else {
+      e.stopImmediatePropagation();
     }
   }
 }

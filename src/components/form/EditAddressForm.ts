@@ -89,9 +89,7 @@ export class EditAddressForm extends Form {
         addressInfo?.isDefaultBillingAddress ?? false,
       )
       .buildForm();
-    this.submitBtn
-      .getNode()
-      .addEventListener('click', addressInfo ? this.editAddress.bind(this) : this.addAddress.bind(this));
+    this.submitBtn.addListener('click', addressInfo ? this.editAddress.bind(this) : this.addAddress.bind(this));
 
     addressInfo
       ? this.form
@@ -104,14 +102,18 @@ export class EditAddressForm extends Form {
   private editAddress(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      console.log('edit');
+      // TODO: update address
+    } else {
+      e.stopImmediatePropagation();
     }
   }
 
   private addAddress(e: Event): void {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      console.log('add');
+      // TODO: add new address
+    } else {
+      e.stopImmediatePropagation();
     }
   }
 }

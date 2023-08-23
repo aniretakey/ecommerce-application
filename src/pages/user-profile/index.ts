@@ -144,7 +144,7 @@ export default class UserProfile extends Page {
           this.openEditAddressForm(addressInfo);
         }
         if (button.classList.contains(UserProfileButtons.deleteAddress)) {
-          console.log(`delete ${addressId}`);
+          // TODO: delete address
         }
       }
     });
@@ -239,36 +239,27 @@ export default class UserProfile extends Page {
   }
 
   private openEditPersonalInfoFrom(): void {
-    if (!this.userInfo) {
-      throw new Error('No user data');
+    if (this.userInfo) {
+      const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, this.userInfo);
+      this.openEditForm(form);
     }
-    const personalInfo = {
-      firstName: this.userInfo.firstName ?? '',
-      lastName: this.userInfo.lastName ?? '',
-      dateOfBirth: this.userInfo.dateOfBirth ?? '',
-      email: this.userInfo.email ?? '',
-    };
-    const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, personalInfo);
-    const modal = new ModalWindow();
-    modal.buildModal(form.form);
   }
 
   private openEditPasswordForm(): void {
-    if (!this.userInfo) {
-      throw new Error('No user data');
+    if (this.userInfo) {
+      const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
+      this.openEditForm(form);
     }
-    const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
-    const modal = new ModalWindow();
-    modal.buildModal(form.form);
   }
 
   private openEditAddressForm(addressInfo?: Address & AddressTypes): void {
-    if (!this.userInfo) {
-      throw new Error('No user data');
+    if (this.userInfo) {
+      const form = new EditAddressForm(this.userInfo.id, this.userInfo.version, addressInfo ?? undefined);
+      this.openEditForm(form);
     }
-    const form = addressInfo
-      ? new EditAddressForm(this.userInfo.id, this.userInfo.version, addressInfo)
-      : new EditAddressForm(this.userInfo.id, this.userInfo.version);
+  }
+
+  private openEditForm(form: EditPersonalInfoFrom | EditPasswordForm | EditAddressForm): void {
     const modal = new ModalWindow();
     modal.buildModal(form.form);
   }
