@@ -2,12 +2,13 @@ import './user-profile-style.css';
 import Page from '@utils/pageTemplate';
 import { getCustomer } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
-import { Customer } from '@commercetools/platform-sdk';
+import { Address, Customer } from '@commercetools/platform-sdk';
 import { getBadge, getDeleteIcon, getEditIcon } from './user-profile-ui';
 import { UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 import { EditPasswordForm } from '@components/form/EditPasswordForm';
+import { EditAddressForm } from '@components/form/EditAddressForm';
 import { AddressTypes } from '@customTypes/types';
 
 const classNames = {
@@ -109,7 +110,7 @@ export default class UserProfile extends Page {
     const table = new BaseComponent({ tagName: 'table', classNames: classNames.table });
     const tableHead = new BaseComponent({ tagName: 'thead' });
     const tableHeadRow = new BaseComponent({ tagName: 'tr' });
-    addAddressBtn.addListener('click', () => console.log('open modal for add address'));
+    addAddressBtn.addListener('click', () => this.openEditAddressForm());
     container.appendChildren([title, addAddressBtn]);
     tableHeadTitles.forEach((title) => {
       const th = new BaseComponent({ tagName: 'th', textContent: title });
@@ -130,10 +131,17 @@ export default class UserProfile extends Page {
       }
       const button = target.closest('.table__button');
 
-      if (button) {
+      if (button && this.userInfo) {
         const addressId = target.closest('tr')?.getAttribute('data-id');
-        if (button.classList.contains(UserProfileButtons.editAddress)) {
-          console.log(`edit ${addressId}`);
+        const address: Address | undefined = this.userInfo.addresses.find((address) => address.id === addressId);
+
+        if (address && addressId && button.classList.contains(UserProfileButtons.editAddress)) {
+          const types: AddressTypes = this.getAddressTypes(addressId, this.userInfo);
+          const addressInfo = {
+            ...address,
+            ...types,
+          };
+          this.openEditAddressForm(addressInfo);
         }
         if (button.classList.contains(UserProfileButtons.deleteAddress)) {
           console.log(`delete ${addressId}`);
@@ -250,6 +258,17 @@ export default class UserProfile extends Page {
       throw new Error('No user data');
     }
     const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
+    const modal = new ModalWindow();
+    modal.buildModal(form.form);
+  }
+
+  private openEditAddressForm(addressInfo?: Address & AddressTypes): void {
+    if (!this.userInfo) {
+      throw new Error('No user data');
+    }
+    const form = addressInfo
+      ? new EditAddressForm(this.userInfo.id, this.userInfo.version, addressInfo)
+      : new EditAddressForm(this.userInfo.id, this.userInfo.version);
     const modal = new ModalWindow();
     modal.buildModal(form.form);
   }
