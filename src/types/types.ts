@@ -29,3 +29,10 @@ export interface Addresses {
   billingAddresses: number[];
   shippingAddresses: number[];
 }
+
+export interface PersonalInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+}

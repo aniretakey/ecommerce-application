@@ -4,6 +4,8 @@ import BaseComponent from '@utils/baseComponent';
 import { Customer } from '@commercetools/platform-sdk';
 import { getBadge, getDeleteIcon, getEditIcon } from './user-profile-ui';
 import { UserProfileButtons } from '@customTypes/enums';
+import { ModalWindow } from '@components/modal/modalWindow';
+import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 
 const classNames = {
   infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-md:flex-col'],
@@ -21,6 +23,7 @@ const classNames = {
 const tableHeadTitles = ['№', 'Country', 'City', 'Street', 'Postal code', 'Address type', 'Edit'];
 
 export default class UserProfile extends Page {
+  private userInfo: Customer | undefined;
   private tableBody = new BaseComponent({ tagName: 'tbody' });
   private personalInfo = {
     firstName: {
@@ -79,7 +82,7 @@ export default class UserProfile extends Page {
       textContent: 'Edit password',
     });
     container.append(title);
-    editInfoBtn.addListener('click', () => console.log('open modal for edit info'));
+    editInfoBtn.addListener('click', this.openEditPersonalInfoFrom.bind(this));
     editPasswordBtn.addListener('click', () => console.log('open modal for edit password'));
     Object.values(this.personalInfo).forEach((field) => {
       const fieldElement = this.createFieldInfo(field.textContent, field.element);
@@ -149,8 +152,9 @@ export default class UserProfile extends Page {
   private setUserInfo(): void {
     getCustomer()
       .then((data) => {
-        this.setPersonalInfo(data.body);
-        this.setAddressesInfo(data.body);
+        this.userInfo = data.body;
+        this.setPersonalInfo(this.userInfo);
+        this.setAddressesInfo(this.userInfo);
       })
       .catch((err) => {
         console.log(err);
@@ -209,5 +213,20 @@ export default class UserProfile extends Page {
     return `
     <button class="${classNames.tableBtn.join(' ')} ${UserProfileButtons.editAddress}">${getEditIcon()}</button>
     <button class="${classNames.tableBtn.join(' ')} ${UserProfileButtons.deleteAddress}">${getDeleteIcon()}</button>`;
+  }
+
+  private openEditPersonalInfoFrom(): void {
+    if (!this.userInfo) {
+      throw new Error('No user data');
+    }
+    const personalInfo = {
+      firstName: this.userInfo.firstName ?? '',
+      lastName: this.userInfo.lastName ?? '',
+      dateOfBirth: this.userInfo.dateOfBirth ?? '',
+      email: this.userInfo.email ?? '',
+    };
+    const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, personalInfo);
+    const modal = new ModalWindow();
+    modal.buildModal(form.form);
   }
 }

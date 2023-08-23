@@ -22,21 +22,25 @@ export enum FormFields {
 export enum FormPages {
   login = 'login',
   registration = 'registration',
+  userProfile = 'userProfile',
 }
 
 export enum RedirectMessage {
   login = 'Have not account yet?',
   registration = 'Already have an account?',
+  userProfile = '',
 }
 
 export enum FormSubmitBtn {
   login = 'Sign In',
   registration = 'Sign Up',
+  userProfile = 'Save',
 }
 
 export enum FormRedirectBtn {
   login = 'Sign Up',
   registration = 'Sign In',
+  userProfile = '',
 }
 
 export enum UserProfileButtons {
