@@ -2,27 +2,36 @@ import BaseComponent from '@utils/baseComponent';
 import { CatalogFilters } from './CatalogFilters';
 import { getCategories, getProducts } from '@utils/apiRequests';
 import { Product } from '@commercetools/platform-sdk';
-import { CatalogItem } from '@utils/catalogItem';
 import placeholder from '@assets/logo.png';
+import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 type cat = Record<string, string>;
 
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
   private filtersContainer: CatalogFilters;
   private catalogCardsWrap: BaseComponent<'div'>;
-  private categoryData: cat = {}; //= new Map();
+  private categoryData: cat = {};
+  private cardItems: CatalogCard[] = [];
   constructor() {
     this.catalogWrapper = new BaseComponent({
       tagName: 'div',
-      //classNames: [/* 'grid', 'grid-cols-3', 'grid-rows-8', 'gap-4' */ 'catalog-wrapper', 'justify-items-center'],
     });
     this.catalogCardsWrap = new BaseComponent({
       tagName: 'div',
-      classNames: [/* 'grid', 'grid-cols-3', 'grid-rows-8', 'gap-4' */ 'catalog__cards-wrap', 'justify-items-center'],
+      classNames: ['catalog__cards-wrap', 'justify-items-center'],
     });
     this.filtersContainer = new CatalogFilters();
     this.catalogWrapper.appendChildren([this.filtersContainer.filters, this.catalogCardsWrap]);
+    this.draw();
     this.drawCatalogCards();
+  }
+
+  private draw(): void {
+    for (let i = 0; i < 6; i++) {
+      const newItem = new CatalogCard().buildItem();
+      this.catalogCardsWrap.getNode().append(newItem.card.getNode());
+      this.cardItems.push(newItem);
+    }
   }
 
   private async getCategoryNames(): Promise<void> {
@@ -34,44 +43,25 @@ export class CatalogView {
             name: { ru: category = '' },
           } = el;
           this.categoryData[id] = category;
-          //   return [id, category];
         });
       })
       .catch(console.log);
-
-    //   /* const allCategories =  */Object.fromEntries(
-
-    //  );
-    //  this.categoryData = allCategories
-    //  sessionStorage.setItem('categoriesData', JSON.stringify(allCategories));
-    //   return allCategories;
   }
 
   private drawCatalogCards(): void {
-    //  const categoriesData = sessionStorage.getItem('categoriesData');
-
     getProducts()
       .then(async (data) => {
-        //: cat; // = JSON.parse(categoriesData)
-        //  if (this.categoryData.size < 1) {
         await this.getCategoryNames();
-        //  }
         console.log(this.categoryData, this.categoryData.size);
-        //  const categories = categoriesData ? JSON.parse(categoriesData) : await this.getCategoryNames();
-
         const results = data.body.results;
-        this.createItems(results, this.catalogCardsWrap, this.categoryData /* categories */);
+        this.createItems(results, this.categoryData);
       })
       .catch(console.log);
   }
 
-  private createItems(
-    results: Product[],
-    catalogWrapper: BaseComponent<'div'>,
-    categoryNames: Record<string, string>,
-  ): void {
+  private createItems(results: Product[], categoryNames: Record<string, string>): void {
     if (results.length > 1) {
-      results.forEach((item) => {
+      results.forEach((item, index) => {
         const product = item.masterData.current;
         const categories: string[] = item.masterData.current.categories.map((data) => categoryNames[data.id] ?? '');
         const name = product.name.ru ?? '';
@@ -88,9 +78,13 @@ export class CatalogView {
         if (images.length) {
           imgSrc = images[0]?.url ?? `${placeholder}`;
         }
-        catalogWrapper
-          .getNode()
-          .append(new CatalogItem(imgSrc, categories, name, description, price, discount).card.getNode());
+        console.log(this.cardItems[index]);
+        this.cardItems[index]
+          ?.setProductName(name)
+          .setProductDescription(description)
+          .setPhotoAttr(imgSrc, name)
+          .setCategories(categories)
+          .displayPrice(price, discount);
       });
     }
   }
