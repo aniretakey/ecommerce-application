@@ -19,12 +19,21 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 18px;
-}
 
+  margin: 0;
+  -webkit-line-clamp: 4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 72px;
+}
+.catalog .poduct-name {
+  height: 50px;
+}
 .catalog .card {
   min-width: 320px;
   width: 70%;
-  height: 433px;
+  min-height: 437px;
 }
 
 .catalog .price,

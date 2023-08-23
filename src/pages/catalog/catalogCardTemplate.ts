@@ -26,7 +26,7 @@ export class CatalogCard {
 
     this.name = new BaseComponent({
       tagName: 'h5',
-      classNames: ['card-title', 'text-start', 'm-0', 'justify-between'],
+      classNames: ['card-title', 'text-start', 'm-0', 'justify-between', 'poduct-name'],
     });
 
     this.description = new BaseComponent({ tagName: 'p', classNames: ['description'] });

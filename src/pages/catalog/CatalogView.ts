@@ -14,12 +14,13 @@ export class CatalogView {
   private categoryData: Record<string, string> = {};
   private cardItems: CatalogCard[] = [];
   private currentPage = 1;
-  //  private maxPage = 1;
+  private maxPage = 2;
   private pagination: CatalogPagination;
   private total = 6;
   constructor() {
     this.catalogWrapper = new BaseComponent({
       tagName: 'div',
+      classNames: ['flex', 'flex-col', 'justify-between', 'items-center', 'gap-4'],
     });
     this.catalogCardsWrap = new BaseComponent({
       tagName: 'div',
@@ -37,13 +38,16 @@ export class CatalogView {
 
     this.pagination.nextBtn.addListener('click', () => {
       this.currentPage += 1;
+      this.pagination.prevBtn.getNode().disabled = false;
       this.cardItems = [];
       this.draw();
       this.drawCatalogCards((this.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
-
       this.pagination.pageInfoBtn.setTextContent(`Page ${this.currentPage}`);
     });
+
     this.pagination.prevBtn.addListener('click', () => {
+      this.pagination.nextBtn.getNode().disabled = false;
+
       this.currentPage -= 1;
       this.cardItems = [];
       this.draw();
@@ -54,9 +58,16 @@ export class CatalogView {
   }
 
   private draw(): void {
+    if (this.currentPage === 1) {
+      this.pagination.prevBtn.getNode().disabled = true;
+    }
+    const cardNumber = Math.min(6, this.total - (this.currentPage - 1) * CATALOG_CARDS_NUM);
+    if (this.currentPage >= this.maxPage || cardNumber < CATALOG_CARDS_NUM) {
+      this.pagination.nextBtn.getNode().disabled = true;
+    }
     this.catalogCardsWrap.clearInnerHTML();
     console.log(this.total, this.currentPage);
-    for (let i = 0; i < Math.min(6, this.total - (this.currentPage - 1) * CATALOG_CARDS_NUM); i++) {
+    for (let i = 0; i < cardNumber; i++) {
       const newItem = new CatalogCard().buildItem();
       this.catalogCardsWrap.getNode().append(newItem.card.getNode());
       this.cardItems.push(newItem);
@@ -81,7 +92,7 @@ export class CatalogView {
     getProducts(offset, limit)
       .then(async (data) => {
         this.total = data.body.total ?? 0;
-        //   this.maxPage = data.body.total ?? 1;
+        this.maxPage = data.body.total ?? 1;
         console.log(data);
         await this.getCategoryNames();
         const results = data.body.results;

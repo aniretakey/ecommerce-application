@@ -7,10 +7,15 @@ export class CatalogPagination {
   public nextBtn: BaseComponent<'button'>;
   constructor() {
     this.pagContainer = new BaseComponent({ tagName: 'div', classNames: ['join'] });
-    this.prevBtn = new BaseComponent({ tagName: 'button', classNames: ['join-item', 'btn'], textContent: '«' });
-    this.pageInfoBtn = new BaseComponent({
+    this.prevBtn = new BaseComponent({
       tagName: 'button',
       classNames: ['join-item', 'btn'],
+      textContent: '«',
+      attributes: { disabled: '' },
+    });
+    this.pageInfoBtn = new BaseComponent({
+      tagName: 'button',
+      classNames: ['join-item', 'btn', 'bg-primary', 'text-white', 'pointer-events-none'],
       textContent: 'Page 1',
     });
     this.nextBtn = new BaseComponent({ tagName: 'button', classNames: ['join-item', 'btn'], textContent: '»' });
