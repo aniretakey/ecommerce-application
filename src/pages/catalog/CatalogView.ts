@@ -4,13 +4,12 @@ import { getCategories, getProducts } from '@utils/apiRequests';
 import { Product } from '@commercetools/platform-sdk';
 import placeholder from '@assets/logo.png';
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
-type cat = Record<string, string>;
 
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
   private filtersContainer: CatalogFilters;
   private catalogCardsWrap: BaseComponent<'div'>;
-  private categoryData: cat = {};
+  private categoryData: Record<string, string> = {};
   private cardItems: CatalogCard[] = [];
   constructor() {
     this.catalogWrapper = new BaseComponent({
