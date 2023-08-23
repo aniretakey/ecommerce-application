@@ -64,23 +64,27 @@ class ModalWindow {
   }
 
   private bindEvents(): void {
-    this.modalCloseBtn.addListener('click', (e) => this.closeModal(e));
-    this.overlay.addListener('click', (e) => this.closeModal(e));
+    this.modalCloseBtn.addListener('click', (e) => this.closeModalHandler(e));
+    this.overlay.addListener('click', (e) => this.closeModalHandler(e));
   }
 
   private openModal(): void {
     document.body.append(this.overlay.getNode());
   }
 
-  private closeModal(e: Event): void {
+  private closeModalHandler(e: Event): void {
     const { target } = e;
     if (!(target instanceof Element)) {
       throw new Error('Target is not element');
     }
     if (target.classList.contains('overlay') || target.closest('.modal__close-icon')) {
-      safeQuerySelector('.overlay').remove();
+      this.closeModal();
       e.stopPropagation();
     }
+  }
+
+  public closeModal(): void {
+    safeQuerySelector('.overlay').remove();
   }
 }
 

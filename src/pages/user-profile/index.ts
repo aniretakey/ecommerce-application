@@ -3,7 +3,7 @@ import Page from '@utils/pageTemplate';
 import { getCustomer } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { Address, Customer } from '@commercetools/platform-sdk';
-import { getBadge, getDeleteIcon, getEditIcon } from './user-profile-ui';
+import { getBadge, getDeleteIcon, getEditIcon, getAlert } from './user-profile-ui';
 import { UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
@@ -22,6 +22,7 @@ const classNames = {
   addressTypes: ['flex', 'flex-col'],
   button: ['btn', 'btn-sm', 'btn-primary', 'mr-4'],
   tableBtn: ['table__button', 'btn-xs'],
+  alert: ['alert', 'alert-success', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max'],
 };
 
 const tableHeadTitles = ['№', 'Country', 'City', 'Street', 'Postal code', 'Address type', 'Edit'];
@@ -180,6 +181,7 @@ export default class UserProfile extends Page {
   }
 
   private setAddressesInfo(data: Customer): void {
+    this.tableBody.clearInnerHTML();
     data.addresses.forEach((address, index) => {
       if (!address.id) {
         throw new Error('Id address does not exist');
@@ -262,5 +264,13 @@ export default class UserProfile extends Page {
   private openEditForm(form: EditPersonalInfoFrom | EditPasswordForm | EditAddressForm): void {
     const modal = new ModalWindow();
     modal.buildModal(form.form);
+    form.submitBtn.addListener('click', () => {
+      modal.closeModal();
+      this.setUserInfo();
+      const alert = new BaseComponent({ tagName: 'div', classNames: classNames.alert });
+      alert.getNode().innerHTML = getAlert();
+      document.body.append(alert.getNode());
+      setTimeout(() => alert.destroy(), 5000);
+    });
   }
 }
