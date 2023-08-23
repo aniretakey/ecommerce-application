@@ -22,7 +22,7 @@ const formClassNames = {
     'w-full',
     'max-w-xs',
   ],
-  withoutRedirect: ['m-auto', 'gap-2', 'px-8', 'pt-6', 'pb-8', 'mb-4', 'w-full', 'max-w-xs'],
+  withoutRedirect: ['m-auto', 'gap-2', 'px-6', 'pt-6', 'w-full', 'max-w-xs'],
 };
 
 export class Form {
@@ -119,6 +119,7 @@ export class Form {
     labelText = ``,
     eventName?: keyof HTMLElementEventMap,
     eventHandler?: (e: Event) => void,
+    isChecked = false,
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, false, labelText);
     if (eventName && eventHandler) {
@@ -126,6 +127,7 @@ export class Form {
     }
     const fieldContainer = field.fieldContainer.getNode();
     fieldContainer.setAttribute('data-valid', 'true');
+    field.fieldInput.getNode().checked = isChecked;
     this.formFields.push(fieldContainer);
     return this;
   }
