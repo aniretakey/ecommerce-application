@@ -1,4 +1,5 @@
 import {
+  CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
   CustomerSignInResult,
@@ -30,13 +31,18 @@ export const signUp = (customer: MyCustomerDraft & Addresses): Promise<ClientRes
   return apiClient.apiRoot.me().signup().post({ body: customer }).execute();
 };
 
-export const getProducts = (): Promise<ClientResponse<ProductPagedQueryResponse>> => {
+export const getProducts = (offset = 0, limit = 6): Promise<ClientResponse<ProductPagedQueryResponse>> => {
   return apiClient.apiRoot
     .products()
     .get({
       queryArgs: {
-        limit: 6,
+        limit,
+        offset,
       },
     })
     .execute();
+};
+
+export const getCategories = (): Promise<ClientResponse<CategoryPagedQueryResponse>> => {
+  return apiClient.apiRoot.categories().get().execute();
 };
