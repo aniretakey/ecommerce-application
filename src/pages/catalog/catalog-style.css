@@ -34,6 +34,7 @@
   min-width: 320px;
   width: 70%;
   min-height: 437px;
+  margin: 10px 0;
 }
 
 .catalog .price,
@@ -69,4 +70,42 @@
 .pagination-prev:disabled {
   opacity: 0.5;
   background-color: transparent;
+}
+
+/* Styles for hovered cards */
+
+.btn-product {
+  cursor: pointer;
+  position: fixed;
+  left: 50%;
+  top: 20%;
+  transform: translate(-50%, 0);
+  width: 150px;
+  background-color: #e0e0e09c;
+  opacity: 0;
+  box-shadow: 0px 0px 4px 4px #aca8a8;
+}
+
+.card:hover {
+  box-shadow: 0px 0px 14px 4px #aca8a8;
+  transition: all 0.4s ease-in-out;
+  transform: scale(1.03);
+  background-color: #5185810a;
+}
+
+.card:hover img {
+  outline: 2px dashed #f9f9f9bd;
+  outline-offset: -10px;
+}
+
+.card:hover .btn-product {
+  opacity: 1;
+}
+
+.btn-product:hover {
+  background-color: #518581;
+  border-color: #518581;
+  transition: all 0.4s ease-in-out;
+  box-shadow: none;
+  color: #f9f9f9;
 }
