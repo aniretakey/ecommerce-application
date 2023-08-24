@@ -10,6 +10,7 @@ export class CatalogCard {
   public description: BaseComponent<'p'>;
   public price: BaseComponent<'p'>;
   public discount: BaseComponent<'p'>;
+  public button: BaseComponent<'a'>;
 
   constructor() {
     this.card = new BaseComponent({
@@ -19,6 +20,16 @@ export class CatalogCard {
     this.photo = new BaseComponent({
       tagName: 'img',
       classNames: ['object-cover', 'h-52', 'loading', 'loading-spinner', 'loading-lg', 'm-auto'],
+    });
+
+    this.button = new BaseComponent({
+      tagName: 'a',
+      classNames: ['btn', 'btn-product'],
+      textContent: 'More info',
+      // attributes: {
+      //   href: '',
+      //   'data-navigo': '',
+      // },
     });
 
     this.cardBody = new BaseComponent({ tagName: 'div', classNames: ['card-body'] });
@@ -90,7 +101,7 @@ export class CatalogCard {
     return this;
   }
   public buildItem(): this {
-    this.card.appendChildren([this.photo, this.cardBody]);
+    this.card.appendChildren([this.photo, this.button, this.cardBody]);
     return this;
   }
 }
