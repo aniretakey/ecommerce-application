@@ -22,7 +22,7 @@ const formClassNames = {
     'w-full',
     'max-w-xs',
   ],
-  withoutRedirect: ['m-auto', 'gap-2', 'px-6', 'pt-6', 'w-full', 'max-w-xs'],
+  withoutRedirect: ['flex', 'flex-col', 'items-center', 'gap-2', 'px-8', 'pt-6', 'w-full', 'max-w-xs'],
 };
 
 export class Form {

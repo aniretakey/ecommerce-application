@@ -20,6 +20,8 @@ const inputclassNames = [
   'focus:shadow-outline',
 ];
 
+const containerClassName = ['form-field-container', 'w-64'];
+
 /**
  * ```html
  * <div class="login__email-container form-field-container" data-valid="">
@@ -48,7 +50,7 @@ export class FormFieldCreator {
       tagName: 'div',
       classNames: [
         `${page}__${fieldName}${additionalName ? '-' + additionalName : ''}-container`.toLowerCase(),
-        'form-field-container',
+        ...containerClassName,
       ],
       attributes: { 'data-valid': 'false' },
     });

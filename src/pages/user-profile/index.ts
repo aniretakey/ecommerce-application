@@ -19,6 +19,7 @@ const classNames = {
   infoField: ['flex', 'items-center', 'justify-between'],
   infoFieldValue: ['pl-20', 'font-normal'],
   table: ['table', 'max-md:table-xs'],
+  thead: ['select-none'],
   addressTypes: ['flex', 'flex-col'],
   button: ['btn', 'btn-sm', 'btn-primary', 'mr-4'],
   tableBtn: ['table__button', 'btn-xs'],
@@ -109,7 +110,7 @@ export default class UserProfile extends Page {
       textContent: '+ new address',
     });
     const table = new BaseComponent({ tagName: 'table', classNames: classNames.table });
-    const tableHead = new BaseComponent({ tagName: 'thead' });
+    const tableHead = new BaseComponent({ tagName: 'thead', classNames: classNames.thead });
     const tableHeadRow = new BaseComponent({ tagName: 'tr' });
     addAddressBtn.addListener('click', () => this.openEditAddressForm());
     container.appendChildren([title, addAddressBtn]);
