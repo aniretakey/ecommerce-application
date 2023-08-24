@@ -1,0 +1,72 @@
+.catalog__cards-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 15px;
+  @media screen and (max-width: 1050px) {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+  @media screen and (max-width: 670px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+  }
+}
+
+.catalog .description {
+  color: #afadb5;
+  text-align: justify;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 18px;
+
+  margin: 0;
+  -webkit-line-clamp: 4;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 72px;
+}
+.catalog .poduct-name {
+  height: 50px;
+}
+.catalog .card {
+  min-width: 320px;
+  width: 70%;
+  min-height: 437px;
+}
+
+.catalog .price,
+.catalog .discount {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.category-badge {
+  cursor: pointer;
+  transition: 0.3s;
+}
+.pagination-next,
+.pagination-prev {
+  background-color: transparent;
+  position: relative;
+  border: none;
+  border-radius: 10px;
+}
+.pagination-next::after,
+.pagination-prev::after {
+  content: '';
+  position: absolute;
+  background: url('../../assets/icons/arrow-right.svg') no-repeat;
+  background-size: contain;
+  width: 32px;
+  height: 32px;
+}
+.pagination-prev::after {
+  transform: rotate(180deg);
+}
+.pagination-next:disabled,
+.pagination-prev:disabled {
+  opacity: 0.5;
+  background-color: transparent;
+}
