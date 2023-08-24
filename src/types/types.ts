@@ -29,3 +29,10 @@ export interface Addresses {
   billingAddresses: number[];
   shippingAddresses: number[];
 }
+
+export interface AddressTypes {
+  isDefaultBillingAddress: boolean;
+  isDefaultShippingAddress: boolean;
+  isBillingAddress: boolean;
+  isShippingAddress: boolean;
+}
