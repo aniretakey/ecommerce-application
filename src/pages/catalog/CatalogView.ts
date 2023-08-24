@@ -13,11 +13,10 @@ export class CatalogView {
   private catalogCardsWrap: BaseComponent<'div'>;
   private categoryData: Record<string, string> = {};
   private cardItems: CatalogCard[] = [];
-  private currentPage = 1;
-  private maxPage = 2;
   private pagination: CatalogPagination;
-  private total = 6;
+
   constructor() {
+    this.filtersContainer = new CatalogFilters();
     this.catalogWrapper = new BaseComponent({
       tagName: 'div',
       classNames: ['flex', 'flex-col', 'justify-between', 'items-center', 'gap-4'],
@@ -26,47 +25,32 @@ export class CatalogView {
       tagName: 'div',
       classNames: ['catalog__cards-wrap', 'justify-items-center'],
     });
-    this.pagination = new CatalogPagination();
-    this.filtersContainer = new CatalogFilters();
+    this.pagination = new CatalogPagination(this.switchPage.bind(this));
+
     this.catalogWrapper.appendChildren([
       this.filtersContainer.filters,
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
-    this.draw();
-    this.drawCatalogCards();
-
-    this.pagination.nextBtn.addListener('click', () => {
-      this.currentPage += 1;
-      this.pagination.prevBtn.getNode().disabled = false;
-      this.cardItems = [];
-      this.draw();
-      this.drawCatalogCards((this.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
-      this.pagination.pageInfoBtn.setTextContent(`Page ${this.currentPage}`);
-    });
-
-    this.pagination.prevBtn.addListener('click', () => {
-      this.pagination.nextBtn.getNode().disabled = false;
-
-      this.currentPage -= 1;
-      this.cardItems = [];
-      this.draw();
-      this.drawCatalogCards((this.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
-
-      this.pagination.pageInfoBtn.setTextContent(`Page ${this.currentPage}`);
-    });
+    this.switchPage();
   }
 
-  private draw(): void {
-    if (this.currentPage === 1) {
+  private switchPage(): void {
+    this.cardItems = [];
+    this.drawCardLoaders();
+    this.drawCatalogCards((this.pagination.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
+    this.pagination.pageInfoBtn.setTextContent(`Page ${this.pagination.currentPage}`);
+  }
+
+  private drawCardLoaders(): void {
+    if (this.pagination.currentPage === 1) {
       this.pagination.prevBtn.getNode().disabled = true;
     }
-    const cardNumber = Math.min(6, this.total - (this.currentPage - 1) * CATALOG_CARDS_NUM);
-    if (this.currentPage >= this.maxPage || cardNumber < CATALOG_CARDS_NUM) {
+    const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
+    if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
       this.pagination.nextBtn.getNode().disabled = true;
     }
     this.catalogCardsWrap.clearInnerHTML();
-    console.log(this.total, this.currentPage);
     for (let i = 0; i < cardNumber; i++) {
       const newItem = new CatalogCard().buildItem();
       this.catalogCardsWrap.getNode().append(newItem.card.getNode());
@@ -91,9 +75,8 @@ export class CatalogView {
   private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM): void {
     getProducts(offset, limit)
       .then(async (data) => {
-        this.total = data.body.total ?? 0;
-        this.maxPage = data.body.total ?? 1;
-        console.log(data);
+        this.pagination.total = data.body.total ?? 0;
+        this.pagination.maxPage = data.body.total ?? 1;
         await this.getCategoryNames();
         const results = data.body.results;
         this.createItems(results, this.categoryData);
@@ -128,7 +111,7 @@ export class CatalogView {
           .setCategories(categories)
           .displayPrice(price, discount);
       });
-    } //удаление лишних карточек
+    }
     if (results.length < this.cardItems.length) {
       this.cardItems.slice(results.length).forEach((el) => {
         el.card.destroy();
