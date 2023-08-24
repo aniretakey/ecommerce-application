@@ -46,3 +46,27 @@
   cursor: pointer;
   transition: 0.3s;
 }
+.pagination-next,
+.pagination-prev {
+  background-color: transparent;
+  position: relative;
+  border: none;
+  border-radius: 10px;
+}
+.pagination-next::after,
+.pagination-prev::after {
+  content: '';
+  position: absolute;
+  background: url('../../assets/icons/arrow-right.svg') no-repeat;
+  background-size: contain;
+  width: 32px;
+  height: 32px;
+}
+.pagination-prev::after {
+  transform: rotate(180deg);
+}
+.pagination-next:disabled,
+.pagination-prev:disabled {
+  opacity: 0.5;
+  background-color: transparent;
+}
