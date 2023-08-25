@@ -32,7 +32,7 @@ export class CatalogView {
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
-    this.switchPage();
+    //  this.switchPage();
   }
 
   private switchPage(): void {
@@ -75,6 +75,7 @@ export class CatalogView {
   private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM): void {
     getProducts(offset, limit)
       .then(async (data) => {
+        console.log(data);
         this.pagination.total = data.body.total ?? 0;
         this.pagination.maxPage = data.body.total ?? 1;
         await this.getCategoryNames();
