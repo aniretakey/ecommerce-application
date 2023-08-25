@@ -2,14 +2,16 @@ import { FormFields, FormPages } from '@customTypes/enums';
 import { passwordValidationCb } from '@utils/customValidationCb';
 import { validator } from '@utils/validator';
 import { Form } from '@components/form/FormTemplate';
+import { EditForm } from '@customTypes/types';
+import { updateCustomerPassword } from '@utils/apiRequests';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { apiClient } from '@utils/ApiClient';
 
-export class EditPasswordForm extends Form {
-  private userId;
+export class EditPasswordForm extends Form implements EditForm {
   private userVersion;
 
-  constructor(userId: string, userVersion: number) {
+  constructor(userVersion: number) {
     super(FormPages.userProfile, false);
-    this.userId = userId;
     this.userVersion = userVersion;
     this.buildEditPasswordForm();
   }
@@ -44,7 +46,6 @@ export class EditPasswordForm extends Form {
       )
       .addNewCtrlField(FormFields.showPw, 'checkbox', 'Show Password', 'click', this.showPasswords.bind(this))
       .buildForm();
-    this.submitBtn.addListener('click', this.editPassword.bind(this));
   }
 
   private showPasswords(): void {
@@ -54,12 +55,35 @@ export class EditPasswordForm extends Form {
     });
   }
 
-  private editPassword(e: Event): void {
+  public async editInfo(e: Event): Promise<void> {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      // TODO: update password
+      const passwordInfo = this.getPasswordInfo();
+      this.checkPasswordsMatch(passwordInfo.newPassword, passwordInfo.confirmNewPassword);
+      await updateCustomerPassword(this.userVersion, passwordInfo.currentPassword, passwordInfo.newPassword)
+        .then(async (data) => {
+          await apiClient
+            .getNewPassFlowToken(data.body.email, passwordInfo.newPassword)
+            .catch((e: Error) => console.log(e.message));
+        })
+        .catch((e: Error) => {
+          throw new Error(e.message);
+        });
     } else {
-      e.stopImmediatePropagation();
+      throw new Error('Data is incorrect');
+    }
+  }
+
+  private getPasswordInfo(): { currentPassword: string; newPassword: string; confirmNewPassword: string } {
+    const currentPassword = safeQuerySelector<HTMLInputElement>('#userProfilePassword-current').value;
+    const newPassword = safeQuerySelector<HTMLInputElement>('#userProfilePassword-new').value;
+    const confirmNewPassword = safeQuerySelector<HTMLInputElement>('#userProfilePassword-confirm-new').value;
+    return { currentPassword, newPassword, confirmNewPassword };
+  }
+
+  private checkPasswordsMatch(newPassword: string, confirmNewPassword: string): void {
+    if (newPassword !== confirmNewPassword) {
+      throw new Error('New password and confirm new password do not match!');
     }
   }
 }
