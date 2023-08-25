@@ -1,4 +1,4 @@
-import { FormFields, FormPages } from '@customTypes/enums';
+import { COUNTRY_CODE, FormFields, FormPages } from '@customTypes/enums';
 import { Form } from './FormTemplate';
 import { validator } from '@utils/validator';
 import {
@@ -17,10 +17,6 @@ import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commerce
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
 import { DefaultAddresses, Addresses } from '@customTypes/types';
-
-const COUNTRY_CODE: Record<string, string> = {
-  Russia: 'RU',
-};
 
 export class RegistrationForm extends Form {
   constructor() {

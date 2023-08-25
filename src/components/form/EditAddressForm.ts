@@ -1,4 +1,4 @@
-import { FormFields, FormPages } from '@customTypes/enums';
+import { COUNTRY_CODE, FormFields, FormPages } from '@customTypes/enums';
 import { Form } from './FormTemplate';
 import { validator } from '@utils/validator';
 import {
@@ -147,8 +147,11 @@ export class EditAddressForm extends Form implements EditForm {
   }
 
   private getAddressInfo(): Address {
-    const country =
-      safeQuerySelector<HTMLInputElement>(`.userprofile__country-container input`).value === 'Russia' ? 'RU' : '';
+    const countryName = safeQuerySelector<HTMLInputElement>(`.userprofile__country-container input`).value;
+    const country = COUNTRY_CODE[countryName];
+    if (!country) {
+      throw new Error('Code of country does not exist');
+    }
     const city = safeQuerySelector<HTMLInputElement>(`.userprofile__city-container input`).value;
     const streetName = safeQuerySelector<HTMLInputElement>(`.userprofile__street-container input`).value;
     const postalCode = safeQuerySelector<HTMLInputElement>(`.userprofile__postal-code-container input`).value;
