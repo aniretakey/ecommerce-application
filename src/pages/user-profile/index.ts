@@ -1,6 +1,6 @@
 import './user-profile-style.css';
 import Page from '@utils/pageTemplate';
-import { getCustomer } from '@utils/apiRequests';
+import { getCustomer, removeCustomerAddress } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { Address, Customer } from '@commercetools/platform-sdk';
 import { getBadge, getDeleteIcon, getEditIcon, getAlert } from './user-profile-ui';
@@ -145,8 +145,15 @@ export default class UserProfile extends Page {
           };
           this.openEditAddressForm(addressInfo);
         }
-        if (button.classList.contains(UserProfileButtons.deleteAddress)) {
-          // TODO: delete address
+        if (addressId && button.classList.contains(UserProfileButtons.deleteAddress)) {
+          removeCustomerAddress(this.userInfo.version, addressId)
+            .then(() => {
+              this.setUserInfo();
+              this.setAlert();
+            })
+            .catch((e: Error) => {
+              this.setAlert(false, e.message);
+            });
         }
       }
     });
@@ -274,7 +281,6 @@ export default class UserProfile extends Page {
           this.setAlert();
         })
         .catch((e: Error) => {
-          console.log(e.message);
           this.setAlert(false, e.message);
         });
     });
