@@ -29,6 +29,7 @@ export class CatalogView {
 
     this.catalogWrapper.appendChildren([
       this.filtersContainer.filters,
+      this.filtersContainer.activeFilters,
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);

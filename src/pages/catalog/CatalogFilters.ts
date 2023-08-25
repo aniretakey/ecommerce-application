@@ -66,21 +66,39 @@ const brands = [
 ];
 export class CatalogFilters {
   public filters: BaseComponent<'ul'>;
+  public activeFilters: BaseComponent<'div'>;
 
   constructor() {
     this.filters = new BaseComponent({
       tagName: 'ul',
       classNames: ['filters', 'w-full', 'border', 'z-10', 'menu', 'menu-horizontal', 'px-1', 'justify-between'],
     });
+    this.activeFilters = new BaseComponent({
+      tagName: 'div',
+      classNames: ['active-filters', 'w-full', 'border', 'px-1'],
+    });
+    this.addNewCheckBoxFilter('Category', categories)
+      .addNewRangeFilter('Price')
+      .addNewCheckBoxFilter('Color', colors)
+      .addNewCheckBoxFilter('Material', materials)
+      .addNewCheckBoxFilter('Brand', brands);
 
-    this.addNewFilter('Category', categories)
-      .addNewFilter('Color', colors)
-      .addNewFilter('Material', materials)
-      .addNewFilter('Brand', brands);
+    const applyFilterBtn = new BaseComponent({
+      tagName: 'button',
+      classNames: ['btn', 'btn-primary'],
+      textContent: `apply`,
+    });
+
+    this.filters.append(applyFilterBtn);
   }
 
-  private addNewFilter(name: string, filterOptions: string[] = []): this {
-    this.filters.append(new FilterItem(name, filterOptions).filterItem);
+  private addNewCheckBoxFilter(name: string, filterOptions: string[] = []): this {
+    this.filters.append(new FilterItem(name, filterOptions).addDropDownCheckBoxList(this.activeFilters).filterItem);
+    return this;
+  }
+
+  private addNewRangeFilter(name: string, filterOptions: string[] = []): this {
+    this.filters.append(new FilterItem(name, filterOptions).addDropDownRange().filterItem);
     return this;
   }
 }
