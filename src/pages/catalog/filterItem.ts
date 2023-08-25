@@ -1,5 +1,4 @@
 import BaseComponent from '@utils/baseComponent';
-import { activeFilterBadge } from './activeFulterItem';
 
 export class FilterItem {
   public filterItem: BaseComponent<'li'>;
@@ -19,7 +18,7 @@ export class FilterItem {
     details.appendChildren([summary, this.optionsList]);
   }
 
-  public addDropDownCheckBoxList(activeFiltersContainer: BaseComponent<'div'>): this {
+  public addDropDownCheckBoxList(): this {
     this.filterOptions.forEach((option) => {
       const optionItem = new BaseComponent({ tagName: 'li' });
       const optionLable = new BaseComponent({
@@ -40,24 +39,8 @@ export class FilterItem {
       optionItem.append(optionLable);
       this.optionsList.appendChildren([optionItem]);
     });
-    this.filterItem.getNode().addEventListener('click', (event) => {
-      this.setNewActiveFilter(event, activeFiltersContainer);
-    });
-    return this;
-  }
 
-  private setNewActiveFilter(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
-    const { target } = event;
-    if (target instanceof HTMLInputElement) {
-      if (target.checked) {
-        activeFiltersContainer.append(new activeFilterBadge(target.value, target.id).badge);
-      } else {
-        const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${target.id}"]`);
-        if (badge) {
-          badge.remove();
-        }
-      }
-    }
+    return this;
   }
 
   public addDropDownRange(): this {

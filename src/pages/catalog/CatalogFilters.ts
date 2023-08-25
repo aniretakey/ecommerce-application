@@ -1,5 +1,6 @@
 import BaseComponent from '@utils/baseComponent';
 import { FilterItem } from './filterItem';
+import { activeFilterBadge } from './activeFulterItem';
 const categories = [
   'Vases',
   'Desks',
@@ -64,16 +65,25 @@ const brands = [
   'Sofanaissance',
   'VelvetyHaven',
 ];
+
+export type ActiveFilters = Record<
+  string,
+  {
+    element: HTMLInputElement;
+    filter: string;
+  }
+>;
+
 export class CatalogFilters {
   public filters: BaseComponent<'ul'>;
-  public activeFilters: BaseComponent<'div'>;
-
+  public activeFiltersContainer: BaseComponent<'div'>;
+  private activeFilters: ActiveFilters = {};
   constructor() {
     this.filters = new BaseComponent({
       tagName: 'ul',
       classNames: ['filters', 'w-full', 'border', 'z-10', 'menu', 'menu-horizontal', 'px-1', 'justify-between'],
     });
-    this.activeFilters = new BaseComponent({
+    this.activeFiltersContainer = new BaseComponent({
       tagName: 'div',
       classNames: ['active-filters', 'w-full', 'border', 'px-1'],
     });
@@ -91,9 +101,34 @@ export class CatalogFilters {
 
     this.filters.append(applyFilterBtn);
   }
-
+  private setNewActiveFilter(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
+    const { target } = event;
+    if (target instanceof HTMLInputElement) {
+      if (target.checked) {
+        activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
+        this.activeFilters[target.id] = {
+          element: target,
+          filter: target.value,
+        };
+      } else {
+        const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${target.id}"]`);
+        if (badge) {
+          badge.remove();
+          delete this.activeFilters[target.id];
+        }
+      }
+      console.log(this.activeFilters);
+    }
+  }
   private addNewCheckBoxFilter(name: string, filterOptions: string[] = []): this {
-    this.filters.append(new FilterItem(name, filterOptions).addDropDownCheckBoxList(this.activeFilters).filterItem);
+    const newFilterCategory = new FilterItem(name, filterOptions);
+    newFilterCategory.addDropDownCheckBoxList();
+
+    newFilterCategory.filterItem.getNode().addEventListener('click', (event) => {
+      this.setNewActiveFilter(event, this.activeFiltersContainer);
+    });
+    this.filters.append(newFilterCategory.filterItem);
+
     return this;
   }
 

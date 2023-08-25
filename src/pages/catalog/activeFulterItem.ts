@@ -1,8 +1,9 @@
 import BaseComponent from '@utils/baseComponent';
+import { ActiveFilters } from './CatalogFilters';
 
 export class activeFilterBadge {
   public badge: BaseComponent<'div'>;
-  constructor(name: string, id: string) {
+  constructor(name: string, id: string, activeFilters: ActiveFilters) {
     this.badge = new BaseComponent({
       tagName: 'div',
       classNames: ['badge'],
@@ -20,6 +21,7 @@ export class activeFilterBadge {
       const checkbox = document.querySelector<HTMLInputElement>(`#${id.trim().split(' ').join('-')}`);
       if (checkbox) {
         checkbox.checked = false;
+        delete activeFilters[`${id.trim().split(' ').join('-')}`];
       }
     });
   }
