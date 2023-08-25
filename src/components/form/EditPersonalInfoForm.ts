@@ -8,20 +8,21 @@ import {
   ageValidationCb,
 } from '@utils/customValidationCb';
 import { Customer } from '@commercetools/platform-sdk';
+import { updateCustomerPersonalInfo } from '@utils/apiRequests';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { EditForm, PersonalInfo } from '@customTypes/types';
 
-export class EditPersonalInfoFrom extends Form {
-  private userId;
+export class EditPersonalInfoFrom extends Form implements EditForm {
   private userVersion;
 
-  constructor(userId: string, userVersion: number, personalInfo: Customer) {
+  constructor(userVersion: number, personalInfo: Customer) {
     super(FormPages.userProfile, false);
-    this.userId = userId;
     this.userVersion = userVersion;
-    this.buildEditPersonalInfoFrom(personalInfo);
+    this.buildPersonalInfoEditFrom(personalInfo);
     this.formFields.forEach((field) => field.setAttribute('data-valid', 'true'));
   }
 
-  private buildEditPersonalInfoFrom(personalInfo: Customer): void {
+  private buildPersonalInfoEditFrom(personalInfo: Customer): void {
     this.addNewValidatedField(
       FormFields.firstName,
       'text',
@@ -55,15 +56,24 @@ export class EditPersonalInfoFrom extends Form {
         personalInfo.email,
       )
       .buildForm();
-    this.submitBtn.addListener('click', this.editPersonalInfo.bind(this));
   }
 
-  private editPersonalInfo(e: Event): void {
+  public async editInfo(e: Event): Promise<void> {
     e.preventDefault();
     if (!this.checkAllFieldsCorrectness()) {
-      // TODO: update personal info
-    } else {
-      e.stopImmediatePropagation();
+      const newPersonalInfo = this.getUserInfo();
+      await updateCustomerPersonalInfo(this.userVersion, newPersonalInfo).catch((e: Error) => {
+        throw new Error(e.message);
+      });
     }
+  }
+
+  private getUserInfo(): PersonalInfo {
+    const email = safeQuerySelector<HTMLInputElement>('#userProfileEmail').value;
+    const firstName = safeQuerySelector<HTMLInputElement>('#userProfileFirst-name').value;
+    const lastName = safeQuerySelector<HTMLInputElement>('#userProfileLast-name').value;
+    const birthDate = safeQuerySelector<HTMLInputElement>('#userProfileBirth-date').value;
+
+    return { email, firstName, lastName, dateOfBirth: birthDate };
   }
 }
