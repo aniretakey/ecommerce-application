@@ -23,7 +23,7 @@ const classNames = {
   addressTypes: ['flex', 'flex-col'],
   button: ['btn', 'btn-sm', 'btn-primary', 'mr-4'],
   tableBtn: ['table__button', 'btn-xs'],
-  alert: ['alert', 'alert-success', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max'],
+  alert: ['alert', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max', 'z-20', 'min-w-[200px]'],
 };
 
 const tableHeadTitles = ['№', 'Country', 'City', 'Street', 'Postal code', 'Address type', 'Edit'];
@@ -243,21 +243,21 @@ export default class UserProfile extends Page {
 
   private openEditPersonalInfoFrom(): void {
     if (this.userInfo) {
-      const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, this.userInfo);
+      const form = new EditPersonalInfoFrom(this.userInfo.version, this.userInfo);
       this.openEditForm(form);
     }
   }
 
   private openEditPasswordForm(): void {
     if (this.userInfo) {
-      const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
+      const form = new EditPasswordForm(this.userInfo.version);
       this.openEditForm(form);
     }
   }
 
   private openEditAddressForm(addressInfo?: Address & AddressTypes): void {
     if (this.userInfo) {
-      const form = new EditAddressForm(this.userInfo.id, this.userInfo.version, addressInfo ?? undefined);
+      const form = new EditAddressForm(this.userInfo.version, addressInfo ?? undefined);
       this.openEditForm(form);
     }
   }
@@ -265,13 +265,28 @@ export default class UserProfile extends Page {
   private openEditForm(form: EditPersonalInfoFrom | EditPasswordForm | EditAddressForm): void {
     const modal = new ModalWindow();
     modal.buildModal(form.form);
-    form.submitBtn.addListener('click', () => {
-      modal.closeModal();
-      this.setUserInfo();
-      const alert = new BaseComponent({ tagName: 'div', classNames: classNames.alert });
-      alert.getNode().innerHTML = getAlert();
-      document.body.append(alert.getNode());
-      setTimeout(() => alert.destroy(), 5000);
+    form.submitBtn.addListener('click', (e) => {
+      form
+        .editInfo(e)
+        .then(() => {
+          this.setUserInfo();
+          modal.closeModal();
+          this.setAlert();
+        })
+        .catch((e: Error) => {
+          console.log(e.message);
+          this.setAlert(false, e.message);
+        });
     });
+  }
+
+  private setAlert(isSuccessAlert = true, errorMessage?: string): void {
+    const alert = new BaseComponent({
+      tagName: 'div',
+      classNames: [isSuccessAlert ? 'alert-success' : 'alert-error', ...classNames.alert],
+    });
+    alert.getNode().innerHTML = getAlert(isSuccessAlert, errorMessage);
+    document.body.append(alert.getNode());
+    setTimeout(() => alert.destroy(), 5000);
   }
 }
