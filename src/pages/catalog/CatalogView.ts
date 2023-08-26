@@ -63,20 +63,31 @@ export class CatalogView {
     this.pagination.currentPage = 1;
     this.pagination.maxPage = 2;
     this.pagination.total = CATALOG_CARDS_NUM;
-    this.createFilterSting('variants.attributes.Color', color, this.resultFilters);
-    this.createFilterSting('variants.attributes.Material', material, this.resultFilters);
-    this.createFilterSting('variants.attributes.Brand', brand, this.resultFilters);
+    this.createFilterString('variants.attributes.Color', color, this.resultFilters);
+    this.createFilterString('variants.attributes.Material', material, this.resultFilters);
+    this.createFilterString('variants.attributes.Brand', brand, this.resultFilters);
+    this.createPriceFilterString(this.resultFilters);
     console.log(this.resultFilters, 'result filters');
     this.switchPage(/* this.resultFilters */);
   }
 
-  private createFilterSting(predicat: string, arr: string[], result: string[] = []): string[] {
+  private createFilterString(predicat: string, arr: string[], result: string[] = []): string[] {
     if (arr.length > 0) {
       result.push(`${predicat}:${arr.join(',')}`);
     }
     return result;
   }
-
+  private createPriceFilterString(result: string[] = []): string[] {
+    const minPriceInput = document.querySelector<HTMLInputElement>('#price-from');
+    const maxPriceInput = document.querySelector<HTMLInputElement>('#price-to');
+    if (minPriceInput && maxPriceInput) {
+      const minPrice = Math.max(0, +minPriceInput.value * 100);
+      const maxPrice = Math.min(7400000, +maxPriceInput.value * 100);
+      const priceString = `variants.price.centAmount:range (${minPrice} to ${maxPrice})`;
+      result.push(priceString);
+    }
+    return result;
+  }
   private switchPage(/* filters: string[] = [] */): void {
     this.cardItems = [];
     this.drawCardLoaders();
@@ -121,8 +132,9 @@ export class CatalogView {
       .then(async (data) => {
         console.log(data);
         this.pagination.total = data.body.total ?? 0;
-        this.pagination.maxPage = data.body.total ?? 1;
+        this.pagination.maxPage = Math.ceil((data.body.total ?? 1) / CATALOG_CARDS_NUM);
         const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
+        console.log(this.pagination.currentPage, this.pagination.maxPage, cardNumber, CATALOG_CARDS_NUM);
         if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
           this.pagination.nextBtn.getNode().disabled = true;
         } else {

@@ -43,8 +43,8 @@ export class FilterItem {
     return this;
   }
 
-  public addDropDownRange(): this {
-    ['from', 'to'].forEach((option) => {
+  public addDropDownRange(maxPrice = 74000): this {
+    ['from', 'to'].forEach((option, i) => {
       const optionItem = new BaseComponent({ tagName: 'li' });
       const optionLable = new BaseComponent({
         tagName: 'label',
@@ -57,8 +57,9 @@ export class FilterItem {
           id: `${this.filterName}-${option}`.toLowerCase(),
           type: 'number',
           name: this.filterName,
-          value: '0',
+          value: i === 1 ? `${maxPrice}` : '0',
           min: '0',
+          max: `${maxPrice}`,
         },
       });
       const currency = new BaseComponent({
