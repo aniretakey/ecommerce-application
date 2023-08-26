@@ -7,6 +7,7 @@ import {
   MyCustomerDraft,
   OrderPagedQueryResponse,
   ProductPagedQueryResponse,
+  ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 import { apiClient } from './ApiClient';
 import { Addresses } from '@customTypes/types';
@@ -43,6 +44,23 @@ export const getProducts = (offset = 0, limit = 6): Promise<ClientResponse<Produ
     .execute();
 };
 
+export const getProductsSearch = (
+  offset = 0,
+  limit = 6,
+  filter: string[] = [],
+): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  return apiClient.apiRoot
+    .productProjections()
+    .search()
+    .get({
+      queryArgs: {
+        limit,
+        offset,
+        filter,
+      },
+    })
+    .execute();
+};
 export const getCategories = (): Promise<ClientResponse<CategoryPagedQueryResponse>> => {
   return apiClient.apiRoot.categories().get().execute();
 };

@@ -71,14 +71,16 @@ export type ActiveFilters = Record<
   {
     element: HTMLInputElement;
     filter: string;
+    value: string;
   }
 >;
 
 export class CatalogFilters {
   public filters: BaseComponent<'ul'>;
   public activeFiltersContainer: BaseComponent<'div'>;
-  private activeFilters: ActiveFilters = {};
+  public activeFilters: ActiveFilters = {};
   private resetFiltersBtn: BaseComponent<'div'>;
+  public applyFilterBtn: BaseComponent<'button'>;
   constructor() {
     this.filters = new BaseComponent({
       tagName: 'ul',
@@ -94,13 +96,13 @@ export class CatalogFilters {
       .addNewCheckBoxFilter('Material', materials)
       .addNewCheckBoxFilter('Brand', brands);
 
-    const applyFilterBtn = new BaseComponent({
+    this.applyFilterBtn = new BaseComponent({
       tagName: 'button',
       classNames: ['btn', 'btn-primary'],
       textContent: `apply`,
     });
 
-    this.filters.append(applyFilterBtn);
+    this.filters.append(this.applyFilterBtn);
     this.resetFiltersBtn = new BaseComponent({
       tagName: 'div',
       classNames: ['badge', 'badge-accent'],
@@ -128,7 +130,8 @@ export class CatalogFilters {
 
         this.activeFilters[target.id] = {
           element: target,
-          filter: target.value,
+          filter: target.name,
+          value: target.value,
         };
       } else {
         const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${target.id}"]`);

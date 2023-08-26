@@ -1,7 +1,7 @@
 import BaseComponent from '@utils/baseComponent';
 import { CatalogFilters } from './CatalogFilters';
-import { getCategories, getProducts } from '@utils/apiRequests';
-import { Product } from '@commercetools/platform-sdk';
+import { getCategories, getProductsSearch } from '@utils/apiRequests';
+import { ProductProjection } from '@commercetools/platform-sdk';
 import placeholder from '@assets/logo.png';
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 import { CatalogPagination } from './CatalogPagination';
@@ -14,6 +14,7 @@ export class CatalogView {
   private categoryData: Record<string, string> = {};
   private cardItems: CatalogCard[] = [];
   private pagination: CatalogPagination;
+  private resultFilters: string[] = [];
 
   constructor() {
     this.filtersContainer = new CatalogFilters();
@@ -33,13 +34,53 @@ export class CatalogView {
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
-    //  this.switchPage();
+    this.switchPage();
+    this.filtersContainer.applyFilterBtn.addListener('click', () => {
+      this.applyFilters();
+    });
   }
 
-  private switchPage(): void {
+  private applyFilters(): void {
+    const activeFilters = this.filtersContainer.activeFilters;
+    const brand: string[] = [];
+    const color: string[] = [];
+    const material: string[] = [];
+    Object.values(activeFilters).forEach(({ filter, value }) => {
+      const val = `"${value}"`;
+      switch (filter) {
+        case 'Brand':
+          brand.push(val);
+          break;
+        case 'Material':
+          material.push(val);
+          break;
+        case 'Color':
+          color.push(val);
+          break;
+      }
+    });
+    this.resultFilters = [];
+    this.pagination.currentPage = 1;
+    this.pagination.maxPage = 2;
+    this.pagination.total = CATALOG_CARDS_NUM;
+    this.createFilterSting('variants.attributes.Color', color, this.resultFilters);
+    this.createFilterSting('variants.attributes.Material', material, this.resultFilters);
+    this.createFilterSting('variants.attributes.Brand', brand, this.resultFilters);
+    console.log(this.resultFilters, 'result filters');
+    this.switchPage(/* this.resultFilters */);
+  }
+
+  private createFilterSting(predicat: string, arr: string[], result: string[] = []): string[] {
+    if (arr.length > 0) {
+      result.push(`${predicat}:${arr.join(',')}`);
+    }
+    return result;
+  }
+
+  private switchPage(/* filters: string[] = [] */): void {
     this.cardItems = [];
     this.drawCardLoaders();
-    this.drawCatalogCards((this.pagination.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
+    this.drawCatalogCards((this.pagination.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM /* , filters */);
     this.pagination.pageInfoBtn.setTextContent(`Page ${this.pagination.currentPage}`);
   }
 
@@ -47,10 +88,11 @@ export class CatalogView {
     if (this.pagination.currentPage === 1) {
       this.pagination.prevBtn.getNode().disabled = true;
     }
-    const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
+    const cardNumber = 6;
+    /*   const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
     if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
       this.pagination.nextBtn.getNode().disabled = true;
-    }
+    } */
     this.catalogCardsWrap.clearInnerHTML();
     for (let i = 0; i < cardNumber; i++) {
       const newItem = new CatalogCard().buildItem();
@@ -73,12 +115,20 @@ export class CatalogView {
       .catch(console.log);
   }
 
-  private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM): void {
-    getProducts(offset, limit)
+  private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM /* , filters: string[] = [] */): void {
+    //   getProducts(offset, limit)
+    getProductsSearch(offset, limit, this.resultFilters)
       .then(async (data) => {
         console.log(data);
         this.pagination.total = data.body.total ?? 0;
         this.pagination.maxPage = data.body.total ?? 1;
+        const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
+        if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
+          this.pagination.nextBtn.getNode().disabled = true;
+        } else {
+          this.pagination.nextBtn.getNode().disabled = false;
+        }
+        console.log(this.pagination.total, this.pagination.currentPage, this.pagination.maxPage);
         await this.getCategoryNames();
         const results = data.body.results;
         this.createItems(results, this.categoryData);
@@ -86,11 +136,11 @@ export class CatalogView {
       .catch(console.log);
   }
 
-  private createItems(results: Product[], categoryNames: Record<string, string>): void {
+  private createItems(results: ProductProjection[], categoryNames: Record<string, string>): void {
     if (results.length >= 1) {
-      results.forEach((item, index) => {
-        const product = item.masterData.current;
-        const categories: string[] = item.masterData.current.categories.map((data) => categoryNames[data.id] ?? '');
+      results.forEach((product, index) => {
+        // const product = item.masterData.current;
+        const categories: string[] = product.categories.map((data) => categoryNames[data.id] ?? '');
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';
         const prices = product.masterVariant.prices ?? [];
