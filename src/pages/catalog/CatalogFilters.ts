@@ -78,6 +78,7 @@ export class CatalogFilters {
   public filters: BaseComponent<'ul'>;
   public activeFiltersContainer: BaseComponent<'div'>;
   private activeFilters: ActiveFilters = {};
+  private resetFiltersBtn: BaseComponent<'div'>;
   constructor() {
     this.filters = new BaseComponent({
       tagName: 'ul',
@@ -100,12 +101,31 @@ export class CatalogFilters {
     });
 
     this.filters.append(applyFilterBtn);
+    this.resetFiltersBtn = new BaseComponent({
+      tagName: 'div',
+      classNames: ['badge', 'badge-accent'],
+      textContent: 'Reset filters',
+      attributes: { id: 'resetAllFiltersBtn' },
+    });
+    this.resetFiltersBtn.addListener('click', () => {
+      Object.values(this.activeFilters).forEach(({ element }) => {
+        element.checked = false;
+      });
+      this.activeFiltersContainer.clearInnerHTML();
+      this.activeFilters = {};
+    });
   }
+
   private setNewActiveFilter(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
     const { target } = event;
     if (target instanceof HTMLInputElement) {
       if (target.checked) {
-        activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
+        //   activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
+        activeFiltersContainer.append(this.resetFiltersBtn);
+        this.resetFiltersBtn
+          .getNode()
+          .before(new activeFilterBadge(target.value, target.id, this.activeFilters).badge.getNode());
+
         this.activeFilters[target.id] = {
           element: target,
           filter: target.value,
@@ -115,6 +135,9 @@ export class CatalogFilters {
         if (badge) {
           badge.remove();
           delete this.activeFilters[target.id];
+        }
+        if (Object.keys(this.activeFilters).length === 0) {
+          this.resetFiltersBtn.destroy();
         }
       }
       console.log(this.activeFilters);

@@ -22,6 +22,10 @@ export class activeFilterBadge {
       if (checkbox) {
         checkbox.checked = false;
         delete activeFilters[`${id.trim().split(' ').join('-')}`];
+        const resetAllBtn = document.querySelector<HTMLDivElement>(`#resetAllFiltersBtn`);
+        if (resetAllBtn && Object.keys(activeFilters).length === 0) {
+          resetAllBtn.remove();
+        }
       }
     });
   }
