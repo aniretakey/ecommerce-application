@@ -112,10 +112,14 @@ export class CatalogFilters {
     this.resetFiltersBtn.addListener('click', () => {
       Object.values(this.activeFilters).forEach(({ element }) => {
         element.checked = false;
+        if (element.type === 'number') {
+          element.value = element.getAttribute('value') ?? '0';
+        }
       });
       this.activeFiltersContainer.clearInnerHTML();
       this.activeFilters = {};
     });
+    //this.activeFiltersContainer.append(this.resetFiltersBtn);
   }
 
   private setNewActiveFilter(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
@@ -159,7 +163,68 @@ export class CatalogFilters {
   }
 
   private addNewRangeFilter(name: string, filterOptions: string[] = []): this {
-    this.filters.append(new FilterItem(name, filterOptions).addDropDownRange().filterItem);
+    const newFilterCategory = new FilterItem(name, filterOptions);
+    newFilterCategory.addDropDownRange();
+    console.log(newFilterCategory.filterItem);
+    const priceRangeValues: Record<string, string> = { from: '0', to: '74000' };
+    let priceRangeStr = '';
+    Object.entries(newFilterCategory.getRangeInputs()).forEach(([option, input]) => {
+      input.addListener('change', (e) => {
+        const { target } = e;
+        if (target instanceof HTMLInputElement) {
+          console.log(target.getAttribute('value'), target.value);
+          priceRangeValues[option] = `${option} ${input.getNode().value}`;
+          priceRangeStr = `${name} ${priceRangeValues.from} ${priceRangeValues.to}`;
+          console.log(priceRangeStr);
+          const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${name}-badge"]`);
+          if (badge) {
+            badge.remove();
+          }
+          const newBadge = new activeFilterBadge(
+            name,
+            `${name}-badge`,
+            this.activeFilters,
+            priceRangeStr,
+          ).badge.getNode();
+          this.activeFilters[target.id] = {
+            element: target,
+            filter: target.name,
+            value: target.value,
+          };
+          this.activeFiltersContainer.getNode().prepend(newBadge);
+        }
+      });
+    });
+    this.filters.append(newFilterCategory.filterItem);
     return this;
+  }
+
+  private setNewActiveFilterPrice(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
+    const { target } = event;
+    if (target instanceof HTMLInputElement) {
+      if (target.checked) {
+        //   activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
+        activeFiltersContainer.append(this.resetFiltersBtn);
+        this.resetFiltersBtn
+          .getNode()
+          .before(new activeFilterBadge(target.value, target.id, this.activeFilters).badge.getNode());
+
+        this.activeFilters[target.id] = {
+          element: target,
+          filter: target.name,
+          value: target.value,
+        };
+      } else {
+        const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${target.id}"]`);
+        if (badge) {
+          badge.remove();
+          delete this.activeFilters[target.id];
+        }
+        if (Object.keys(this.activeFilters).length === 0) {
+          this.resetFiltersBtn.destroy();
+        }
+      }
+      console.log(this.activeFilters);
+    }
   }
 }

@@ -5,6 +5,7 @@ export class FilterItem {
   private optionsList: BaseComponent<'ul'>;
   private filterName: string;
   private filterOptions: string[] = [];
+  private rangeInputs: Record<string, BaseComponent<'input'>> = {};
 
   constructor(name: string, filterOptions: string[] = []) {
     this.filterName = name;
@@ -68,12 +69,14 @@ export class FilterItem {
       });
       optionLable.appendChildren([optionInput, currency]);
       optionItem.append(optionLable);
-      optionInput.addListener('click', () => {
-        console.log(option);
-      });
-
+      this.rangeInputs[option] = optionInput;
       this.optionsList.appendChildren([optionItem]);
     });
+
     return this;
+  }
+
+  public getRangeInputs(): Record<string, BaseComponent<'input'>> {
+    return this.rangeInputs;
   }
 }

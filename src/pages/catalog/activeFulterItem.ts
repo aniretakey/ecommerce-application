@@ -3,11 +3,11 @@ import { ActiveFilters } from './CatalogFilters';
 
 export class activeFilterBadge {
   public badge: BaseComponent<'div'>;
-  constructor(name: string, id: string, activeFilters: ActiveFilters) {
+  constructor(name: string, id: string, activeFilters: ActiveFilters, text = name) {
     this.badge = new BaseComponent({
       tagName: 'div',
       classNames: ['badge'],
-      textContent: name,
+      textContent: text,
       attributes: { 'data-id': id },
     });
     const remove = new BaseComponent({
@@ -19,6 +19,7 @@ export class activeFilterBadge {
     remove.addListener('click', () => {
       this.badge.destroy();
       const checkbox = document.querySelector<HTMLInputElement>(`#${id.trim().split(' ').join('-')}`);
+      console.log(name, '!!!!', checkbox);
       if (checkbox) {
         checkbox.checked = false;
         delete activeFilters[`${id.trim().split(' ').join('-')}`];
