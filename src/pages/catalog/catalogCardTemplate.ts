@@ -26,10 +26,6 @@ export class CatalogCard {
       tagName: 'a',
       classNames: ['btn', 'btn-product'],
       textContent: 'More info',
-      // attributes: {
-      //   href: '',
-      //   'data-navigo': '',
-      // },
     });
 
     this.cardBody = new BaseComponent({ tagName: 'div', classNames: ['card-body'] });
@@ -99,6 +95,11 @@ export class CatalogCard {
   public setProductDescription(description: string): this {
     this.description.setTextContent(description);
     return this;
+  }
+
+  public addCardId(id: string): void {
+    this.card.setAttributes({ id });
+    this.button.setAttributes({ href: `/product-page/${id}` });
   }
   public buildItem(): this {
     this.card.appendChildren([this.photo, this.button, this.cardBody]);
