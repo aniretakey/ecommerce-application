@@ -99,7 +99,7 @@ export class CatalogCard {
 
   public addCardId(id: string): void {
     this.card.setAttributes({ id });
-    this.button.setAttributes({ href: `/product-page/${id}` });
+    this.button.setAttributes({ href: `/#/product-page/${id}`, 'data-navigo': '' });
   }
   public buildItem(): this {
     this.card.appendChildren([this.photo, this.button, this.cardBody]);

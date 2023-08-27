@@ -92,6 +92,7 @@ export class CatalogView {
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';
         const prices = product.masterVariant.prices ?? [];
+        const productKey = product.masterVariant.key?.slice(0, -2) ?? '';
         let price = 0;
         let discount: number | undefined;
         if (prices.length) {
@@ -109,9 +110,11 @@ export class CatalogView {
           .setProductDescription(description)
           .setPhotoAttr(imgSrc, name)
           .setCategories(categories)
-          .displayPrice(price, discount);
+          .displayPrice(price, discount)
+          .addCardId(productKey);
       });
     }
+
     if (results.length < this.cardItems.length) {
       this.cardItems.slice(results.length).forEach((el) => {
         el.card.destroy();
