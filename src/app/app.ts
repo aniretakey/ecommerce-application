@@ -107,12 +107,6 @@ export default class App {
         },
       );
 
-      this.router.on(/product-page\/(.*)/, () => {
-        const product = new ProductPage().createPage(window.location.hash.slice(15));
-        this.main.main.clearInnerHTML();
-        this.main.main.getNode().append(product);
-      });
-
       this.router.on(`/basket-page`, () => {
         const BasketPage = new Basket().render();
         renderNewPage(this.main.main, BasketPage);
