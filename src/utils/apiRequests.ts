@@ -61,6 +61,7 @@ export const getProductsSearch = (
         filter,
         sort: sort ? sort : undefined,
         'text.ru': search,
+        fuzzy: true,
       },
     })
     .execute();

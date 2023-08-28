@@ -12,25 +12,22 @@ export class FilterItem {
   constructor(name: string, filterOptions: string[] = []) {
     this.filterName = name;
     this.filterOptions = filterOptions;
-    // this.filterItem = new BaseComponent({ tagName: 'li' });
-
-    this.filterItem = new BaseComponent({ tagName: 'li', classNames: ['dropdown'] });
-    // const details = new BaseComponent({ tagName: 'details', parentNode: this.filterItem.getNode() });
-    // const summary = new BaseComponent({ tagName: 'summary', textContent: this.filterName });
+    this.filterItem = new BaseComponent({
+      tagName: 'li',
+      classNames: ['dropdown' /* , 'dropdown-end' */, 'w-64'],
+    });
     this.label = new BaseComponent({
       tagName: 'label',
       textContent: this.filterName,
       attributes: { tabindex: '0' },
-      classNames: ['btn', 'm-1'],
+      classNames: ['btn', 'm-1', 'btn-sm'],
     });
 
-    // this.optionsList = new BaseComponent({ tagName: 'ul', classNames: ['p-2', 'bg-base-100', 'w-max'] });
     this.optionsList = new BaseComponent({
       tagName: 'ul',
       attributes: { tabindex: '0' },
       classNames: ['dropdown-content', 'z-[1]', 'menu', 'p-2', 'shadow', 'bg-base-100', 'rounded-box', 'w-52'],
     });
-    // details.appendChildren([summary, this.optionsList]);
     this.filterItem.appendChildren([this.label, this.optionsList]);
   }
 
@@ -69,6 +66,7 @@ export class FilterItem {
       });
       const optionInput = new BaseComponent({
         tagName: 'input',
+        classNames: ['w-24', 'justify-self-end'],
         attributes: {
           id: `${this.filterName}-${option}`.toLowerCase(),
           type: 'number',
@@ -108,16 +106,25 @@ export class FilterItem {
           value: values[i] ?? option,
         },
       });
+
       optionInput.addListener('change', () => {
-        FilterItem.sort = optionInput.getNode().value;
-        this.label.setTextContent(`${this.filterName} by ${option}`);
+        this.changeRadioHandler(optionInput, option);
       });
+      if (i === 0) {
+        optionInput.getNode().checked = true;
+        this.changeRadioHandler(optionInput, option);
+      }
       optionLable.getNode().prepend(optionInput.getNode());
       optionItem.append(optionLable);
       this.optionsList.appendChildren([optionItem]);
     });
 
     return this;
+  }
+
+  private changeRadioHandler(optionInput: BaseComponent<'input'>, option: string): void {
+    FilterItem.sort = optionInput.getNode().value;
+    this.label.setTextContent(`${this.filterName} by ${option}`);
   }
 
   public getRangeInputs(): Record<string, BaseComponent<'input'>> {

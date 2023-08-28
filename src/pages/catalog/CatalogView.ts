@@ -9,6 +9,7 @@ import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from './filterItem';
 import { Search } from './search';
 
+//const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Name: A-Z', 'Name: Z-A'];
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
   private filtersContainer: CatalogFilters;
@@ -21,6 +22,7 @@ export class CatalogView {
 
   constructor() {
     this.search = new Search();
+
     this.filtersContainer = new CatalogFilters();
     this.catalogWrapper = new BaseComponent({
       tagName: 'div',
@@ -34,6 +36,8 @@ export class CatalogView {
 
     this.catalogWrapper.appendChildren([
       this.search.searchField,
+      //  this.addSorting('Sort', sortOptions).filterItem,
+
       this.filtersContainer.filters,
       this.filtersContainer.activeFiltersContainer,
       this.catalogCardsWrap,
@@ -104,6 +108,15 @@ export class CatalogView {
     this.pagination.pageInfoBtn.setTextContent(`Page ${this.pagination.currentPage}`);
   }
 
+  /*  private addSorting(name: string, filterOptions: string[] = []) {
+    const newFilterCategory = new FilterItem(name, filterOptions);
+    newFilterCategory.addDropDownRadioList(['price asc', 'price desc', 'name.ru asc', 'name.ru desc']);
+
+
+    this.catalogWrapper.append(newFilterCategory.filterItem);
+
+    return newFilterCategory;
+  } */
   private drawCardLoaders(): void {
     if (this.pagination.currentPage === 1) {
       this.pagination.prevBtn.getNode().disabled = true;

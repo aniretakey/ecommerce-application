@@ -77,37 +77,37 @@ export type ActiveFilters = Record<
 >;
 
 export class CatalogFilters {
-  public filters: BaseComponent<'ul'>;
+  public filters: BaseComponent<'div'>;
   public activeFiltersContainer: BaseComponent<'div'>;
   public activeFilters: ActiveFilters = {};
   private resetFiltersBtn: BaseComponent<'div'>;
   public applyFilterBtn: BaseComponent<'button'>;
   constructor() {
     this.filters = new BaseComponent({
-      tagName: 'ul',
-      classNames: ['filters', 'w-full', 'border', 'menu', 'menu-horizontal', 'px-1', 'justify-between'],
+      tagName: 'div',
+      classNames: ['filters', 'w-full', 'menu', 'menu-horizontal', 'px-1', 'justify-center', 'rounded-lg'],
     });
     this.activeFiltersContainer = new BaseComponent({
       tagName: 'div',
-      classNames: ['active-filters', 'w-full', 'border', 'px-1'],
+      classNames: ['active-filters', 'w-full', 'px-1', 'flex', 'flex-wrap', 'gap-2.5'],
     });
-    this.addSorting('Sort', sortOptions)
-      .addNewCheckBoxFilter('Category', categories)
+    this.addNewCheckBoxFilter('Category', categories)
       .addNewRangeFilter('Price')
       .addNewCheckBoxFilter('Color', colors)
       .addNewCheckBoxFilter('Material', materials)
-      .addNewCheckBoxFilter('Brand', brands);
+      .addNewCheckBoxFilter('Brand', brands)
+      .addSorting('Sort', sortOptions);
 
     this.applyFilterBtn = new BaseComponent({
       tagName: 'button',
-      classNames: ['btn', 'btn-primary'],
-      textContent: `apply`,
+      classNames: ['btn', 'btn-sm', 'btn-primary', 'w-64' /* , 'w-full' */ /* , 'px-4', 'py-2', 'rounded-lg' */],
+      textContent: `APPLY`,
     });
 
-    this.filters.append(this.applyFilterBtn);
+    this.filters.appendChildren([this.applyFilterBtn]);
     this.resetFiltersBtn = new BaseComponent({
       tagName: 'div',
-      classNames: ['badge', 'badge-accent'],
+      classNames: ['badge', 'badge-accent', 'cursor-pointer'],
       textContent: 'Reset filters',
       attributes: { id: 'resetAllFiltersBtn' },
     });
@@ -160,20 +160,21 @@ export class CatalogFilters {
       this.setNewActiveFilter(event, this.activeFiltersContainer);
     });
     this.filters.append(newFilterCategory.filterItem);
-
+    // this.filtersWrap.append(newFilterCategory.filterItem);
     return this;
   }
   private addSorting(name: string, filterOptions: string[] = []): this {
     const newFilterCategory = new FilterItem(name, filterOptions);
     newFilterCategory.addDropDownRadioList(['price asc', 'price desc', 'name.ru asc', 'name.ru desc']);
-
+    //newFilterCategory.filterItem.addClass([])
     /*    newFilterCategory.filterItem.getNode().addEventListener('click', () => {
       // this.setNewActiveFilter(event, this.activeFiltersContainer);
       console.log('!!!');
     }); */
     this.filters.append(newFilterCategory.filterItem);
-
+    // this.filtersWrap.append(newFilterCategory.filterItem);
     return this;
+    // return newFilterCategory;
   }
 
   private addNewRangeFilter(name: string, filterOptions: string[] = []): this {
@@ -212,6 +213,7 @@ export class CatalogFilters {
       });
     });
     this.filters.append(newFilterCategory.filterItem);
+    //  this.filtersWrap.append(newFilterCategory.filterItem);
     return this;
   }
   private filterRangeValuesValidation(
