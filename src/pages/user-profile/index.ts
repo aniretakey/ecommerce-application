@@ -12,8 +12,8 @@ import { EditAddressForm } from '@components/form/EditAddressForm';
 import { AddressTypes } from '@customTypes/types';
 
 const classNames = {
-  infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-md:flex-col'],
-  infoBlock: ['bg-white', 'shadow-md', 'rounded', 'py-2', 'px-5', 'max-md:w-full'],
+  infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-lg:flex-col'],
+  infoBlock: ['bg-white', 'shadow-md', 'rounded', 'py-2', 'px-5'],
   personalInfoBlock: ['min-w-max'],
   addressesInfoBlock: ['overflow-x-auto'],
   infoField: ['flex', 'items-center', 'justify-between'],
