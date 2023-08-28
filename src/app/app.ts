@@ -155,7 +155,7 @@ export default class App {
 
         keys.forEach((key) => {
           this.router.on(`/product-page/${key}`, () => {
-            if (key !== undefined) {
+            if (key) {
               this.router.link(`/product-page/${key}`);
               if (this.clickedCardKey) {
                 const productPage = new ProductPage().createPage(this.clickedCardKey);
