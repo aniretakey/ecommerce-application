@@ -19,14 +19,25 @@ export class activeFilterBadge {
     remove.addListener('click', () => {
       this.badge.destroy();
       const checkbox = document.querySelector<HTMLInputElement>(`#${id.trim().split(' ').join('-')}`);
-      console.log(name, '!!!!', checkbox);
+
       if (checkbox) {
         checkbox.checked = false;
         delete activeFilters[`${id.trim().split(' ').join('-')}`];
-        const resetAllBtn = document.querySelector<HTMLDivElement>(`#resetAllFiltersBtn`);
-        if (resetAllBtn && Object.keys(activeFilters).length === 0) {
-          resetAllBtn.remove();
+      } else {
+        const from = activeFilters[`${name}-from`.toLowerCase()];
+        if (from) {
+          from.element.value = from.element.getAttribute('value') ?? '0';
         }
+        const to = activeFilters[`${name}-to`.toLowerCase()];
+        if (to) {
+          to.element.value = to.element.getAttribute('value') ?? '0';
+        }
+        delete activeFilters[`${name}-from`.toLowerCase()];
+        delete activeFilters[`${name}-to`.toLowerCase()];
+      }
+      const resetAllBtn = document.querySelector<HTMLDivElement>(`#resetAllFiltersBtn`);
+      if (resetAllBtn && Object.keys(activeFilters).length === 0) {
+        resetAllBtn.remove();
       }
     });
   }

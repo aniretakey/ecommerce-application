@@ -84,7 +84,7 @@ export class CatalogFilters {
   constructor() {
     this.filters = new BaseComponent({
       tagName: 'ul',
-      classNames: ['filters', 'w-full', 'border', 'z-10', 'menu', 'menu-horizontal', 'px-1', 'justify-between'],
+      classNames: ['filters', 'w-full', 'border', 'menu', 'menu-horizontal', 'px-1', 'justify-between'],
     });
     this.activeFiltersContainer = new BaseComponent({
       tagName: 'div',
@@ -126,8 +126,9 @@ export class CatalogFilters {
     const { target } = event;
     if (target instanceof HTMLInputElement) {
       if (target.checked) {
-        //   activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
-        activeFiltersContainer.append(this.resetFiltersBtn);
+        if (Object.keys(this.activeFilters).length === 0) {
+          activeFiltersContainer.append(this.resetFiltersBtn);
+        }
         this.resetFiltersBtn
           .getNode()
           .before(new activeFilterBadge(target.value, target.id, this.activeFilters).badge.getNode());
@@ -165,17 +166,18 @@ export class CatalogFilters {
   private addNewRangeFilter(name: string, filterOptions: string[] = []): this {
     const newFilterCategory = new FilterItem(name, filterOptions);
     newFilterCategory.addDropDownRange();
-    console.log(newFilterCategory.filterItem);
-    const priceRangeValues: Record<string, string> = { from: '0', to: '74000' };
+    let priceRangeValues: Record<string, string> = { from: '0', to: '74000' };
     let priceRangeStr = '';
     Object.entries(newFilterCategory.getRangeInputs()).forEach(([option, input]) => {
       input.addListener('change', (e) => {
         const { target } = e;
         if (target instanceof HTMLInputElement) {
-          console.log(target.getAttribute('value'), target.value);
-          priceRangeValues[option] = `${option} ${input.getNode().value}`;
-          priceRangeStr = `${name} ${priceRangeValues.from} ${priceRangeValues.to}`;
-          console.log(priceRangeStr);
+          if (Object.keys(this.activeFilters).length === 0) {
+            this.activeFiltersContainer.append(this.resetFiltersBtn);
+          }
+          priceRangeValues = this.filterRangeValuesValidation(0, 74000, priceRangeValues, input, option);
+
+          priceRangeStr = `${name} from ${priceRangeValues.from} to ${priceRangeValues.to}`;
           const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${name}-badge"]`);
           if (badge) {
             badge.remove();
@@ -186,6 +188,7 @@ export class CatalogFilters {
             this.activeFilters,
             priceRangeStr,
           ).badge.getNode();
+
           this.activeFilters[target.id] = {
             element: target,
             filter: target.name,
@@ -198,33 +201,24 @@ export class CatalogFilters {
     this.filters.append(newFilterCategory.filterItem);
     return this;
   }
+  private filterRangeValuesValidation(
+    minVal: number,
+    maxVal: number,
+    priceRangeValues: Record<string, string> = { from: `${minVal}`, to: `${maxVal}` },
+    input: BaseComponent<'input'>,
+    option: string,
+  ): Record<string, string> {
+    priceRangeValues[option] = `${Math.max(minVal, Math.min(maxVal, +input.getNode().value))}`;
 
-  private setNewActiveFilterPrice(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
-    const { target } = event;
-    if (target instanceof HTMLInputElement) {
-      if (target.checked) {
-        //   activeFiltersContainer.append(new activeFilterBadge(target.value, target.id, this.activeFilters).badge);
-        activeFiltersContainer.append(this.resetFiltersBtn);
-        this.resetFiltersBtn
-          .getNode()
-          .before(new activeFilterBadge(target.value, target.id, this.activeFilters).badge.getNode());
-
-        this.activeFilters[target.id] = {
-          element: target,
-          filter: target.name,
-          value: target.value,
-        };
-      } else {
-        const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${target.id}"]`);
-        if (badge) {
-          badge.remove();
-          delete this.activeFilters[target.id];
-        }
-        if (Object.keys(this.activeFilters).length === 0) {
-          this.resetFiltersBtn.destroy();
-        }
+    if (priceRangeValues.from && priceRangeValues.to) {
+      if (+priceRangeValues.from > +priceRangeValues.to) {
+        priceRangeValues.from = `${Math.max(minVal, +priceRangeValues.from)}`;
+        priceRangeValues.to = `${Math.min(maxVal, +priceRangeValues.from)}`;
+        input.getNode().value = priceRangeValues[option] ?? `${minVal}`;
       }
-      console.log(this.activeFilters);
+      input.getNode().value = priceRangeValues[option] ?? `${minVal}`;
     }
+
+    return priceRangeValues;
   }
 }

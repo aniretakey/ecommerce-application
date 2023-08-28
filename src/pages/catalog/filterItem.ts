@@ -10,13 +10,26 @@ export class FilterItem {
   constructor(name: string, filterOptions: string[] = []) {
     this.filterName = name;
     this.filterOptions = filterOptions;
-    this.filterItem = new BaseComponent({ tagName: 'li' });
-    const details = new BaseComponent({ tagName: 'details', parentNode: this.filterItem.getNode() });
-    const summary = new BaseComponent({ tagName: 'summary', textContent: this.filterName });
+    // this.filterItem = new BaseComponent({ tagName: 'li' });
 
-    this.optionsList = new BaseComponent({ tagName: 'ul', classNames: ['p-2', 'bg-base-100', 'w-max'] });
+    this.filterItem = new BaseComponent({ tagName: 'li', classNames: ['dropdown'] });
+    // const details = new BaseComponent({ tagName: 'details', parentNode: this.filterItem.getNode() });
+    // const summary = new BaseComponent({ tagName: 'summary', textContent: this.filterName });
+    const label = new BaseComponent({
+      tagName: 'label',
+      textContent: this.filterName,
+      attributes: { tabindex: '0' },
+      classNames: ['btn', 'm-1'],
+    });
 
-    details.appendChildren([summary, this.optionsList]);
+    // this.optionsList = new BaseComponent({ tagName: 'ul', classNames: ['p-2', 'bg-base-100', 'w-max'] });
+    this.optionsList = new BaseComponent({
+      tagName: 'ul',
+      attributes: { tabindex: '0' },
+      classNames: ['dropdown-content', 'z-[1]', 'menu', 'p-2', 'shadow', 'bg-base-100', 'rounded-box', 'w-52'],
+    });
+    // details.appendChildren([summary, this.optionsList]);
+    this.filterItem.appendChildren([label, this.optionsList]);
   }
 
   public addDropDownCheckBoxList(): this {
