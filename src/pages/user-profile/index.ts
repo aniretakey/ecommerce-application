@@ -15,7 +15,7 @@ const classNames = {
   infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-lg:flex-col'],
   infoBlock: ['bg-white', 'shadow-md', 'rounded', 'py-2', 'px-5'],
   personalInfoBlock: ['min-w-max'],
-  addressesInfoBlock: ['overflow-x-auto'],
+  addressesInfoBlock: ['overflow-x-auto', 'max-md:w-full'],
   infoField: ['flex', 'items-center', 'justify-between'],
   infoFieldValue: ['pl-20', 'font-normal'],
   table: ['table', 'max-md:table-xs'],
