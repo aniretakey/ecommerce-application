@@ -6,6 +6,7 @@ import placeholder from '@assets/logo.png';
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 import { CatalogPagination } from './CatalogPagination';
 import { CATALOG_CARDS_NUM } from '@customTypes/enums';
+import { FilterItem } from './filterItem';
 
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
@@ -128,7 +129,7 @@ export class CatalogView {
 
   private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM /* , filters: string[] = [] */): void {
     //   getProducts(offset, limit)
-    getProductsSearch(offset, limit, this.resultFilters)
+    getProductsSearch(offset, limit, this.resultFilters, FilterItem.getSortVal())
       .then(async (data) => {
         console.log(data);
         this.pagination.total = data.body.total ?? 0;

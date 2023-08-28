@@ -65,6 +65,7 @@ const brands = [
   'Sofanaissance',
   'VelvetyHaven',
 ];
+const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Name: A-Z', 'Name: Z-A'];
 
 export type ActiveFilters = Record<
   string,
@@ -90,7 +91,8 @@ export class CatalogFilters {
       tagName: 'div',
       classNames: ['active-filters', 'w-full', 'border', 'px-1'],
     });
-    this.addNewCheckBoxFilter('Category', categories)
+    this.addSorting('Sort', sortOptions)
+      .addNewCheckBoxFilter('Category', categories)
       .addNewRangeFilter('Price')
       .addNewCheckBoxFilter('Color', colors)
       .addNewCheckBoxFilter('Material', materials)
@@ -119,7 +121,6 @@ export class CatalogFilters {
       this.activeFiltersContainer.clearInnerHTML();
       this.activeFilters = {};
     });
-    //this.activeFiltersContainer.append(this.resetFiltersBtn);
   }
 
   private setNewActiveFilter(event: Event, activeFiltersContainer: BaseComponent<'div'>): void {
@@ -158,6 +159,18 @@ export class CatalogFilters {
     newFilterCategory.filterItem.getNode().addEventListener('click', (event) => {
       this.setNewActiveFilter(event, this.activeFiltersContainer);
     });
+    this.filters.append(newFilterCategory.filterItem);
+
+    return this;
+  }
+  private addSorting(name: string, filterOptions: string[] = []): this {
+    const newFilterCategory = new FilterItem(name, filterOptions);
+    newFilterCategory.addDropDownRadioList(['price asc', 'price desc', 'name.ru asc', 'name.ru desc']);
+
+    /*    newFilterCategory.filterItem.getNode().addEventListener('click', () => {
+      // this.setNewActiveFilter(event, this.activeFiltersContainer);
+      console.log('!!!');
+    }); */
     this.filters.append(newFilterCategory.filterItem);
 
     return this;
