@@ -137,8 +137,12 @@ export default class App {
       });
 
       window.addEventListener('hashchange', () => {
-        if (!this.pagesList.includes(window.location.hash.slice(2))) {
+        const hash = window.location.hash;
+        if (!this.pagesList.includes(hash.slice(2))) {
           this.router.navigate('/error-page');
+        } else if (hash.includes('product-page')) {
+          const productPage = new ProductPage().createPage(hash.slice(15));
+          renderNewPage(this.main.main, productPage);
         }
       });
 
@@ -147,7 +151,7 @@ export default class App {
     });
   }
 
-  public createProductPagesRoutes(offset = 0, limit = 50): void {
+  private createProductPagesRoutes(offset = 0, limit = 50): void {
     getProducts(offset, limit)
       .then((data) => {
         const keys = data.body.results.map((item) => item.key);
@@ -162,15 +166,6 @@ export default class App {
                 this.main.main.clearInnerHTML();
                 this.main.main.getNode().append(productPage);
               }
-
-              window.addEventListener('hashchange', () => {
-                const hash = window.location.hash;
-                if (hash.includes('product-page')) {
-                  const productPage = new ProductPage().createPage(hash.slice(15));
-                  this.main.main.clearInnerHTML();
-                  this.main.main.getNode().append(productPage);
-                }
-              });
             }
           });
         });
