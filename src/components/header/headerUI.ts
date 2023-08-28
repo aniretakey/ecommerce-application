@@ -22,7 +22,7 @@ function renderNavUI(): string {
                 ${renderUserSVG()}
               </div>
             </summary>
-            <ul class="nav__sublist-end p-2 bg-base-100 right-0 navbar__user-list">
+            <ul class="nav__sublist-end p-2 bg-base-100 right-0 navbar__user-list z-10">
             </ul>
           </details>
         </li>
