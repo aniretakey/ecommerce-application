@@ -7,6 +7,7 @@ import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 import { CatalogPagination } from './CatalogPagination';
 import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from './filterItem';
+import { Search } from './search';
 
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
@@ -30,6 +31,7 @@ export class CatalogView {
     this.pagination = new CatalogPagination(this.switchPage.bind(this));
 
     this.catalogWrapper.appendChildren([
+      new Search().searchField,
       this.filtersContainer.filters,
       this.filtersContainer.activeFiltersContainer,
       this.catalogCardsWrap,
