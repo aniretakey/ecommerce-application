@@ -65,6 +65,8 @@ export class EditPersonalInfoFrom extends Form implements EditForm {
       await updateCustomerPersonalInfo(this.userVersion, newPersonalInfo).catch((e: Error) => {
         throw new Error(e.message);
       });
+    } else {
+      throw new Error('Data is incorrect');
     }
   }
 
