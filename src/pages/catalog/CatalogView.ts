@@ -17,8 +17,10 @@ export class CatalogView {
   private cardItems: CatalogCard[] = [];
   private pagination: CatalogPagination;
   private resultFilters: string[] = [];
+  private search: Search;
 
   constructor() {
+    this.search = new Search();
     this.filtersContainer = new CatalogFilters();
     this.catalogWrapper = new BaseComponent({
       tagName: 'div',
@@ -31,7 +33,7 @@ export class CatalogView {
     this.pagination = new CatalogPagination(this.switchPage.bind(this));
 
     this.catalogWrapper.appendChildren([
-      new Search().searchField,
+      this.search.searchField,
       this.filtersContainer.filters,
       this.filtersContainer.activeFiltersContainer,
       this.catalogCardsWrap,
@@ -40,6 +42,10 @@ export class CatalogView {
     this.switchPage();
     this.filtersContainer.applyFilterBtn.addListener('click', () => {
       this.applyFilters();
+    });
+    this.search.searchBtn.addListener('click', () => {
+      //   e.preventDefault();
+      this.switchPage();
     });
   }
 
@@ -131,7 +137,13 @@ export class CatalogView {
 
   private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM /* , filters: string[] = [] */): void {
     //   getProducts(offset, limit)
-    getProductsSearch(offset, limit, this.resultFilters, FilterItem.getSortVal())
+    getProductsSearch(
+      offset,
+      limit,
+      this.resultFilters,
+      FilterItem.getSortVal(),
+      this.search.searchInput.getNode().value,
+    )
       .then(async (data) => {
         console.log(data);
         this.pagination.total = data.body.total ?? 0;

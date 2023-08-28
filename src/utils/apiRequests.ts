@@ -48,7 +48,8 @@ export const getProductsSearch = (
   offset = 0,
   limit = 6,
   filter: string[] = [],
-  sort?: string, //= 'price asc',
+  sort = 'price asc',
+  search = '',
 ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
   return apiClient.apiRoot
     .productProjections()
@@ -59,6 +60,7 @@ export const getProductsSearch = (
         offset,
         filter,
         sort: sort ? sort : undefined,
+        'text.ru': search,
       },
     })
     .execute();
