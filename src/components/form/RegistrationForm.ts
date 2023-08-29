@@ -68,7 +68,7 @@ export class RegistrationForm extends Form {
         `${FormFields.country}*`,
         validator.inputString,
         countryValidationCb,
-        'Russia',
+        COUNTRY_CODE?.RU?.[0],
         'shipping',
       )
       .addNewValidatedField(
@@ -106,7 +106,7 @@ export class RegistrationForm extends Form {
         `${FormFields.country}*`,
         validator.inputString,
         countryValidationCb,
-        'Russia',
+        COUNTRY_CODE?.RU?.[0],
         'billing',
       )
       .addNewValidatedField(
@@ -210,7 +210,7 @@ export class RegistrationForm extends Form {
 
     const shippingAddressFields = this.getAddressFields('shipping');
     const countryName = shippingAddressFields.country.value;
-    const countryCode = COUNTRY_CODE[countryName];
+    const countryCode = Object.keys(COUNTRY_CODE).find((code) => COUNTRY_CODE[code]?.includes(countryName));
     if (!countryCode) {
       throw new Error('countryCode does not exist');
     }

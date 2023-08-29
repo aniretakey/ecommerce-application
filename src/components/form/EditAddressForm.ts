@@ -25,13 +25,14 @@ export class EditAddressForm extends Form implements EditForm {
 
   // eslint-disable-next-line max-lines-per-function
   private buildEditAddressForm(addressInfo?: Address & AddressTypes): void {
+    const countryName = addressInfo ? COUNTRY_CODE[addressInfo?.country]?.[0] : COUNTRY_CODE?.RU?.[0];
     this.addNewValidatedField(
       FormFields.country,
       'text',
       `${FormFields.country}*`,
       validator.inputString,
       countryValidationCb,
-      'Russia',
+      countryName,
     )
       .addNewValidatedField(
         FormFields.city,
@@ -148,7 +149,10 @@ export class EditAddressForm extends Form implements EditForm {
 
   private getAddressInfo(): Address {
     const countryName = safeQuerySelector<HTMLInputElement>(`.userprofile__country-container input`).value;
-    const country = COUNTRY_CODE[countryName];
+    const country = Object.keys(COUNTRY_CODE).find(
+      (code) => COUNTRY_CODE[code]?.includes(countryName.slice(0, 1).toUpperCase() + countryName.slice(1)),
+    );
+
     if (!country) {
       throw new Error('Code of country does not exist');
     }

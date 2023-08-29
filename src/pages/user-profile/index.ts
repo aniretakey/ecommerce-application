@@ -4,7 +4,7 @@ import { getCustomer, removeCustomerAddress } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { Address, Customer } from '@commercetools/platform-sdk';
 import { getBadge, getDeleteIcon, getEditIcon, getAlert } from './user-profile-ui';
-import { UserProfileButtons } from '@customTypes/enums';
+import { COUNTRY_CODE, UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 import { EditPasswordForm } from '@components/form/EditPasswordForm';
@@ -197,7 +197,7 @@ export default class UserProfile extends Page {
       const tableRow = new BaseComponent({ tagName: 'tr', attributes: { 'data-id': address.id } });
       tableRow.getNode().innerHTML = `
         <td>${index + 1}</td>
-        <td>${address.country}</td>
+        <td>${COUNTRY_CODE[address.country]?.[0]}</td>
         <td>${address.city}</td>
         <td>${address.streetName}</td>
         <td>${address.postalCode}</td>
