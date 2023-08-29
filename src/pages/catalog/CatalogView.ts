@@ -9,7 +9,6 @@ import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from './filterItem';
 import { Search } from './search';
 
-//const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Name: A-Z', 'Name: Z-A'];
 export class CatalogView {
   public catalogWrapper: BaseComponent<'div'>;
   private filtersContainer: CatalogFilters;
@@ -32,24 +31,21 @@ export class CatalogView {
       tagName: 'div',
       classNames: ['catalog__cards-wrap', 'justify-items-center'],
     });
-    this.pagination = new CatalogPagination(this.switchPage.bind(this));
+    this.pagination = new CatalogPagination(this.updateCatalogPage.bind(this));
 
     this.catalogWrapper.appendChildren([
       this.search.searchField,
-      //  this.addSorting('Sort', sortOptions).filterItem,
-
       this.filtersContainer.filters,
       this.filtersContainer.activeFiltersContainer,
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
-    this.switchPage();
+    this.updateCatalogPage();
     this.filtersContainer.applyFilterBtn.addListener('click', () => {
       this.applyFilters();
     });
     this.search.searchBtn.addListener('click', () => {
-      //   e.preventDefault();
-      this.switchPage();
+      this.updateCatalogPage();
     });
   }
 
@@ -80,8 +76,7 @@ export class CatalogView {
     this.createFilterString('variants.attributes.Material', material, this.resultFilters);
     this.createFilterString('variants.attributes.Brand', brand, this.resultFilters);
     this.createPriceFilterString(this.resultFilters);
-    console.log(this.resultFilters, 'result filters');
-    this.switchPage(/* this.resultFilters */);
+    this.updateCatalogPage();
   }
 
   private createFilterString(predicat: string, arr: string[], result: string[] = []): string[] {
@@ -90,6 +85,7 @@ export class CatalogView {
     }
     return result;
   }
+
   private createPriceFilterString(result: string[] = []): string[] {
     const minPriceInput = document.querySelector<HTMLInputElement>('#price-from');
     const maxPriceInput = document.querySelector<HTMLInputElement>('#price-to');
@@ -101,31 +97,18 @@ export class CatalogView {
     }
     return result;
   }
-  private switchPage(/* filters: string[] = [] */): void {
+  private updateCatalogPage(): void {
     this.cardItems = [];
     this.drawCardLoaders();
-    this.drawCatalogCards((this.pagination.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM /* , filters */);
+    this.drawCatalogCards((this.pagination.currentPage - 1) * CATALOG_CARDS_NUM, CATALOG_CARDS_NUM);
     this.pagination.pageInfoBtn.setTextContent(`Page ${this.pagination.currentPage}`);
   }
 
-  /*  private addSorting(name: string, filterOptions: string[] = []) {
-    const newFilterCategory = new FilterItem(name, filterOptions);
-    newFilterCategory.addDropDownRadioList(['price asc', 'price desc', 'name.ru asc', 'name.ru desc']);
-
-
-    this.catalogWrapper.append(newFilterCategory.filterItem);
-
-    return newFilterCategory;
-  } */
   private drawCardLoaders(): void {
     if (this.pagination.currentPage === 1) {
       this.pagination.prevBtn.getNode().disabled = true;
     }
     const cardNumber = 6;
-    /*   const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
-    if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
-      this.pagination.nextBtn.getNode().disabled = true;
-    } */
     this.catalogCardsWrap.clearInnerHTML();
     for (let i = 0; i < cardNumber; i++) {
       const newItem = new CatalogCard().buildItem();
@@ -148,8 +131,7 @@ export class CatalogView {
       .catch(console.log);
   }
 
-  private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM /* , filters: string[] = [] */): void {
-    //   getProducts(offset, limit)
+  private drawCatalogCards(offset = 0, limit = CATALOG_CARDS_NUM): void {
     getProductsSearch(
       offset,
       limit,
@@ -168,18 +150,16 @@ export class CatalogView {
         } else {
           this.pagination.nextBtn.getNode().disabled = false;
         }
-        console.log(this.pagination.total, this.pagination.currentPage, this.pagination.maxPage);
         await this.getCategoryNames();
         const results = data.body.results;
-        this.createItems(results, this.categoryData);
+        this.createCardItems(results, this.categoryData);
       })
       .catch(console.log);
   }
 
-  private createItems(results: ProductProjection[], categoryNames: Record<string, string>): void {
+  private createCardItems(results: ProductProjection[], categoryNames: Record<string, string>): void {
     if (results.length >= 1) {
       results.forEach((product, index) => {
-        // const product = item.masterData.current;
         const categories: string[] = product.categories.map((data) => categoryNames[data.id] ?? '');
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';

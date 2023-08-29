@@ -1,4 +1,5 @@
 import BaseComponent from '@utils/baseComponent';
+import { prices } from './data';
 
 export class FilterItem {
   public filterItem: BaseComponent<'li'>;
@@ -6,7 +7,7 @@ export class FilterItem {
   private filterName: string;
   private filterOptions: string[] = [];
   private rangeInputs: Record<string, BaseComponent<'input'>> = {};
-  private label: BaseComponent<'label'>;
+  private filterItemBtn: BaseComponent<'label'>;
   private static sort = '';
 
   constructor(name: string, filterOptions: string[] = []) {
@@ -14,9 +15,9 @@ export class FilterItem {
     this.filterOptions = filterOptions;
     this.filterItem = new BaseComponent({
       tagName: 'li',
-      classNames: ['dropdown' /* , 'dropdown-end' */, 'w-64'],
+      classNames: ['dropdown', 'w-64'],
     });
-    this.label = new BaseComponent({
+    this.filterItemBtn = new BaseComponent({
       tagName: 'label',
       textContent: this.filterName,
       attributes: { tabindex: '0' },
@@ -28,36 +29,20 @@ export class FilterItem {
       attributes: { tabindex: '0' },
       classNames: ['dropdown-content', 'z-[1]', 'menu', 'p-2', 'shadow', 'bg-base-100', 'rounded-box', 'w-52'],
     });
-    this.filterItem.appendChildren([this.label, this.optionsList]);
+    this.filterItem.appendChildren([this.filterItemBtn, this.optionsList]);
   }
 
-  public addDropDownCheckBoxList(): this {
-    this.filterOptions.forEach((option) => {
-      const optionItem = new BaseComponent({ tagName: 'li' });
-      const optionLable = new BaseComponent({
-        tagName: 'label',
-        attributes: { for: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase() },
-        textContent: option,
-      });
-      const optionInput = new BaseComponent({
-        tagName: 'input',
-        attributes: {
-          id: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase(),
-          type: 'checkbox',
-          name: this.filterName,
-          value: option,
-        },
-      });
-      optionLable.getNode().prepend(optionInput.getNode());
-      optionItem.append(optionLable);
-      this.optionsList.appendChildren([optionItem]);
+  public addDropDownCheckBoxList(values = this.filterOptions): this {
+    this.filterOptions.forEach((option, i) => {
+      this.createFilterSubItem(option, 'checkbox', values, i);
     });
 
     return this;
   }
 
-  public addDropDownRange(maxPrice = 74000): this {
-    ['from', 'to'].forEach((option, i) => {
+  public addDropDownRange(values = prices): this {
+    this.filterOptions.forEach((option, i) => {
+      const [minVal, maxVal] = values;
       const optionItem = new BaseComponent({ tagName: 'li' });
       const optionLable = new BaseComponent({
         tagName: 'label',
@@ -71,9 +56,10 @@ export class FilterItem {
           id: `${this.filterName}-${option}`.toLowerCase(),
           type: 'number',
           name: this.filterName,
-          value: i === 1 ? `${maxPrice}` : '0',
-          min: '0',
-          max: `${maxPrice}`,
+          value: `${values[i] ?? option}`,
+          min: `${minVal}`,
+          max: `${maxVal}`,
+          'data-optionName': option,
         },
       });
       const currency = new BaseComponent({
@@ -91,22 +77,7 @@ export class FilterItem {
 
   public addDropDownRadioList(values = this.filterOptions): this {
     this.filterOptions.forEach((option, i) => {
-      const optionItem = new BaseComponent({ tagName: 'li' });
-      const optionLable = new BaseComponent({
-        tagName: 'label',
-        attributes: { for: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase() },
-        textContent: option,
-      });
-      const optionInput = new BaseComponent({
-        tagName: 'input',
-        attributes: {
-          id: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase(),
-          type: 'radio',
-          name: this.filterName,
-          value: values[i] ?? option,
-        },
-      });
-
+      const optionInput = this.createFilterSubItem(option, 'radio', values, i);
       optionInput.addListener('change', () => {
         this.changeRadioHandler(optionInput, option);
       });
@@ -114,17 +85,42 @@ export class FilterItem {
         optionInput.getNode().checked = true;
         this.changeRadioHandler(optionInput, option);
       }
-      optionLable.getNode().prepend(optionInput.getNode());
-      optionItem.append(optionLable);
-      this.optionsList.appendChildren([optionItem]);
     });
 
     return this;
   }
 
+  private createFilterSubItem(
+    option: string,
+    inputType: string,
+    values = this.filterOptions,
+    i: number,
+  ): BaseComponent<'input'> {
+    const optionItem = new BaseComponent({ tagName: 'li' });
+    const optionLable = new BaseComponent({
+      tagName: 'label',
+      attributes: { for: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase() },
+      textContent: option,
+    });
+    const optionInput = new BaseComponent({
+      tagName: 'input',
+      attributes: {
+        id: `${this.filterName}-${option.trim().split(' ').join('-')}`.toLowerCase(),
+        type: inputType,
+        name: this.filterName,
+        value: values[i] ?? option,
+        'data-optionName': option,
+      },
+    });
+    optionLable.getNode().prepend(optionInput.getNode());
+    optionItem.append(optionLable);
+    this.optionsList.appendChildren([optionItem]);
+    return optionInput;
+  }
+
   private changeRadioHandler(optionInput: BaseComponent<'input'>, option: string): void {
     FilterItem.sort = optionInput.getNode().value;
-    this.label.setTextContent(`${this.filterName} by ${option}`);
+    this.filterItemBtn.setTextContent(`${this.filterName} by ${option}`);
   }
 
   public getRangeInputs(): Record<string, BaseComponent<'input'>> {

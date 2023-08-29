@@ -36,3 +36,13 @@ export interface AddressTypes {
   isBillingAddress: boolean;
   isShippingAddress: boolean;
 }
+
+export type ActiveFilters = Record<
+  string,
+  {
+    element: HTMLInputElement;
+    filter: string;
+    optionName: string;
+    value: string;
+  }
+>;

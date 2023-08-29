@@ -1,0 +1,46 @@
+export const colors = [
+  'beige',
+  'black',
+  'blue',
+  'brown',
+  'dark brown',
+  'dark grey',
+  'grey',
+  'light brown',
+  'light-blue',
+  'olive',
+  'pink',
+  'red',
+  'turquoise',
+  'white',
+  'yellow',
+];
+export const materials = [
+  'ceramics',
+  'cotton',
+  'faux-rattan',
+  'jacquard',
+  'leather',
+  'MDF',
+  'particleboard',
+  'plaster',
+  'polyester',
+  'rattan',
+  'velour',
+  'velvet',
+  'wood',
+];
+export const brands = [
+  'Artful Creations',
+  'Bohemian Bliss',
+  'Classic Comfort',
+  'LuxoCouch',
+  'RegalRest',
+  'RoyaLounge',
+  'Rustic Roots',
+  'Serene Spaces',
+  'Sofanaissance',
+  'VelvetyHaven',
+];
+export const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Name: A-Z', 'Name: Z-A'];
+export const prices = [0, 74000];
