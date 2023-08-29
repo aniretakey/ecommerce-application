@@ -3,6 +3,9 @@ export const MIN_LENGTH = 1;
 export const MIN_POSTAL_CODE_LENGTH = 6;
 export const MAX_POSTAL_CODE_LENGTH = 6;
 export const CATALOG_CARDS_NUM = 6;
+export const COUNTRY_CODE: Record<string, [string, string]> = {
+  RU: ['Russia', 'Россия'],
+};
 
 export enum FormFields {
   email = 'Email',

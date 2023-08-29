@@ -1,10 +1,10 @@
 import './user-profile-style.css';
 import Page from '@utils/pageTemplate';
-import { getCustomer } from '@utils/apiRequests';
+import { getCustomer, removeCustomerAddress } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { Address, Customer } from '@commercetools/platform-sdk';
 import { getBadge, getDeleteIcon, getEditIcon, getAlert } from './user-profile-ui';
-import { UserProfileButtons } from '@customTypes/enums';
+import { COUNTRY_CODE, UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 import { EditPasswordForm } from '@components/form/EditPasswordForm';
@@ -12,10 +12,10 @@ import { EditAddressForm } from '@components/form/EditAddressForm';
 import { AddressTypes } from '@customTypes/types';
 
 const classNames = {
-  infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-md:flex-col'],
-  infoBlock: ['bg-white', 'shadow-md', 'rounded', 'py-2', 'px-5', 'max-md:w-full'],
+  infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-lg:flex-col'],
+  infoBlock: ['bg-white', 'shadow-md', 'rounded', 'py-2', 'px-5'],
   personalInfoBlock: ['min-w-max'],
-  addressesInfoBlock: ['overflow-x-auto'],
+  addressesInfoBlock: ['overflow-x-auto', 'max-md:w-full'],
   infoField: ['flex', 'items-center', 'justify-between'],
   infoFieldValue: ['pl-20', 'font-normal'],
   table: ['table', 'max-md:table-xs'],
@@ -23,7 +23,7 @@ const classNames = {
   addressTypes: ['flex', 'flex-col'],
   button: ['btn', 'btn-sm', 'btn-primary', 'mr-4'],
   tableBtn: ['table__button', 'btn-xs'],
-  alert: ['alert', 'alert-success', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max'],
+  alert: ['alert', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max', 'z-20', 'min-w-[200px]'],
 };
 
 const tableHeadTitles = ['№', 'Country', 'City', 'Street', 'Postal code', 'Address type', 'Edit'];
@@ -145,8 +145,15 @@ export default class UserProfile extends Page {
           };
           this.openEditAddressForm(addressInfo);
         }
-        if (button.classList.contains(UserProfileButtons.deleteAddress)) {
-          // TODO: delete address
+        if (addressId && button.classList.contains(UserProfileButtons.deleteAddress)) {
+          removeCustomerAddress(this.userInfo.version, addressId)
+            .then(() => {
+              this.setUserInfo();
+              this.setAlert();
+            })
+            .catch((e: Error) => {
+              this.setAlert(false, e.message);
+            });
         }
       }
     });
@@ -190,7 +197,7 @@ export default class UserProfile extends Page {
       const tableRow = new BaseComponent({ tagName: 'tr', attributes: { 'data-id': address.id } });
       tableRow.getNode().innerHTML = `
         <td>${index + 1}</td>
-        <td>${address.country}</td>
+        <td>${COUNTRY_CODE[address.country]?.[0]}</td>
         <td>${address.city}</td>
         <td>${address.streetName}</td>
         <td>${address.postalCode}</td>
@@ -243,21 +250,21 @@ export default class UserProfile extends Page {
 
   private openEditPersonalInfoFrom(): void {
     if (this.userInfo) {
-      const form = new EditPersonalInfoFrom(this.userInfo.id, this.userInfo.version, this.userInfo);
+      const form = new EditPersonalInfoFrom(this.userInfo.version, this.userInfo);
       this.openEditForm(form);
     }
   }
 
   private openEditPasswordForm(): void {
     if (this.userInfo) {
-      const form = new EditPasswordForm(this.userInfo.id, this.userInfo.version);
+      const form = new EditPasswordForm(this.userInfo.version);
       this.openEditForm(form);
     }
   }
 
   private openEditAddressForm(addressInfo?: Address & AddressTypes): void {
     if (this.userInfo) {
-      const form = new EditAddressForm(this.userInfo.id, this.userInfo.version, addressInfo ?? undefined);
+      const form = new EditAddressForm(this.userInfo.version, addressInfo ?? undefined);
       this.openEditForm(form);
     }
   }
@@ -265,13 +272,27 @@ export default class UserProfile extends Page {
   private openEditForm(form: EditPersonalInfoFrom | EditPasswordForm | EditAddressForm): void {
     const modal = new ModalWindow();
     modal.buildModal(form.form);
-    form.submitBtn.addListener('click', () => {
-      modal.closeModal();
-      this.setUserInfo();
-      const alert = new BaseComponent({ tagName: 'div', classNames: classNames.alert });
-      alert.getNode().innerHTML = getAlert();
-      document.body.append(alert.getNode());
-      setTimeout(() => alert.destroy(), 5000);
+    form.submitBtn.addListener('click', (e) => {
+      form
+        .editInfo(e)
+        .then(() => {
+          this.setUserInfo();
+          modal.closeModal();
+          this.setAlert();
+        })
+        .catch((e: Error) => {
+          this.setAlert(false, e.message);
+        });
     });
+  }
+
+  private setAlert(isSuccessAlert = true, errorMessage?: string): void {
+    const alert = new BaseComponent({
+      tagName: 'div',
+      classNames: [isSuccessAlert ? 'alert-success' : 'alert-error', ...classNames.alert],
+    });
+    alert.getNode().innerHTML = getAlert(isSuccessAlert, errorMessage);
+    document.body.append(alert.getNode());
+    setTimeout(() => alert.destroy(), 5000);
   }
 }
