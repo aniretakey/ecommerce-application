@@ -11,6 +11,7 @@ import Basket from '@pages/basket';
 import UserProfile from '@pages/user-profile';
 import ProductPage from '@pages/product';
 import { getProducts } from '@utils/apiRequests';
+import { apiClient } from '@utils/ApiClient';
 
 export default class App {
   private static container: HTMLElement = document.body;
@@ -147,6 +148,14 @@ export default class App {
 
   private createProductPagesRoutes(offset = 0, limit = 50): void {
     getProducts(offset, limit)
+      .catch(async () => {
+        localStorage.removeItem('comforto-access-token');
+        apiClient.autorize();
+        this.header.setEndSubListLink(false);
+        this.router.updatePageLinks();
+        const data = await getProducts(offset, limit);
+        return data;
+      })
       .then((data) => {
         const keys = data.body.results.map((item) => item.key);
         this.pagesList.push(...keys.map((key) => `product-page/${key}`));
@@ -174,6 +183,7 @@ export default class App {
   }
 
   private isAuthorizedUser(): boolean {
+    console.log(Boolean(localStorage.getItem('comforto-access-token')));
     return Boolean(localStorage.getItem('comforto-access-token'));
   }
 }
