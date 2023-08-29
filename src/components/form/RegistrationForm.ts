@@ -1,4 +1,4 @@
-import { FormFields, FormPages } from '@customTypes/enums';
+import { COUNTRY_CODE, FormFields, FormPages } from '@customTypes/enums';
 import { Form } from './FormTemplate';
 import { validator } from '@utils/validator';
 import {
@@ -17,10 +17,6 @@ import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commerce
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
 import { DefaultAddresses, Addresses } from '@customTypes/types';
-
-const COUNTRY_CODE: Record<string, string> = {
-  Russia: 'RU',
-};
 
 export class RegistrationForm extends Form {
   constructor() {
@@ -72,7 +68,7 @@ export class RegistrationForm extends Form {
         `${FormFields.country}*`,
         validator.inputString,
         countryValidationCb,
-        'Russia',
+        COUNTRY_CODE?.RU?.[0],
         'shipping',
       )
       .addNewValidatedField(
@@ -110,7 +106,7 @@ export class RegistrationForm extends Form {
         `${FormFields.country}*`,
         validator.inputString,
         countryValidationCb,
-        'Russia',
+        COUNTRY_CODE?.RU?.[0],
         'billing',
       )
       .addNewValidatedField(
@@ -214,7 +210,7 @@ export class RegistrationForm extends Form {
 
     const shippingAddressFields = this.getAddressFields('shipping');
     const countryName = shippingAddressFields.country.value;
-    const countryCode = COUNTRY_CODE[countryName];
+    const countryCode = Object.keys(COUNTRY_CODE).find((code) => COUNTRY_CODE[code]?.includes(countryName));
     if (!countryCode) {
       throw new Error('countryCode does not exist');
     }
