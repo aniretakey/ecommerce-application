@@ -56,7 +56,7 @@ export const updateCustomerPersonalInfo = (
     .me()
     .post({
       body: {
-        version: version,
+        version,
         actions: [
           {
             action: 'setFirstName',
@@ -89,7 +89,7 @@ export const updateCustomerPassword = (
     .me()
     .password()
     .post({
-      body: { version: version, currentPassword: currentPassword, newPassword: newPassword },
+      body: { version, currentPassword, newPassword },
     })
     .execute();
 };
@@ -161,10 +161,7 @@ export const setAddressTypes = (
   return apiClient.apiRoot
     .me()
     .post({
-      body: {
-        version: version,
-        actions: [...actions],
-      },
+      body: { version, actions },
     })
     .execute();
 };
