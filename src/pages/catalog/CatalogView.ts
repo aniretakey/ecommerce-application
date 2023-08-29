@@ -1,12 +1,12 @@
 import BaseComponent from '@utils/baseComponent';
-import { CatalogFilters } from './CatalogFilters';
+import { CatalogFilters } from '../../components/filters/CatalogFilters';
 import { getCategories, getProductsSearch } from '@utils/apiRequests';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import placeholder from '@assets/logo.png';
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 import { CatalogPagination } from './CatalogPagination';
 import { CATALOG_CARDS_NUM } from '@customTypes/enums';
-import { FilterItem } from './filterItem';
+import { FilterItem } from '../../components/filters/filterItem';
 import { Search } from './search';
 
 export class CatalogView {
