@@ -2,8 +2,9 @@ import BaseComponent from '@utils/baseComponent';
 import { FilterItem } from './filterItem';
 import { ActiveFilterBadge } from './activeFilterItem';
 import { filterClasses } from '@utils/componentsClasses';
-import { brands, colors, materials, prices, sortOptions } from './data';
 import { ActiveFilters } from '@customTypes/types';
+import { getProductsSearch } from '@utils/apiRequests';
+import { ProductProjection } from '@commercetools/platform-sdk';
 
 export class CatalogFilters {
   public applyFilterBtn: BaseComponent<'button'>;
@@ -48,13 +49,50 @@ export class CatalogFilters {
   }
 
   private appendFilters(): void {
-    this.appendNewCheckBoxFilter('Category', ['add your categories'])
-      .appendNewRangeFilter('Price', ['from', 'to'])
-      .appendNewCheckBoxFilter('Color', colors)
-      .appendNewCheckBoxFilter('Material', materials)
-      .appendNewCheckBoxFilter('Brand', brands)
-      .addSorting('Sort', sortOptions);
-    this.filters.appendChildren([this.applyFilterBtn]);
+    getProductsSearch(0, 100, [], 'price asc')
+      .then((data) => {
+        this.appendNewCheckBoxFilter('Category', ['add your categories']);
+
+        const results = data.body.results;
+        const minPriceVal = this.getPrice(results, true);
+        const maxPriceVal = this.getPrice(results, false);
+        this.appendNewRangeFilter('Price', ['from', 'to'], minPriceVal, maxPriceVal);
+
+        const attributes = this.getAttributes(results);
+        Object.entries(attributes).forEach(([key, val]) => {
+          this.appendNewCheckBoxFilter(key, val);
+        });
+
+        this.addSorting('Sort', ['Price: Low to High', 'Price: High to Low', 'Name: A-Z', 'Name: Z-A']);
+
+        this.filters.appendChildren([this.applyFilterBtn]);
+      })
+      .catch(console.log);
+  }
+
+  private getPrice(results: ProductProjection[], isGetMin = true): number {
+    const productIndex = isGetMin ? 0 : results.length - 1;
+    const priceProduct = results[productIndex];
+    const allPrices = priceProduct?.masterVariant.prices ?? [];
+    let price = isGetMin ? Infinity : -Infinity;
+    let discount = isGetMin ? Infinity : -Infinity;
+    if (allPrices.length) {
+      price = allPrices[0]?.value.centAmount ?? price;
+      discount = allPrices[0]?.discounted?.value.centAmount ?? discount;
+    }
+    const priceVal = (isGetMin ? Math.min(price, discount) : Math.max(price, discount)) / 100;
+    return priceVal;
+  }
+
+  private getAttributes(results: ProductProjection[]): Record<string, string[]> {
+    const attrs: Record<string, string[]> = {};
+    results.forEach((res) => {
+      const attributes = res.masterVariant.attributes ?? [];
+      attributes.forEach(({ name, value }) => {
+        attrs[name] = [...new Set((attrs[name] ?? []).concat(`${value}`))];
+      });
+    });
+    return attrs;
   }
 
   private appendNewCheckBoxFilter(name: string, filterOptions: string[] = [], values = filterOptions): this {
@@ -67,14 +105,14 @@ export class CatalogFilters {
     return this;
   }
 
-  private appendNewRangeFilter(name: string, filterOptions: string[] = []): this {
+  private appendNewRangeFilter(name: string, filterOptions: string[] = [], minVal: number, maxVal: number): this {
     const newFilterCategory = new FilterItem(name, filterOptions);
-    newFilterCategory.addDropDownRange(prices);
-    const priceRangeValues: Record<string, string> = { from: '0', to: '74000' };
+    newFilterCategory.addDropDownRange([minVal, maxVal]);
+    const priceRangeValues: Record<string, string> = { from: `${minVal}`, to: `${maxVal}` };
     const priceRangeStr = '';
     Object.entries(newFilterCategory.getRangeInputs()).forEach(([option, input]) => {
       input.addListener('change', (e) => {
-        this.setNewActiveRangeFilter(e, name, option, priceRangeValues, priceRangeStr);
+        this.setNewActiveRangeFilter(e, name, option, priceRangeValues, priceRangeStr, minVal, maxVal);
       });
     });
     this.filters.append(newFilterCategory.filterItem);
@@ -124,13 +162,15 @@ export class CatalogFilters {
     e: Event,
     name: string,
     option: string,
-    priceRangeValues: Record<string, string> = { from: '0', to: '74000' },
+    priceRangeValues: Record<string, string>,
     priceRangeStr = '',
+    minVal: number,
+    maxVal: number,
   ): void {
     const { target } = e;
     if (target instanceof HTMLInputElement) {
       this.addResetBtn();
-      priceRangeValues = this.filterRangeValuesValidation(0, 74000, priceRangeValues, target, option);
+      priceRangeValues = this.filterRangeValuesValidation(minVal, maxVal, priceRangeValues, target, option);
 
       priceRangeStr = `${name} from ${priceRangeValues.from} to ${priceRangeValues.to}`;
       const badge = document.querySelector<HTMLDivElement>(`.badge[data-id="${name}-badge"]`);

@@ -1,5 +1,4 @@
 import BaseComponent from '@utils/baseComponent';
-import { prices } from './data';
 
 export class FilterItem {
   public filterItem: BaseComponent<'li'>;
@@ -40,7 +39,7 @@ export class FilterItem {
     return this;
   }
 
-  public addDropDownRange(values = prices): this {
+  public addDropDownRange(values: number[]): this {
     this.filterOptions.forEach((option, i) => {
       const [minVal, maxVal] = values;
       const optionItem = new BaseComponent({ tagName: 'li' });
