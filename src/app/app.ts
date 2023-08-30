@@ -183,7 +183,6 @@ export default class App {
   }
 
   private isAuthorizedUser(): boolean {
-    console.log(Boolean(localStorage.getItem('comforto-access-token')));
     return Boolean(localStorage.getItem('comforto-access-token'));
   }
 }
