@@ -45,6 +45,9 @@ export class CatalogView {
       this.applyFilters();
     });
     this.search.searchBtn.addListener('click', () => {
+      this.pagination.currentPage = 1;
+      this.pagination.maxPage = 2;
+      this.pagination.total = CATALOG_CARDS_NUM;
       this.updateCatalogPage();
     });
   }
@@ -140,11 +143,9 @@ export class CatalogView {
       this.search.searchInput.getNode().value,
     )
       .then(async (data) => {
-        console.log(data);
         this.pagination.total = data.body.total ?? 0;
         this.pagination.maxPage = Math.ceil((data.body.total ?? 1) / CATALOG_CARDS_NUM);
         const cardNumber = Math.min(6, this.pagination.total - (this.pagination.currentPage - 1) * CATALOG_CARDS_NUM);
-        console.log(this.pagination.currentPage, this.pagination.maxPage, cardNumber, CATALOG_CARDS_NUM);
         if (this.pagination.currentPage >= this.pagination.maxPage || cardNumber < CATALOG_CARDS_NUM) {
           this.pagination.nextBtn.getNode().disabled = true;
         } else {
