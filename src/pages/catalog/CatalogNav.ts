@@ -200,7 +200,6 @@ export class CatalogNav {
       const categoryElement = target.closest<HTMLElement>('.breadcrumb-link');
       if (categoryElement) {
         this.currentCategoryId = categoryElement.getAttribute('data-id') ?? '';
-        console.log(categoryElement);
         this.setCurrentCategory();
         return true;
       }
