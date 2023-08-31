@@ -1,5 +1,5 @@
 import { Attribute } from '@commercetools/platform-sdk';
-import { getProductsSearch } from '@utils/apiRequests';
+import { getProduct } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import createSlider from '@pages/product/productImgSlider';
 
@@ -17,7 +17,7 @@ export default class ProductUI {
   }
 
   public render(parentContainer: HTMLElement, productID: string): void {
-    getProductsSearch(0, 1, [], 'price asc', productID)
+    getProduct(productID)
       .then((data): void => {
         const product = data.body.results[0];
         this.name = product?.name.ru ?? '';

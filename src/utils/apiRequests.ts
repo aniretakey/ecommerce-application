@@ -7,7 +7,6 @@ import {
   CustomerSignin,
   MyCustomerDraft,
   OrderPagedQueryResponse,
-  Product,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 import { apiClient } from './ApiClient';
@@ -31,6 +30,14 @@ export const getCustomer = (): Promise<ClientResponse<Customer>> => {
 
 export const signUp = (customer: MyCustomerDraft & Addresses): Promise<ClientResponse<CustomerSignInResult>> => {
   return apiClient.apiRoot.me().signup().post({ body: customer }).execute();
+};
+
+export const getProduct = (key: string): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  return apiClient.apiRoot
+    .productProjections()
+    .search()
+    .get({ queryArgs: { filter: `key:"${key}"` } })
+    .execute();
 };
 
 export const getProductsSearch = (
@@ -57,10 +64,6 @@ export const getProductsSearch = (
 };
 export const getCategories = (): Promise<ClientResponse<CategoryPagedQueryResponse>> => {
   return apiClient.apiRoot.categories().get().execute();
-};
-
-export const getProduct = (key: string): Promise<ClientResponse<Product>> => {
-  return apiClient.apiRoot.products().withKey({ key }).get().execute();
 };
 
 export const updateCustomerPersonalInfo = (
