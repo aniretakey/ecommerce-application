@@ -63,3 +63,13 @@ export type ActionsForUpdateAddressTypes =
   | MyCustomerRemoveShippingAddressIdAction
   | MyCustomerSetDefaultBillingAddressAction
   | MyCustomerSetDefaultShippingAddressAction;
+
+export type ActiveFilters = Record<
+  string,
+  {
+    element: HTMLInputElement;
+    filter: string;
+    optionName: string;
+    value: string;
+  }
+>;

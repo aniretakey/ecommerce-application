@@ -28,9 +28,14 @@ class ApiClient {
 
   constructor() {
     const access_token = localStorage.getItem('comforto-access-token');
+
     this.apiRoot = access_token
       ? this.updateExistingFlow(access_token)
       : createApiBuilderFromCtpClient(this.ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
+  }
+
+  public autorize(): void {
+    this.apiRoot = createApiBuilderFromCtpClient(this.ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
   }
 
   private updateExistingFlow(access_token: string): ByProjectKeyRequestBuilder {
@@ -77,3 +82,4 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
+//apiClient.apiRoot.
