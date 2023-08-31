@@ -20,8 +20,8 @@ export default class ProductUI {
     this.discount = 0;
   }
 
-  public render(parentContainer: HTMLElement): void {
-    getProduct('ComfortHaven')
+  public render(parentContainer: HTMLElement, productID: string): void {
+    getProduct(productID)
       .then((data): void => {
         const product = data.body.masterData.current;
         this.name = product.name?.ru ?? '';

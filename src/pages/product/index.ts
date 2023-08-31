@@ -8,8 +8,7 @@ export default class ProductPage extends Page {
   }
 
   public createPage(productKey: string): HTMLElement {
-    new ProductUI().render(this.container);
-    console.log(productKey);
+    new ProductUI().render(this.container, productKey);
 
     return this.container;
   }
