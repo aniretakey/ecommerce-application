@@ -141,6 +141,9 @@ export default class App {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
       });
+
+      this.router.resolve();
+
       const hash = window.location.hash;
       if (this.pagesList.includes(hash.slice(2))) {
         this.router.navigate(hash.slice(2));
