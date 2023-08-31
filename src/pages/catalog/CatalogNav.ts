@@ -194,13 +194,17 @@ export class CatalogNav {
     return this.categoriesInfo.find((item) => item.id === categoryId);
   }
 
-  public breadcrumbClickHandler(e: Event): void {
+  public breadcrumbClickHandler(e: Event): boolean {
     const target = e.target;
     if (target instanceof HTMLElement) {
       const categoryElement = target.closest<HTMLElement>('.breadcrumb-link');
-      this.currentCategoryId = categoryElement?.getAttribute('data-id') ?? '';
-      console.log(categoryElement);
-      this.setCurrentCategory();
+      if (categoryElement) {
+        this.currentCategoryId = categoryElement.getAttribute('data-id') ?? '';
+        console.log(categoryElement);
+        this.setCurrentCategory();
+        return true;
+      }
     }
+    return false;
   }
 }

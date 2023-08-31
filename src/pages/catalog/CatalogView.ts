@@ -61,8 +61,7 @@ export class CatalogView {
       this.catalogNav.categoryClickHandler(e) && this.applyFilters();
     });
     this.catalogNav.breadcrumb.addListener('click', (e) => {
-      this.catalogNav.breadcrumbClickHandler(e);
-      this.applyFilters();
+      this.catalogNav.breadcrumbClickHandler(e) && this.applyFilters();
     });
   }
 
