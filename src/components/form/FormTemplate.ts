@@ -5,35 +5,41 @@ import { PageIds, ValidationCb } from '@customTypes/types';
 import { ZodString, z } from 'zod';
 import { FormFieldCreator } from './FormFieldCreator';
 
-const formClassNames = [
-  'flex',
-  'flex-col',
-  'items-center',
-  'm-auto',
-  'gap-2',
-  'bg-white',
-  'shadow-md',
-  'rounded',
-  'px-8',
-  'pt-6',
-  'pb-8',
-  'mb-4',
-  'w-full',
-  'max-w-xs',
-];
+const formClassNames = {
+  withRedirect: [
+    'flex',
+    'flex-col',
+    'items-center',
+    'm-auto',
+    'gap-2',
+    'bg-white',
+    'shadow-md',
+    'rounded',
+    'px-8',
+    'pt-6',
+    'pb-8',
+    'mb-4',
+    'w-full',
+    'max-w-xs',
+  ],
+  withoutRedirect: ['flex', 'flex-col', 'items-center', 'gap-2', 'px-8', 'pt-6', 'w-full', 'max-w-xs'],
+};
 
 export class Form {
   public form: BaseComponent<'form'>;
   public submitBtn: BaseComponent<'button'>;
   protected formFields: HTMLDivElement[] = [];
   private pageName: FormPages;
-  protected redirectBtn: BaseComponent<'a'>;
+  private isFormWithRedirect: boolean;
+  protected redirectBtn: BaseComponent<'a'> | undefined;
   public errAuthMessage: BaseComponent<'p'>;
-  constructor(pageName: FormPages) {
+  constructor(pageName: FormPages, isFormWithRedirect = true) {
     this.pageName = pageName;
+    this.isFormWithRedirect = isFormWithRedirect;
+    const classNames = this.isFormWithRedirect ? formClassNames.withRedirect : formClassNames.withoutRedirect;
     this.form = new BaseComponent({
       tagName: 'form',
-      classNames: [`${pageName}__form`, ...formClassNames],
+      classNames: [`${pageName}__form`, ...classNames],
       attributes: { id: `${pageName}Form` },
     });
 
@@ -43,13 +49,16 @@ export class Form {
       textContent: FormSubmitBtn[pageName],
       attributes: { id: `${pageName}SubmitBtn` },
     });
-    const anotherPage = this.pageName === FormPages.login ? PageIds.RegistrationPage : PageIds.LoginPage;
-    this.redirectBtn = new BaseComponent({
-      tagName: 'a',
-      classNames: [`${pageName}__redirect-btn`, 'btn'],
-      textContent: FormRedirectBtn[pageName],
-      attributes: { id: `${pageName}RedirectBtn`, 'data-navigo': '', href: `/${anotherPage}` },
-    });
+
+    if (this.isFormWithRedirect) {
+      const anotherPage = this.pageName === FormPages.login ? PageIds.RegistrationPage : PageIds.LoginPage;
+      this.redirectBtn = new BaseComponent({
+        tagName: 'a',
+        classNames: [`${pageName}__redirect-btn`, 'btn'],
+        textContent: FormRedirectBtn[pageName],
+        attributes: { id: `${pageName}RedirectBtn`, 'data-navigo': '', href: `/${anotherPage}` },
+      });
+    }
     this.errAuthMessage = new BaseComponent({
       tagName: 'p',
       classNames: ['err-auth-message', 'text-red-700', 'px-4', 'py-3', 'rounded'],
@@ -110,6 +119,7 @@ export class Form {
     labelText = ``,
     eventName?: keyof HTMLElementEventMap,
     eventHandler?: (e: Event) => void,
+    isChecked = false,
   ): this {
     const field = new FormFieldCreator(this.pageName, fieldName, inputType, false, labelText);
     if (eventName && eventHandler) {
@@ -117,6 +127,7 @@ export class Form {
     }
     const fieldContainer = field.fieldContainer.getNode();
     fieldContainer.setAttribute('data-valid', 'true');
+    field.fieldInput.getNode().checked = isChecked;
     this.formFields.push(fieldContainer);
     return this;
   }
@@ -142,15 +153,11 @@ export class Form {
   }
 
   protected buildForm(): this {
-    this.form
-      .getNode()
-      .append(
-        ...this.formFields,
-        this.errAuthMessage.getNode(),
-        this.submitBtn.getNode(),
-        this.createRedirectMessage().getNode(),
-        this.redirectBtn.getNode(),
-      );
+    this.form.getNode().append(...this.formFields, this.errAuthMessage.getNode(), this.submitBtn.getNode());
+
+    if (this.isFormWithRedirect && this.redirectBtn) {
+      this.form.getNode().append(this.createRedirectMessage().getNode(), this.redirectBtn.getNode());
+    }
     return this;
   }
   private createRedirectMessage(): BaseComponent<'p'> {

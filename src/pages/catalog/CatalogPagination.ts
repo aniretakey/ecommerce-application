@@ -24,7 +24,7 @@ export class CatalogPagination {
     });
     this.nextBtn = new BaseComponent({
       tagName: 'button',
-      classNames: ['join-item', 'btn', 'pagination-next'] /* , textContent: '»' */,
+      classNames: ['join-item', 'btn', 'pagination-next'],
     });
     this.pagContainer.appendChildren([this.prevBtn, this.pageInfoBtn, this.nextBtn]);
     this.addSwitchPageListeners(switchPageHandler);
