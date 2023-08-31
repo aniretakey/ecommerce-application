@@ -41,6 +41,16 @@ export class CatalogNav {
         ];
         this.createCategoriesNav();
         this.createBreadcrumb();
+        window.addEventListener('click', (e) => {
+          const target = e.target;
+          if (target && target instanceof HTMLElement) {
+            const navElement = target.closest('.catalog-nav');
+            const listElement = safeQuerySelector('ul', this.catalogNavigation.getNode());
+            if (!navElement && !listElement.classList.contains('hidden')) {
+              listElement.classList.add('hidden');
+            }
+          }
+        });
       })
       .catch(console.log);
   }
