@@ -210,7 +210,9 @@ export class RegistrationForm extends Form {
 
     const shippingAddressFields = this.getAddressFields('shipping');
     const countryName = shippingAddressFields.country.value;
-    const countryCode = Object.keys(COUNTRY_CODE).find((code) => COUNTRY_CODE[code]?.includes(countryName));
+    const countryCode = Object.keys(COUNTRY_CODE).find(
+      (code) => COUNTRY_CODE[code]?.includes(countryName.slice(0, 1).toUpperCase() + countryName.slice(1)),
+    );
     if (!countryCode) {
       throw new Error('countryCode does not exist');
     }
