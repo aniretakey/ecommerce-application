@@ -43,6 +43,7 @@ export class CatalogView {
     this.catalogWrapper.appendChildren([
       this.search.searchField,
       this.filterOptionsWrapper,
+      this.catalogNav.breadcrumb,
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
@@ -58,6 +59,10 @@ export class CatalogView {
     });
     this.catalogNav.catalogNavigation.addListener('click', (e) => {
       this.catalogNav.categoryClickHandler(e) && this.applyFilters();
+    });
+    this.catalogNav.breadcrumb.addListener('click', (e) => {
+      this.catalogNav.breadcrumbClickHandler(e);
+      this.applyFilters();
     });
   }
 

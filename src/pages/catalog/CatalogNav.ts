@@ -6,6 +6,7 @@ import { safeQuerySelector } from '@utils/safeQuerySelector';
 const classNames = {
   categoriesContainer: ['w-96', 'h-16', 'relative', 'p-3', 'max-lg:w-1/2'],
   catalogNavigation: [
+    'catalog-nav',
     'menu',
     'rounded-box',
     'w-56',
@@ -21,11 +22,14 @@ const classNames = {
   categorySublist: ['category-sublist', 'hidden', 'block'],
   itemTitleContainer: ['justify-items-end'],
   itemTitleButton: ['category-button', 'btn', 'btn-xs', 'max-w-min'],
+  breadcrumb: ['breadcrumbs', 'text-sm', 'w-full'],
+  breadcrumbLink: ['breadcrumb-link'],
 };
 
 export class CatalogNav {
   public categoriesContainer = new BaseComponent({ tagName: 'div', classNames: classNames.categoriesContainer });
   public catalogNavigation = new BaseComponent({ tagName: 'ul', classNames: classNames.catalogNavigation });
+  public breadcrumb = new BaseComponent({ tagName: 'div', classNames: classNames.breadcrumb });
   public currentCategoryId = '';
   private categoriesInfo: Category[] = [];
   private categoriesParentsId: string[] = [];
@@ -36,6 +40,7 @@ export class CatalogNav {
           ...new Set(this.categoriesInfo.map((item) => item.parent?.id ?? '').filter((item) => item)),
         ];
         this.createCategoriesNav();
+        this.createBreadcrumb();
       })
       .catch(console.log);
   }
@@ -49,6 +54,7 @@ export class CatalogNav {
   private createCategoriesNav(): void {
     const categoriesParent = this.categoriesInfo.filter((item) => !item.parent);
     const mainCategory = this.createParentItemNav('', 'All', categoriesParent);
+    safeQuerySelector('li a', mainCategory.getNode()).classList.add('font-bold', 'text-primary');
     this.catalogNavigation.append(mainCategory);
     this.categoriesContainer.append(this.catalogNavigation);
   }
@@ -121,13 +127,70 @@ export class CatalogNav {
         categorySubList?.classList.toggle('hidden');
       } else if (categoryElement) {
         this.currentCategoryId = categoryElement.getAttribute('data-id') ?? '';
-        document
-          .querySelectorAll('.category-link')
-          .forEach((link) => link.classList.remove('font-bold', 'text-primary'));
-        safeQuerySelector('.category-link', categoryElement).classList.add('font-bold', 'text-primary');
+        this.setCurrentCategory();
         return true;
       }
     }
     return false;
+  }
+
+  private setCurrentCategory(): void {
+    document.querySelectorAll('.category-link').forEach((link) => link.classList.remove('font-bold', 'text-primary'));
+    safeQuerySelector(
+      `.category-item[data-id='${this.currentCategoryId}'] a`,
+      this.catalogNavigation.getNode(),
+    ).classList.add('font-bold', 'text-primary');
+    this.createBreadcrumb(this.getCategoryInfo(this.currentCategoryId));
+  }
+
+  private createBreadcrumb(category?: Category): void {
+    this.breadcrumb.clearInnerHTML();
+    const breadcrumbList = new BaseComponent({ tagName: 'ul' });
+    const breadcrumbCatalog = this.createBreadcrumbItem();
+    const breadcrumbCategory = category ? this.createBreadcrumbItem(category) : undefined;
+    const breadcrumbParentCategories = category ? this.getParentCategories(category).reverse() : [];
+    breadcrumbList.appendChildren([breadcrumbCatalog, ...breadcrumbParentCategories]);
+    breadcrumbCategory && breadcrumbList.append(breadcrumbCategory);
+    this.breadcrumb.append(breadcrumbList);
+  }
+
+  private createBreadcrumbItem(category?: Category): BaseComponent<'li'> {
+    const breadcrumbItem = new BaseComponent({ tagName: 'li' });
+    const breadcrumbItemLink = new BaseComponent({
+      tagName: 'a',
+      textContent: category ? category.name.ru : 'Catalog',
+      attributes: {
+        'data-id': category ? category.id : '',
+      },
+      classNames: classNames.breadcrumbLink,
+    });
+    breadcrumbItem.append(breadcrumbItemLink);
+
+    return breadcrumbItem;
+  }
+
+  private getParentCategories(category: Category): BaseComponent<'li'>[] {
+    const parentCategories = [];
+    let categoryParent = category.parent;
+    while (categoryParent) {
+      const categoryInfo = this.getCategoryInfo(categoryParent.id);
+      parentCategories.push(this.createBreadcrumbItem(categoryInfo));
+      categoryParent = categoryInfo?.parent;
+    }
+    return parentCategories;
+  }
+
+  private getCategoryInfo(categoryId: string): Category | undefined {
+    return this.categoriesInfo.find((item) => item.id === categoryId);
+  }
+
+  public breadcrumbClickHandler(e: Event): void {
+    const target = e.target;
+    if (target instanceof HTMLElement) {
+      const categoryElement = target.closest<HTMLElement>('.breadcrumb-link');
+      this.currentCategoryId = categoryElement?.getAttribute('data-id') ?? '';
+      console.log(categoryElement);
+      this.setCurrentCategory();
+    }
   }
 }
