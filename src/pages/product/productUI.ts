@@ -1,6 +1,7 @@
 import { Attribute } from '@commercetools/platform-sdk';
 import { getProduct } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
+import createSlider from '@pages/product/productImgSlider';
 
 export default class ProductUI {
   private container: BaseComponent<'div'>;
@@ -34,9 +35,14 @@ export default class ProductUI {
         }
 
         const attributes = product.masterVariant.attributes ?? [];
-        // const productImages = product.masterVariant.images ?? [];
+        const productImages = product.masterVariant.images ?? [];
+        // console.log(Object.values(productImages).map((img) => img.url));
+        const imgLinks = Object.values(productImages).map((img) => img.url);
+        // const imagesSlider = createSlider(imgLinks);
 
-        parentContainer.append(this.createMarkup(this.name, this.description, this.price, attributes).getNode());
+        parentContainer.append(
+          this.createMarkup(this.name, this.description, this.price, attributes, imgLinks).getNode(),
+        );
       })
       .catch(console.log);
   }
@@ -46,6 +52,7 @@ export default class ProductUI {
     description: string,
     price: number,
     attributesList: Record<string, string> | Attribute[],
+    imgLinks: string[],
   ): BaseComponent<'div'> {
     const container = new BaseComponent({
       tagName: 'div',
@@ -56,6 +63,10 @@ export default class ProductUI {
       tagName: 'div',
       classNames: ['product-slider'],
     });
+
+    const imagesSlider = createSlider(imgLinks);
+    sliderBox.append(imagesSlider);
+
     container.append(sliderBox);
     container.append(this.createProductInfo(name, description, price, attributesList, this.discount));
     return container;
