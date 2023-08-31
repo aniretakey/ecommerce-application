@@ -84,12 +84,16 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  width: 60%;
 }
 
 .product-price {
   font-size: 30px;
   font-weight: 600;
+
+  @media screen and (max-width: 1100px) {
+    font-size: 24px;
+  }
 }
 
 .product-discount {
