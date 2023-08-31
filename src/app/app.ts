@@ -130,8 +130,8 @@ export default class App {
         renderNewPage(this.main.main, ErrorPage);
       });
 
+      const hash = window.location.hash;
       window.addEventListener('hashchange', () => {
-        const hash = window.location.hash;
         if (!this.pagesList.includes(hash.slice(2))) {
           this.router.navigate('/error-page');
         } else if (hash.includes('product-page')) {
@@ -141,7 +141,16 @@ export default class App {
       });
 
       this.router.resolve();
-      this.router.navigate(`${window.location.hash.slice(2)}`);
+
+      if (this.pagesList.includes(hash.slice(2))) {
+        this.router.navigate(hash.slice(2));
+      } else if (hash.includes('product-page')) {
+        const productID = hash.slice(15);
+        const productPage = new ProductPage().createPage(productID);
+        renderNewPage(this.main.main, productPage);
+      } else {
+        this.router.navigate('/error-page');
+      }
     });
   }
 

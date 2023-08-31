@@ -104,7 +104,6 @@ export default class ProductUI {
       tagName: 'div',
       classNames: ['product-attributes'],
     });
-    console.log(Object.values(attributesList));
 
     const attributesArr = Object.values(attributesList);
     attributesArr.forEach((attr: Record<string, string>) => {
