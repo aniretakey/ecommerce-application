@@ -4,17 +4,12 @@ import BaseComponent from '@utils/baseComponent';
 import createSlider from '@pages/product/productImgSlider';
 
 export default class ProductUI {
-  private container: BaseComponent<'div'>;
   private name: string;
   private description: string;
   private price: number;
   private discount: number;
 
   constructor() {
-    this.container = new BaseComponent({
-      tagName: 'div',
-      classNames: ['product-container'],
-    });
     this.name = '';
     this.description = '';
     this.price = 0;
