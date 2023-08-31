@@ -7,6 +7,7 @@ import {
   MyCustomerDraft,
   OrderPagedQueryResponse,
   ProductPagedQueryResponse,
+  Product,
 } from '@commercetools/platform-sdk';
 import { apiClient } from './ApiClient';
 import { Addresses } from '@customTypes/types';
@@ -45,4 +46,8 @@ export const getProducts = (offset = 0, limit = 6): Promise<ClientResponse<Produ
 
 export const getCategories = (): Promise<ClientResponse<CategoryPagedQueryResponse>> => {
   return apiClient.apiRoot.categories().get().execute();
+};
+
+export const getProduct = (key: string): Promise<ClientResponse<Product>> => {
+  return apiClient.apiRoot.products().withKey({ key }).get().execute();
 };

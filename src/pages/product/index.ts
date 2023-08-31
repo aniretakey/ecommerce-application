@@ -1,5 +1,6 @@
-import BaseComponent from '@utils/baseComponent';
 import Page from '@utils/pageTemplate';
+import ProductUI from './productUI';
+import './style.css';
 
 export default class ProductPage extends Page {
   constructor() {
@@ -7,13 +8,8 @@ export default class ProductPage extends Page {
   }
 
   public createPage(productKey: string): HTMLElement {
-    const title = this.createHeaderTitle('Product');
-    const productID = new BaseComponent({
-      tagName: 'p',
-      classNames: ['product-id'],
-      textContent: productKey,
-    });
-    this.container.append(title, productID.getNode());
+    new ProductUI().render(this.container);
+    console.log(productKey);
 
     return this.container;
   }
