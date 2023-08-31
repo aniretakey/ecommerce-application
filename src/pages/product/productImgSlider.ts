@@ -17,7 +17,7 @@ function createSliderImgs(imgLinks: string[]): BaseComponent<'div'> {
     classNames: ['carousel'],
   });
 
-  for (let i = 1; i < imgLinks.length; i++) {
+  for (let i = 0; i < imgLinks.length; i++) {
     const imgBlock = new BaseComponent({
       tagName: 'div',
       classNames: ['carousel-item', 'w-full'],
@@ -45,7 +45,7 @@ function createSliderBtns(imgLinks: string[]): BaseComponent<'div'> {
     classNames: ['carousel-btns', 'flex', 'justify-center', 'py-2', 'gap-2'],
   });
 
-  for (let i = 1; i < imgLinks.length; i++) {
+  for (let i = 0; i < imgLinks.length; i++) {
     const btn = new BaseComponent({
       tagName: 'button',
       classNames: ['btn-carousel', 'btn', 'btn-xs', 'opacity-70'],
@@ -53,7 +53,7 @@ function createSliderBtns(imgLinks: string[]): BaseComponent<'div'> {
         href: `#${`item${i}`}`,
       },
     });
-    if (i === 1) {
+    if (i === 0) {
       btn.getNode().classList.add('bg-accent');
     }
     carouselBtns.append(btn);

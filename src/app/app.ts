@@ -149,7 +149,6 @@ export default class App {
         const ErrorPage = new Error().render();
         renderNewPage(this.main.main, ErrorPage);
       });
-      this.router.resolve();
       const hash = window.location.hash;
       if (this.pagesList.includes(hash.slice(2))) {
         this.router.navigate(hash.slice(2));
@@ -188,11 +187,9 @@ export default class App {
           this.router.on(`/product-page/${key}`, () => {
             if (key) {
               this.router.link(`/product-page/${key}`);
-              if (this.clickedCardKey) {
-                const productPage = new ProductPage().createPage(this.clickedCardKey);
-                this.main.main.clearInnerHTML();
-                this.main.main.getNode().append(productPage);
-              }
+              const productPage = new ProductPage().createPage(key);
+              this.main.main.clearInnerHTML();
+              this.main.main.getNode().append(productPage);
             }
           });
         });
