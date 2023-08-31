@@ -10,7 +10,7 @@ import Error from '@pages/error';
 import Basket from '@pages/basket';
 import UserProfile from '@pages/user-profile';
 import ProductPage from '@pages/product';
-import { getProducts } from '@utils/apiRequests';
+import { getProductsSearch } from '@utils/apiRequests';
 import { apiClient } from '@utils/ApiClient';
 
 export default class App {
@@ -26,6 +26,17 @@ export default class App {
     this.header = new Header();
     this.main = new Main();
     this.router = new Navigo('/', { hash: true, strategy: 'ALL' });
+    this.clickedCardKey = '';
+
+    this.pagesList = [
+      '',
+      'catalog-page',
+      'about-page',
+      'registration-page',
+      'login-page',
+      'basket-page',
+      'profile-page',
+    ];
     this.clickedCardKey = '';
 
     this.pagesList = [
@@ -131,29 +142,36 @@ export default class App {
         renderNewPage(this.main.main, ErrorPage);
       });
 
-      window.addEventListener('hashchange', () => {
-        const hash = window.location.hash;
-        if (!this.pagesList.includes(hash.slice(2))) {
-          this.router.navigate('/error-page');
-        } else if (hash.includes('product-page')) {
-          const productPage = new ProductPage().createPage(hash.slice(15));
-          renderNewPage(this.main.main, productPage);
-        }
-      });
-
       this.router.resolve();
-      this.router.navigate(`${window.location.hash.slice(2)}`);
+
+      const hash = window.location.hash;
+      if (this.pagesList.includes(hash.slice(2))) {
+        this.router.navigate(hash.slice(2));
+      } else if (hash.includes('product-page')) {
+        const productID = hash.slice(15);
+        const productPage = new ProductPage().createPage(productID);
+        renderNewPage(this.main.main, productPage);
+      } else {
+        this.router.navigate('/error-page');
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.slice(2);
+      if (!this.pagesList.includes(hash)) {
+        this.router.navigate('/error-page');
+      }
     });
   }
 
   private createProductPagesRoutes(offset = 0, limit = 50): void {
-    getProducts(offset, limit)
+    getProductsSearch(offset, limit, [], 'price asc', '')
       .catch(async () => {
         localStorage.removeItem('comforto-access-token');
         apiClient.autorize();
         this.header.setEndSubListLink(false);
         this.router.updatePageLinks();
-        const data = await getProducts(offset, limit);
+        const data = await getProductsSearch(offset, limit, [], 'price asc', '');
         return data;
       })
       .then((data) => {
@@ -164,11 +182,9 @@ export default class App {
           this.router.on(`/product-page/${key}`, () => {
             if (key) {
               this.router.link(`/product-page/${key}`);
-              if (this.clickedCardKey) {
-                const productPage = new ProductPage().createPage(this.clickedCardKey);
-                this.main.main.clearInnerHTML();
-                this.main.main.getNode().append(productPage);
-              }
+              const productPage = new ProductPage().createPage(key);
+              this.main.main.clearInnerHTML();
+              this.main.main.getNode().append(productPage);
             }
           });
         });

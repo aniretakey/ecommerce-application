@@ -7,7 +7,6 @@ import {
   CustomerSignin,
   MyCustomerDraft,
   OrderPagedQueryResponse,
-  ProductPagedQueryResponse,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
 import { apiClient } from './ApiClient';
@@ -33,15 +32,11 @@ export const signUp = (customer: MyCustomerDraft & Addresses): Promise<ClientRes
   return apiClient.apiRoot.me().signup().post({ body: customer }).execute();
 };
 
-export const getProducts = (offset = 0, limit = 6): Promise<ClientResponse<ProductPagedQueryResponse>> => {
+export const getProduct = (key: string): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
   return apiClient.apiRoot
-    .products()
-    .get({
-      queryArgs: {
-        limit,
-        offset,
-      },
-    })
+    .productProjections()
+    .search()
+    .get({ queryArgs: { filter: `key:"${key}"` } })
     .execute();
 };
 
