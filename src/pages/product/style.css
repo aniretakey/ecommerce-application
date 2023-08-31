@@ -80,13 +80,20 @@
   }
 }
 
-.product-price {
-  font-size: 28px;
-  font-weight: 600;
+.product-prices {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
 
-  @media screen and (max-width: 1100px) {
-    font-size: 28px;
-  }
+.product-price {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.product-discount {
+  font-weight: 800;
 }
 
 .btn_add-cart {

@@ -57,7 +57,7 @@ export default class ProductUI {
       classNames: ['product-slider'],
     });
     container.append(sliderBox);
-    container.append(this.createProductInfo(name, description, price, attributesList));
+    container.append(this.createProductInfo(name, description, price, attributesList, this.discount));
     return container;
   }
 
@@ -66,6 +66,7 @@ export default class ProductUI {
     description: string,
     price: number,
     attributesList: Record<string, string> | Attribute[],
+    discount?: number,
   ): BaseComponent<'div'> {
     const productInfo = new BaseComponent({
       tagName: 'div',
@@ -81,19 +82,40 @@ export default class ProductUI {
       classNames: ['product-description'],
       textContent: description,
     });
-    const productPrice = new BaseComponent({
-      tagName: 'p',
-      classNames: ['product-price'],
-      textContent: `₽ ${price}`,
-    });
+    const prices = this.addPrices(price, discount);
     const btnAddCart = new BaseComponent({
       tagName: 'button',
       classNames: ['btn', 'btn-primary', 'btn_add-cart'],
       textContent: '🛒 Add to cart',
     });
-    productInfo.appendChildren([productTitle, productDescription, productPrice, btnAddCart]);
+    productInfo.appendChildren([productTitle, productDescription, prices, btnAddCart]);
     this.addProductAttributes(productInfo, attributesList);
     return productInfo;
+  }
+
+  private addPrices(price: number, discount?: number): BaseComponent<'div'> {
+    const pricesContainer = new BaseComponent({
+      tagName: 'div',
+      classNames: ['product-prices'],
+    });
+
+    const productPrice = new BaseComponent({
+      tagName: 'p',
+      classNames: ['product-price', 'text-primary'],
+      textContent: `₽ ${price}`,
+    });
+
+    if (discount) {
+      const productDiscount = new BaseComponent({
+        tagName: 'p',
+        classNames: ['product-price', 'product-discount', 'text-accent'],
+        textContent: `₽ ${discount}`,
+      });
+      productPrice.addClass(['line-through', 'opacity-50']);
+      pricesContainer.append(productDiscount);
+    }
+    pricesContainer.append(productPrice);
+    return pricesContainer;
   }
 
   private addProductAttributes(
