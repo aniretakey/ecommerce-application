@@ -10,7 +10,7 @@ import Error from '@pages/error';
 import Basket from '@pages/basket';
 import UserProfile from '@pages/user-profile';
 import ProductPage from '@pages/product';
-import { getProducts } from '@utils/apiRequests';
+import { getProductsSearch } from '@utils/apiRequests';
 import { apiClient } from '@utils/ApiClient';
 
 export default class App {
@@ -165,13 +165,13 @@ export default class App {
   }
 
   private createProductPagesRoutes(offset = 0, limit = 50): void {
-    getProducts(offset, limit)
+    getProductsSearch(offset, limit, [], 'price asc', '')
       .catch(async () => {
         localStorage.removeItem('comforto-access-token');
         apiClient.autorize();
         this.header.setEndSubListLink(false);
         this.router.updatePageLinks();
-        const data = await getProducts(offset, limit);
+        const data = await getProductsSearch(offset, limit, [], 'price asc', '');
         return data;
       })
       .then((data) => {

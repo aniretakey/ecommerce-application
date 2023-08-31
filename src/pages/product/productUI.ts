@@ -1,5 +1,5 @@
 import { Attribute } from '@commercetools/platform-sdk';
-import { getProduct } from '@utils/apiRequests';
+import { getProductsSearch } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import createSlider from '@pages/product/productImgSlider';
 
@@ -22,23 +22,21 @@ export default class ProductUI {
   }
 
   public render(parentContainer: HTMLElement, productID: string): void {
-    getProduct(productID)
+    getProductsSearch(0, 1, [], 'price asc', productID)
       .then((data): void => {
-        const product = data.body.masterData.current;
-        this.name = product.name?.ru ?? '';
-        this.description = product.description?.ru ?? '';
+        const product = data.body.results[0];
+        this.name = product?.name.ru ?? '';
+        this.description = product?.description?.ru ?? '';
 
-        const prices = product.masterVariant.prices ?? [];
+        const prices = product?.masterVariant.prices ?? [];
         if (prices.length) {
           this.price = Number(prices[0]?.value.centAmount.toString().slice(0, -2)) ?? 0;
           this.discount = Number(prices[0]?.discounted?.value.centAmount.toString().slice(0, -2)) ?? 0;
         }
 
-        const attributes = product.masterVariant.attributes ?? [];
-        const productImages = product.masterVariant.images ?? [];
-        // console.log(Object.values(productImages).map((img) => img.url));
+        const attributes = product?.masterVariant.attributes ?? [];
+        const productImages = product?.masterVariant.images ?? [];
         const imgLinks = Object.values(productImages).map((img) => img.url);
-        // const imagesSlider = createSlider(imgLinks);
 
         parentContainer.append(
           this.createMarkup(this.name, this.description, this.price, attributes, imgLinks).getNode(),
