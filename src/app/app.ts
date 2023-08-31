@@ -71,14 +71,6 @@ export default class App {
             return this.clickedCardKey;
           }
         });
-        CatalogPage.addEventListener('click', (e) => {
-          const clickedElem: EventTarget | null = e.target;
-          if (clickedElem instanceof HTMLElement && clickedElem?.closest('.card')) {
-            this.clickedCardKey = clickedElem?.closest('.card')?.id;
-            this.router.navigate(`/product-page/${this.clickedCardKey}`);
-            return this.clickedCardKey;
-          }
-        });
         renderNewPage(this.main.main, CatalogPage);
       });
 
