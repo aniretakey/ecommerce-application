@@ -8,35 +8,42 @@ import { CatalogPagination } from './CatalogPagination';
 import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from '../../components/filters/filterItem';
 import { Search } from './search';
+import { CatalogNav } from './CatalogNav';
 
 export class CatalogView {
-  public catalogWrapper: BaseComponent<'div'>;
+  public catalogWrapper = new BaseComponent({
+    tagName: 'div',
+    classNames: ['flex', 'flex-col', 'justify-between', 'items-center', 'gap-4'],
+  });
+  private filterOptionsWrapper = new BaseComponent({
+    tagName: 'div',
+    classNames: ['flex', 'max-sm:flex-col', 'max-sm:items-center'],
+  });
   private filtersContainer: CatalogFilters;
-  private catalogCardsWrap: BaseComponent<'div'>;
+  private catalogCardsWrap = new BaseComponent({
+    tagName: 'div',
+    classNames: ['catalog__cards-wrap', 'justify-items-center'],
+  });
   private categoryData: Record<string, string> = {};
   private cardItems: CatalogCard[] = [];
   private pagination: CatalogPagination;
   private resultFilters: string[] = [];
   private search: Search;
+  private catalogNav: CatalogNav;
 
   constructor() {
     this.search = new Search();
-
     this.filtersContainer = new CatalogFilters();
-    this.catalogWrapper = new BaseComponent({
-      tagName: 'div',
-      classNames: ['flex', 'flex-col', 'justify-between', 'items-center', 'gap-4'],
-    });
-    this.catalogCardsWrap = new BaseComponent({
-      tagName: 'div',
-      classNames: ['catalog__cards-wrap', 'justify-items-center'],
-    });
+    this.catalogNav = new CatalogNav();
     this.pagination = new CatalogPagination(this.updateCatalogPage.bind(this));
-
+    this.filterOptionsWrapper.appendChildren([
+      this.catalogNav.categoriesContainer,
+      this.filtersContainer.filtersContainer,
+    ]);
     this.catalogWrapper.appendChildren([
       this.search.searchField,
-      this.filtersContainer.filters,
-      this.filtersContainer.activeFiltersContainer,
+      this.filterOptionsWrapper,
+      this.catalogNav.breadcrumb,
       this.catalogCardsWrap,
       this.pagination.pagContainer,
     ]);
@@ -49,6 +56,12 @@ export class CatalogView {
       this.pagination.maxPage = 2;
       this.pagination.total = CATALOG_CARDS_NUM;
       this.updateCatalogPage();
+    });
+    this.catalogNav.catalogNavigation.addListener('click', (e) => {
+      this.catalogNav.categoryClickHandler(e) && this.applyFilters();
+    });
+    this.catalogNav.breadcrumb.addListener('click', (e) => {
+      this.catalogNav.breadcrumbClickHandler(e) && this.applyFilters();
     });
   }
 
@@ -79,6 +92,8 @@ export class CatalogView {
     this.createFilterString('variants.attributes.Material', material, this.resultFilters);
     this.createFilterString('variants.attributes.Brand', brand, this.resultFilters);
     this.createPriceFilterString(this.resultFilters);
+    this.catalogNav.currentCategoryId &&
+      this.createFilterString('categories.id', [`subtree("${this.catalogNav.currentCategoryId}")`], this.resultFilters);
     this.updateCatalogPage();
   }
 

@@ -8,19 +8,21 @@ import { ProductProjection } from '@commercetools/platform-sdk';
 
 export class CatalogFilters {
   public applyFilterBtn: BaseComponent<'button'>;
+  public filtersContainer: BaseComponent<'div'>;
   public filters: BaseComponent<'div'>;
   public activeFiltersContainer: BaseComponent<'div'>;
   public activeFilters: ActiveFilters = {};
   private resetFiltersBtn: BaseComponent<'div'>;
 
   constructor() {
+    this.filtersContainer = new BaseComponent({ tagName: 'div', classNames: ['max-lg:w-1/2'] });
     this.filters = new BaseComponent({
       tagName: 'div',
       classNames: filterClasses,
     });
     this.activeFiltersContainer = new BaseComponent({
       tagName: 'div',
-      classNames: ['active-filters', 'w-full', 'px-1', 'flex', 'flex-wrap', 'gap-2.5'],
+      classNames: ['active-filters', 'w-full', 'px-1', 'flex', 'flex-wrap', 'gap-2.5', 'justify-center'],
     });
 
     this.applyFilterBtn = new BaseComponent({
@@ -46,13 +48,12 @@ export class CatalogFilters {
       this.activeFilters = {};
     });
     this.appendFilters();
+    this.filtersContainer.appendChildren([this.filters, this.activeFiltersContainer]);
   }
 
   private appendFilters(): void {
     getProductsSearch(0, 100, [], 'price asc')
       .then((data) => {
-        this.appendNewCheckBoxFilter('Category', ['add your categories']);
-
         const results = data.body.results;
         const minPriceVal = this.getPrice(results, true);
         const maxPriceVal = this.getPrice(results, false);
