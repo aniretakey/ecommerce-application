@@ -174,9 +174,7 @@ export class CatalogView {
         }
         const images = product.masterVariant.images ?? [];
         let imgSrc = '';
-        if (images.length) {
-          imgSrc = images[0]?.url ?? `${placeholder}`;
-        }
+        imgSrc = images[0]?.url ?? `${placeholder}`;
 
         this.cardItems[index]
           ?.setProductName(name)
