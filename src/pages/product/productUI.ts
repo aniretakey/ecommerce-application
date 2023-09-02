@@ -1,7 +1,8 @@
 import { Attribute } from '@commercetools/platform-sdk';
 import { getProduct } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
-import createSlider from '@pages/product/productImgSlider';
+import { ProductImgSlider } from '@pages/product/productImgSlider';
+import { ModalWindow } from '@components/modal/modalWindow';
 
 export default class ProductUI {
   private name: string;
@@ -57,8 +58,19 @@ export default class ProductUI {
       classNames: ['product-slider'],
     });
 
-    const imagesSlider = createSlider(imgLinks);
-    sliderBox.append(imagesSlider);
+    const imagesSlider = new ProductImgSlider();
+    sliderBox.append(imagesSlider.createSlider(imgLinks));
+    sliderBox.addListener('click', (e) => {
+      console.log(e.target);
+      const target = e.target;
+      if (target instanceof HTMLElement && target.closest('img')) {
+        console.log('img');
+        const modal = new ModalWindow();
+        const modalImgSlider = new ProductImgSlider('modal', imagesSlider.currentImageId);
+        modal.buildModal(modalImgSlider.createSlider(imgLinks));
+        modalImgSlider.setCurrentImage();
+      }
+    });
 
     container.append(sliderBox);
     container.append(this.createProductInfo(name, description, price, attributesList, this.discount));
