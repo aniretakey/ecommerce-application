@@ -61,10 +61,8 @@ export default class ProductUI {
     const imagesSlider = new ProductImgSlider();
     sliderBox.append(imagesSlider.createSlider(imgLinks));
     sliderBox.addListener('click', (e) => {
-      console.log(e.target);
       const target = e.target;
       if (target instanceof HTMLElement && target.closest('img')) {
-        console.log('img');
         const modal = new ModalWindow();
         const modalImgSlider = new ProductImgSlider('modal', imagesSlider.currentImageId);
         modal.buildModal(modalImgSlider.createSlider(imgLinks));

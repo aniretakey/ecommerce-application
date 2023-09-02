@@ -75,8 +75,6 @@ export class ProductImgSlider {
   }
 
   public setCurrentImage(): void {
-    console.log(this.sliderContainer.getNode().querySelector(`#item${this.currentImageId}`));
-
     this.sliderContainer.getNode().querySelector(`#item${this.currentImageId}`)?.scrollIntoView({ behavior: 'smooth' });
     this.sliderContainer
       .getNode()
