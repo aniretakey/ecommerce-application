@@ -9,6 +9,8 @@ module.exports = {
     '^@components/(.*)$': '<rootDir>/src/components/$1',
     '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
+    '^@assets/logo.png$': '<rootDir>/src/tests/imageStub.ts',
+    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/assets/logo.png',
   },
   collectCoverageFrom: ['src/*/*/*', 'src/*/*', 'src/*'],
   coveragePathIgnorePatterns: ['/node_modules/', 'src/tests/*', 'src/types/*', 'src/utils/apiClientData.ts'],

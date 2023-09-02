@@ -4,7 +4,7 @@ import { FormPages } from '@customTypes/enums';
 
 jest.mock('../utils/ApiClient', () => ({
   apiClient: {
-    getNewPassFlowToken: jest.fn().mockResolvedValue({ a: 1 }), // Полностью переопределяем signIn
+    getNewPassFlowToken: jest.fn().mockResolvedValue({ a: 1 }),
   },
 }));
 
