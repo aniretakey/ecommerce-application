@@ -1,9 +1,9 @@
 import BaseComponent from '@utils/baseComponent';
 import './main.css';
-import wideImg from '@assets/img/main/main-page-wide.png';
+import wideImg from '@assets/img/main/main-page-wide.jpg';
 import { renderProductsCarousel } from './carousel';
-import productsMakingImg2 from '@assets/img/main/furniture-making1.png';
-import productsMakingImg1 from '@assets/img/main/furniture-making2.png';
+import productsMakingImg2 from '@assets/img/main/furniture-making1.jpg';
+import productsMakingImg1 from '@assets/img/main/furniture-making2.jpg';
 
 export default class Main {
   public main: BaseComponent<'main'>;
