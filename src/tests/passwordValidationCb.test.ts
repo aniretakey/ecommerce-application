@@ -24,8 +24,6 @@ describe('passwordValidationCb', () => {
     ['  test  ', `${fieldName} must not contain leading or trailing whitespace`],
   ])(`should fail validation:`, (value, message) => {
     it(`password: '${value}'. ${message}`, () => {
-      // const message = 'This field is mandatory';
-
       passwordValidationCb(value, ctxMock);
 
       expect(ctxMock.addIssue).toHaveBeenCalledWith({

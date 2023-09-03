@@ -1,4 +1,6 @@
 import Page from '@utils/pageTemplate';
+import './catalog-style.css';
+import { CatalogView } from './CatalogView';
 
 export default class Catalog extends Page {
   constructor() {
@@ -7,7 +9,8 @@ export default class Catalog extends Page {
 
   public render(): HTMLElement {
     const title = this.createHeaderTitle('Catalog');
-    this.container.append(title);
+    const catalogWrapper = new CatalogView();
+    this.container.append(title, catalogWrapper.catalogWrapper.getNode());
     return this.container;
   }
 }

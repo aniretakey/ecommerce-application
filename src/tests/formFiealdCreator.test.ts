@@ -3,7 +3,6 @@ import { FormFields, FormPages } from '@customTypes/enums';
 import { validator } from '@utils/validator';
 import { ZodString, z } from 'zod';
 
-//const validate = validator.validate;
 const errorMessage = 'Invalid value';
 
 describe('FormFieldCreator test', () => {
