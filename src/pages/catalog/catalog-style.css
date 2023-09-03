@@ -113,21 +113,21 @@
 
 .btn_add-cart__active,
 .btn_add-cart__disabled {
-  width: 200px;
-  margin: 0 auto;
-  opacity: 0.95;
+  margin: 0 auto 0 0;
+  height: 45px;
 }
 
 .btn_add-cart__active::before {
-  content: '➕ Add to cart';
+  content: '+';
+  font-size: 30px;
+  color: white;
 }
 
 .btn_add-cart__active:hover {
   transition: all 0.2s ease-in-out;
-  background-color: #fb073d;
   opacity: 1;
   color: #f9f9f9;
-  box-shadow: 0 0.8em 0.8em -0.4em #c2193e;
+  box-shadow: 0 0.8em 0.8em -0.4em #1e3331c2;
   transform: translateY(-0.25em);
 }
 
@@ -140,7 +140,7 @@
 
 .btn_add-cart__disabled::before,
 .btn_add-cart__disabled:hover {
-  content: '✔️ Already in cart';
+  content: '✔️';
   background-color: #aca8a8;
   border: #aca8a8;
   color: #f9f9f9;

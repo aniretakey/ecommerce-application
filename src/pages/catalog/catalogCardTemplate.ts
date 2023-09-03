@@ -76,8 +76,8 @@ export class CatalogCard {
   public createAddToCartButton(): BaseComponent<'button'> {
     const addToCartButton = new BaseComponent({
       tagName: 'button',
-      classNames: ['btn', 'btn-accent', 'btn-sm', 'btn_add-cart__active'],
-      parentNode: this.cardBody.getNode(),
+      classNames: ['btn', 'btn-primary', 'rounded-full', 'btn-sm', 'btn_add-cart__active'],
+      parentNode: this.categories.getNode(),
     });
     return addToCartButton;
   }
