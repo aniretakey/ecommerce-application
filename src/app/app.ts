@@ -151,6 +151,7 @@ export default class App {
         const productID = hash.slice(15);
         const productPage = new ProductPage().createPage(productID);
         renderNewPage(this.main.main, productPage);
+        this.router.updatePageLinks();
       } else {
         this.router.navigate('/error-page');
       }
