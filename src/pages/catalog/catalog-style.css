@@ -110,3 +110,38 @@
   box-shadow: none;
   color: #f9f9f9;
 }
+
+.btn_add-cart__active,
+.btn_add-cart__disabled {
+  width: 200px;
+  margin: 0 auto;
+  opacity: 0.95;
+}
+
+.btn_add-cart__active::before {
+  content: '➕ Add to cart';
+}
+
+.btn_add-cart__active:hover {
+  transition: all 0.2s ease-in-out;
+  background-color: #fb073d;
+  opacity: 1;
+  color: #f9f9f9;
+  box-shadow: 0 0.8em 0.8em -0.4em #c2193e;
+  transform: translateY(-0.25em);
+}
+
+.btn_add-cart__disabled {
+  background-color: #aca8a8;
+  border: #aca8a8;
+  color: #f9f9f9;
+  opacity: 0.5;
+}
+
+.btn_add-cart__disabled::before,
+.btn_add-cart__disabled:hover {
+  content: '✔️ Already in cart';
+  background-color: #aca8a8;
+  border: #aca8a8;
+  color: #f9f9f9;
+}

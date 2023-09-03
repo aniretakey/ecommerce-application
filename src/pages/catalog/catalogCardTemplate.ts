@@ -44,6 +44,7 @@ export class CatalogCard {
     this.priceContainer.appendChildren([this.price, this.discount]);
 
     this.cardBody.appendChildren([this.name, this.description, this.priceContainer, this.categories]);
+    this.createAddToCartButton();
   }
 
   public setPhotoAttr(src: string, alt: string): this {
@@ -70,6 +71,15 @@ export class CatalogCard {
       this.categories.append(category);
     });
     return this;
+  }
+
+  public createAddToCartButton(): BaseComponent<'button'> {
+    const addToCartButton = new BaseComponent({
+      tagName: 'button',
+      classNames: ['btn', 'btn-accent', 'btn-sm', 'btn_add-cart__active'],
+      parentNode: this.cardBody.getNode(),
+    });
+    return addToCartButton;
   }
 
   public displayPrice(price: number, discount?: number): this {
