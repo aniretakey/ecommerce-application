@@ -37,9 +37,19 @@ img {
   margin: 30px auto;
 }
 
-.carousel-item {
-  max-width: 300px;
+.carousel-main {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.carousel-main .carousel-item-main {
+  max-width: 300px !important;
   margin: 0 15px;
+}
+
+.carousel-main .carousel-item-main img {
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .products-creating {

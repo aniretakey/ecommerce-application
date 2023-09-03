@@ -74,7 +74,7 @@ export default class Main {
 
     const productsCarousel = new BaseComponent({
       tagName: 'div',
-      classNames: ['carousel', 'carousel-center', 'rounded-box'],
+      classNames: ['carousel', 'carousel-center', 'rounded-box', 'carousel-main'],
       parentNode: productsSection.getNode(),
     });
 
