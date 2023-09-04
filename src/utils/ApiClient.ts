@@ -16,7 +16,6 @@ class ApiClient {
     credentials: {
       clientId: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
-      //  anonymousId:
     },
     scopes: SCOPES.split(' '),
     fetch,
@@ -78,10 +77,24 @@ class ApiClient {
   }
 
   public updateClientCredentialsFlow(): void {
-    this.apiRoot = createApiBuilderFromCtpClient(this.ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
+    const anonOptions: AuthMiddlewareOptions = {
+      host: AUTH_URL,
+      projectKey: PROJECT_KEY,
+      credentials: {
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+      },
+      scopes: SCOPES.split(' '),
+      fetch,
+    };
+    const anonCtpClient: Client = new ClientBuilder()
+      .withAnonymousSessionFlow(anonOptions)
+      .withHttpMiddleware(this.httpMiddlewareOptions)
+      .build();
+
+    this.apiRoot = createApiBuilderFromCtpClient(anonCtpClient).withProjectKey({ projectKey: PROJECT_KEY });
     localStorage.removeItem('comforto-access-token');
   }
 }
 
 export const apiClient = new ApiClient();
-//apiClient.apiRoot.
