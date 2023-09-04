@@ -76,8 +76,14 @@ export class CatalogCard {
   public createAddToCartButton(): BaseComponent<'button'> {
     const addToCartButton = new BaseComponent({
       tagName: 'button',
-      classNames: ['btn', 'btn-primary', 'rounded-full', 'btn-sm', 'btn_add-cart__active'],
+      classNames: ['btn', 'btn-primary', 'rounded-full', 'btn-sm', 'btn_add-to-cart', 'btn_add-cart__active'],
       parentNode: this.categories.getNode(),
+    });
+
+    addToCartButton.addListener('click', (e) => {
+      e.preventDefault();
+      addToCartButton.getNode().classList.toggle('btn_add-cart__active');
+      addToCartButton.getNode().classList.toggle('btn_add-cart__disabled');
     });
     return addToCartButton;
   }

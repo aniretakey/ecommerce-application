@@ -111,10 +111,10 @@
   color: #f9f9f9;
 }
 
-.btn_add-cart__active,
-.btn_add-cart__disabled {
+.btn_add-to-cart {
   margin: 0 auto 0 0;
   height: 45px;
+  width: auto;
 }
 
 .btn_add-cart__active::before {
