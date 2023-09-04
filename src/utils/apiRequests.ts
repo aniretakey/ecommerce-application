@@ -1,5 +1,6 @@
 import {
   BaseAddress,
+  CartPagedQueryResponse,
   CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
@@ -182,4 +183,8 @@ export const setAddressTypes = (
       body: { version, actions },
     })
     .execute();
+};
+
+export const getCart = (): Promise<ClientResponse<CartPagedQueryResponse>> => {
+  return apiClient.apiRoot.me().carts().get().execute();
 };
