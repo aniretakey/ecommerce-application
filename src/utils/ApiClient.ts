@@ -9,18 +9,20 @@ class ApiClient {
     host: API_URL,
     fetch,
   };
+
   private options: AuthMiddlewareOptions = {
     host: AUTH_URL,
     projectKey: PROJECT_KEY,
     credentials: {
       clientId: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
+      //  anonymousId:
     },
     scopes: SCOPES.split(' '),
     fetch,
   };
   private ctpClient: Client = new ClientBuilder()
-    .withClientCredentialsFlow(this.options)
+    .withAnonymousSessionFlow(this.options)
     .withHttpMiddleware(this.httpMiddlewareOptions)
     .build();
 
