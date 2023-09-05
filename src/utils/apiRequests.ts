@@ -1,11 +1,13 @@
 import {
   BaseAddress,
+  Cart,
   CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
   CustomerSignInResult,
   CustomerSignin,
   MyCustomerDraft,
+  MyLineItemDraft,
   OrderPagedQueryResponse,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
@@ -180,6 +182,47 @@ export const setAddressTypes = (
     .me()
     .post({
       body: { version, actions },
+    })
+    .execute();
+};
+
+export const createCard = (lineItems: MyLineItemDraft[]): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .post({
+      body: {
+        currency: 'RUB',
+        country: 'RU',
+        lineItems,
+      },
+    })
+    .execute();
+};
+
+export const getActiveCard = (): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot.me().activeCart().get().execute();
+};
+
+export const getCard = (ID: string): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot.me().carts().withId({ ID }).get().execute();
+};
+
+export const addProductInCard = (ID: string, version: number, productId: string): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID })
+    .post({
+      body: {
+        version,
+        actions: [
+          {
+            action: 'addLineItem',
+            productId,
+          },
+        ],
+      },
     })
     .execute();
 };
