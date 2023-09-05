@@ -54,7 +54,7 @@ export class CartSummary {
   private createCouponContainer(): BaseComponent<'div'> {
     const couponContainer = new BaseComponent({
       tagName: 'div',
-      classNames: ['summary-container', 'gap-4'],
+      classNames: ['summary-container', 'coupon-container', 'gap-4'],
     });
     const couponInput = new BaseComponent({
       tagName: 'input',
