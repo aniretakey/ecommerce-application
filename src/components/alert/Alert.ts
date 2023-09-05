@@ -1,6 +1,6 @@
 import BaseComponent from '@utils/baseComponent';
 
-const classNames = ['alert', 'absolute', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max', 'z-20', 'min-w-[200px]'];
+const classNames = ['alert', 'fixed', 'top-5', 'left-1/2', '-translate-x-1/2', 'max-w-max', 'z-20', 'min-w-[200px]'];
 
 export class Alert {
   private alert: BaseComponent<'div'>;
