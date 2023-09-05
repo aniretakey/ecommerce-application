@@ -1,4 +1,4 @@
-import { addProductInCard, createCard, getCard } from '@utils/apiRequests';
+import { addProductInCart, createCart, getCart } from '@utils/apiRequests';
 import BaseComponent from '../../utils/baseComponent';
 import { Alert } from '@components/alert/Alert';
 
@@ -127,25 +127,25 @@ export class CatalogCard {
   }
 
   private addProductToCard(productId: string): void {
-    const cardId = localStorage.getItem('comforto-card-id');
-    if (cardId) {
-      getCard(cardId)
+    const cartId = localStorage.getItem('comforto-cart-id');
+    if (cartId) {
+      getCart(cartId)
         .then((data) => {
           const version = data.body.version;
-          return addProductInCard(cardId, version, productId);
+          return addProductInCart(cartId, version, productId);
         })
         .then((data) => {
           console.log(data);
-          const alert = new Alert(true, 'Product add to shopping card');
+          const alert = new Alert(true, 'Product add to shopping cart');
           alert.setAlertOnPage();
         })
         .catch(console.log);
     } else {
-      createCard([{ productId: productId }])
+      createCart([{ productId: productId }])
         .then((data) => {
           console.log(data);
-          const cardId = data.body.id;
-          localStorage.setItem('comforto-card-id', cardId);
+          const cartId = data.body.id;
+          localStorage.setItem('comforto-cart-id', cartId);
         })
         .catch(console.log);
     }

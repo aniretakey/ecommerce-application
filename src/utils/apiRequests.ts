@@ -186,7 +186,7 @@ export const setAddressTypes = (
     .execute();
 };
 
-export const createCard = (lineItems: MyLineItemDraft[]): Promise<ClientResponse<Cart>> => {
+export const createCart = (lineItems: MyLineItemDraft[]): Promise<ClientResponse<Cart>> => {
   return apiClient.apiRoot
     .me()
     .carts()
@@ -200,15 +200,15 @@ export const createCard = (lineItems: MyLineItemDraft[]): Promise<ClientResponse
     .execute();
 };
 
-export const getActiveCard = (): Promise<ClientResponse<Cart>> => {
+export const getActiveCart = (): Promise<ClientResponse<Cart>> => {
   return apiClient.apiRoot.me().activeCart().get().execute();
 };
 
-export const getCard = (ID: string): Promise<ClientResponse<Cart>> => {
+export const getCart = (ID: string): Promise<ClientResponse<Cart>> => {
   return apiClient.apiRoot.me().carts().withId({ ID }).get().execute();
 };
 
-export const addProductInCard = (ID: string, version: number, productId: string): Promise<ClientResponse<Cart>> => {
+export const addProductInCart = (ID: string, version: number, productId: string): Promise<ClientResponse<Cart>> => {
   return apiClient.apiRoot
     .me()
     .carts()

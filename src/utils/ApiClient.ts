@@ -3,7 +3,7 @@ import { API_URL, AUTH_URL, CLIENT_ID, CLIENT_SECRET, PROJECT_KEY, SCOPES } from
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { TokenResponse } from '@customTypes/types';
-import { getActiveCard } from './apiRequests';
+import { getActiveCart } from './apiRequests';
 
 class ApiClient {
   private httpMiddlewareOptions: HttpMiddlewareOptions = {
@@ -71,11 +71,11 @@ class ApiClient {
         localStorage.setItem('comforto-access-token', data.access_token);
         localStorage.removeItem('comforto-anonymous-token');
         this.updateExistingFlow(data.access_token);
-        return getActiveCard();
+        return getActiveCart();
       })
       .then((data) => {
         console.log(data);
-        localStorage.setItem('comforto-card-id', data.body.id);
+        localStorage.setItem('comforto-cart-id', data.body.id);
       })
       .catch((err: Error) => {
         console.log(err.message);
@@ -85,7 +85,7 @@ class ApiClient {
   public updateClientCredentialsFlow(): void {
     this.apiRoot = createApiBuilderFromCtpClient(this.ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
     localStorage.removeItem('comforto-access-token');
-    localStorage.removeItem('comforto-card-id');
+    localStorage.removeItem('comforto-cart-id');
     this.createAnonymousToken().catch(console.log);
   }
 
