@@ -134,8 +134,7 @@ export class CatalogCard {
           const version = data.body.version;
           return addProductInCart(cartId, version, productId);
         })
-        .then((data) => {
-          console.log(data);
+        .then(() => {
           const alert = new Alert(true, 'Product add to shopping cart');
           alert.setAlertOnPage();
         })
@@ -143,7 +142,6 @@ export class CatalogCard {
     } else {
       createCart([{ productId: productId }])
         .then((data) => {
-          console.log(data);
           const cartId = data.body.id;
           localStorage.setItem('comforto-cart-id', cartId);
         })

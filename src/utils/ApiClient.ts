@@ -74,7 +74,6 @@ class ApiClient {
         return getActiveCart();
       })
       .then((data) => {
-        console.log(data);
         localStorage.setItem('comforto-cart-id', data.body.id);
       })
       .catch((err: Error) => {
@@ -99,7 +98,6 @@ class ApiClient {
       this.updateExistingFlow(tokenAnonymous);
     } else {
       apiClient.createAnonymousToken().catch(console.log);
-      console.log(apiClient);
     }
   }
 
@@ -114,7 +112,6 @@ class ApiClient {
     })
       .then((res: Response) => res.json())
       .then((data: TokenResponse) => {
-        console.log(data);
         localStorage.setItem('comforto-anonymous-token', data.access_token);
         this.updateExistingFlow(data.access_token);
       })
