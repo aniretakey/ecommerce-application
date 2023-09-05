@@ -15,7 +15,7 @@ export class Alert {
 
   public setAlertOnPage(): void {
     document.body.append(this.alert.getNode());
-    setTimeout(() => this.alert.destroy(), 5000);
+    setTimeout(() => this.alert.destroy(), 3000);
   }
 
   private setContent(isSuccessAlert: boolean, textContent: string): void {

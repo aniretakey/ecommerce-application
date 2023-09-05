@@ -144,6 +144,8 @@ export class CatalogCard {
         .then((data) => {
           const cartId = data.body.id;
           localStorage.setItem('comforto-cart-id', cartId);
+          const alert = new Alert(true, 'Product add to shopping cart');
+          alert.setAlertOnPage();
         })
         .catch(console.log);
     }
