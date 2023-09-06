@@ -9,6 +9,7 @@ import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from '../../components/filters/filterItem';
 import { Search } from './search';
 import { CatalogNav } from './CatalogNav';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 export class CatalogView {
   public catalogWrapper = new BaseComponent({
@@ -176,6 +177,7 @@ export class CatalogView {
   private createCardItems(results: ProductProjection[], categoryNames: Record<string, string>): void {
     if (results.length >= 1) {
       results.forEach((product, index) => {
+        const id = product.id;
         const categories: string[] = product.categories.map((data) => categoryNames[data.id] ?? '');
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';
@@ -198,6 +200,9 @@ export class CatalogView {
           .setCategories(categories)
           .displayPrice(price, discount)
           .addCardId(productKey);
+
+        this.cardItems[index]?.card &&
+          safeQuerySelector('.btn_add-to-cart', this.cardItems[index]?.card.getNode()).setAttribute('productId', id);
       });
     }
 

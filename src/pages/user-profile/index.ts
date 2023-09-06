@@ -3,13 +3,14 @@ import Page from '@utils/pageTemplate';
 import { getCustomer, removeCustomerAddress } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { Address, Customer } from '@commercetools/platform-sdk';
-import { getBadge, getDeleteIcon, getEditIcon, getAlert } from './user-profile-ui';
+import { getBadge, getDeleteIcon, getEditIcon } from './user-profile-ui';
 import { COUNTRY_CODE, UserProfileButtons } from '@customTypes/enums';
 import { ModalWindow } from '@components/modal/modalWindow';
 import { EditPersonalInfoFrom } from '@components/form/EditPersonalInfoForm';
 import { EditPasswordForm } from '@components/form/EditPasswordForm';
 import { EditAddressForm } from '@components/form/EditAddressForm';
 import { AddressTypes } from '@customTypes/types';
+import { Alert } from '@components/alert/Alert';
 
 const classNames = {
   infoContainer: ['flex', 'items-start', 'justify-center', 'gap-2', 'p-2', 'max-lg:flex-col'],
@@ -287,12 +288,8 @@ export default class UserProfile extends Page {
   }
 
   private setAlert(isSuccessAlert = true, errorMessage?: string): void {
-    const alert = new BaseComponent({
-      tagName: 'div',
-      classNames: [isSuccessAlert ? 'alert-success' : 'alert-error', ...classNames.alert],
-    });
-    alert.getNode().innerHTML = getAlert(isSuccessAlert, errorMessage);
-    document.body.append(alert.getNode());
-    setTimeout(() => alert.destroy(), 5000);
+    const message = isSuccessAlert ? 'Your changes have been saved successfully!' : errorMessage ?? 'Error';
+    const alert = new Alert(isSuccessAlert, message);
+    alert.setAlertOnPage();
   }
 }

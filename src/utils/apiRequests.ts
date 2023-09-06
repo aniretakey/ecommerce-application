@@ -1,11 +1,13 @@
 import {
   BaseAddress,
+  Cart,
   CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
   CustomerSignInResult,
   CustomerSignin,
   MyCustomerDraft,
+  MyLineItemDraft,
   OrderPagedQueryResponse,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
@@ -182,4 +184,63 @@ export const setAddressTypes = (
       body: { version, actions },
     })
     .execute();
+};
+
+export const createCart = (lineItems: MyLineItemDraft[]): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .post({
+      body: {
+        currency: 'RUB',
+        country: 'RU',
+        lineItems,
+      },
+    })
+    .execute();
+};
+
+export const getActiveCart = (): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot.me().activeCart().get().execute();
+};
+
+export const getCart = (ID: string): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot.me().carts().withId({ ID }).get().execute();
+};
+
+export const addProductInCart = (ID: string, version: number, productId: string): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID })
+    .post({
+      body: {
+        version,
+        actions: [
+          {
+            action: 'addLineItem',
+            productId,
+          },
+        ],
+      },
+    })
+    .execute();
+};
+
+export const changeCard = (changeAction: (data: ClientResponse<Cart>) => void, productId: string): void => {
+  const cartId = localStorage.getItem('comforto-cart-id');
+  if (cartId) {
+    getCart(cartId)
+      .then((data) => {
+        changeAction(data);
+      })
+      .catch(console.log);
+  } else {
+    createCart([{ productId: productId }])
+      .then((data) => {
+        const cartId = data.body.id;
+        localStorage.setItem('comforto-cart-id', cartId);
+      })
+      .catch(console.log);
+  }
 };

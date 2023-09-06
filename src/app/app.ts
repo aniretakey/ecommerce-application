@@ -23,6 +23,7 @@ export default class App {
 
   // eslint-disable-next-line max-lines-per-function
   constructor() {
+    apiClient.createToken();
     this.header = new Header();
     this.main = new Main();
     this.router = new Navigo('/', { hash: true, strategy: 'ALL' });
