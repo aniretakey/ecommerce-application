@@ -4,10 +4,11 @@ import BaseComponent from '@utils/baseComponent';
 export class CartItem {
   public cartItem: BaseComponent<'div'>;
 
-  constructor() {
+  constructor(lineItemId: string) {
     this.cartItem = new BaseComponent({
       tagName: 'div',
       classNames: ['cart-item', 'grid', 'grid-cols-5', 'grid-rows-2', 'gap-4'],
+      attributes: { 'data-lineItemId': lineItemId },
     });
   }
 

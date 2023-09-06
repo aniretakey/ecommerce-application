@@ -3,9 +3,6 @@ import BaseComponent from '@utils/baseComponent';
 import { CartItem } from './CartItem';
 import { CartSummary } from './summary';
 import { Cart, ClientResponse } from '@commercetools/platform-sdk';
-//import { CartItem } from './CartItem';
-//import { CartSummary } from './summary';
-//import { getCart } from '@utils/apiRequests';
 
 export class CartView {
   public cart: BaseComponent<'div'>;
@@ -42,8 +39,9 @@ export class CartView {
   private displayCartItems(data: ClientResponse<Cart>): void {
     const cartData = data.body;
     cartData?.lineItems.forEach((res) => {
+      console.log(res);
       this.cartItemsContainer.append(
-        new CartItem().create(
+        new CartItem(res.id).create(
           res.name.ru ?? '',
           res.price.value.centAmount,
           (res.variant.images ?? [])[0]?.url ?? '',
@@ -52,6 +50,10 @@ export class CartView {
         ),
       );
     });
-    this.cart.append(new CartSummary(cartData?.totalPrice.centAmount ?? 0).summary);
+    if (cartData?.lineItems.length > 0) {
+      this.cart.append(new CartSummary(cartData?.totalPrice.centAmount ?? 0).summary);
+    } else {
+      this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
+    }
   }
 }
