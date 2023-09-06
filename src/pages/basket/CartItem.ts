@@ -1,10 +1,13 @@
 import { getDeleteIcon } from '@pages/user-profile/user-profile-ui';
 import BaseComponent from '@utils/baseComponent';
+import { CartQuantity } from '@components/cartQuantityContainer';
 
 export class CartItem {
   public cartItem: BaseComponent<'div'>;
+  private lineItemId: string;
 
   constructor(lineItemId: string) {
+    this.lineItemId = lineItemId;
     this.cartItem = new BaseComponent({
       tagName: 'div',
       classNames: ['cart-item', 'grid', 'grid-cols-5', 'grid-rows-2', 'gap-4'],
@@ -27,7 +30,7 @@ export class CartItem {
 
     const removeItemBtn = new BaseComponent({
       tagName: 'button',
-      classNames: ['remove-cart-item', 'col-start-5', 'row-start-1'],
+      classNames: ['remove-cart-item', 'col-start-5', 'row-start-1', 'w-4'],
     });
     removeItemBtn.getNode().innerHTML = getDeleteIcon();
 
@@ -66,26 +69,7 @@ export class CartItem {
   }
 
   private createQuantityContainer(quantityVal = 1): BaseComponent<'div'> {
-    const quantityContainer = new BaseComponent({
-      tagName: 'div',
-      classNames: ['quantity-container', 'col-start-2', 'row-start-2', 'flex', 'align-center', 'gap-1.5'],
-    });
-    const quantityReduceBtn = new BaseComponent({
-      tagName: 'div',
-      classNames: ['reduce-btn', 'text-2xl', 'btn', 'btn-sm', 'btn-primary', 'px-4', 'w-9', 'h-9'],
-      textContent: '-',
-    });
-    const quantity = new BaseComponent({
-      tagName: 'input',
-      attributes: { type: 'number', value: `${quantityVal}`, min: '0', max: '1000000' },
-      classNames: ['input', 'input-bordered', 'w-16', 'input-sm', 'h-9'],
-    });
-    const quantityIncreaseBtn = new BaseComponent({
-      tagName: 'div',
-      classNames: ['increase-btn', 'text-3xl', 'btn', 'btn-sm', 'btn-primary', 'font-light', 'px-3', 'w-9', 'h-9'],
-      textContent: '+',
-    });
-    quantityContainer.appendChildren([quantityReduceBtn, quantity, quantityIncreaseBtn]);
+    const quantityContainer = new CartQuantity(this.lineItemId, quantityVal).quantityContainer;
     return quantityContainer;
   }
 }

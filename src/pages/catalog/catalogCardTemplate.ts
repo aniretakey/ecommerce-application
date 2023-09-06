@@ -136,7 +136,6 @@ export class CatalogCard {
         CartView.cartVersion = version;
         await addProductInCart(cartId, version, productId).then(() => {
           this.showAlert();
-          console.log(CartView.cartVersion, 'version');
         });
       })
       .catch(() => {
@@ -145,7 +144,6 @@ export class CatalogCard {
             saveNewCartId(data);
             this.showAlert();
             CartView.cartVersion = data.body.version;
-            console.log(CartView.cartVersion, 'version');
           })
           .catch(console.log);
       });
