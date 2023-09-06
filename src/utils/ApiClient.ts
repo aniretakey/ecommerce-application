@@ -10,6 +10,7 @@ class ApiClient {
     host: API_URL,
     fetch,
   };
+
   private options: AuthMiddlewareOptions = {
     host: AUTH_URL,
     projectKey: PROJECT_KEY,
@@ -21,7 +22,7 @@ class ApiClient {
     fetch,
   };
   private ctpClient: Client = new ClientBuilder()
-    .withClientCredentialsFlow(this.options)
+    .withAnonymousSessionFlow(this.options)
     .withHttpMiddleware(this.httpMiddlewareOptions)
     .build();
 
@@ -82,7 +83,22 @@ class ApiClient {
   }
 
   public updateClientCredentialsFlow(): void {
-    this.apiRoot = createApiBuilderFromCtpClient(this.ctpClient).withProjectKey({ projectKey: PROJECT_KEY });
+    const anonOptions: AuthMiddlewareOptions = {
+      host: AUTH_URL,
+      projectKey: PROJECT_KEY,
+      credentials: {
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+      },
+      scopes: SCOPES.split(' '),
+      fetch,
+    };
+    const anonCtpClient: Client = new ClientBuilder()
+      .withAnonymousSessionFlow(anonOptions)
+      .withHttpMiddleware(this.httpMiddlewareOptions)
+      .build();
+
+    this.apiRoot = createApiBuilderFromCtpClient(anonCtpClient).withProjectKey({ projectKey: PROJECT_KEY });
     localStorage.removeItem('comforto-access-token');
     localStorage.removeItem('comforto-cart-id');
     this.createAnonymousToken().catch(console.log);
@@ -122,4 +138,3 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient();
-//apiClient.apiRoot.

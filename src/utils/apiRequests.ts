@@ -227,20 +227,7 @@ export const addProductInCart = (ID: string, version: number, productId: string)
     .execute();
 };
 
-export const changeCard = (changeAction: (data: ClientResponse<Cart>) => void, productId: string): void => {
-  const cartId = localStorage.getItem('comforto-cart-id');
-  if (cartId) {
-    getCart(cartId)
-      .then((data) => {
-        changeAction(data);
-      })
-      .catch(console.log);
-  } else {
-    createCart([{ productId: productId }])
-      .then((data) => {
-        const cartId = data.body.id;
-        localStorage.setItem('comforto-cart-id', cartId);
-      })
-      .catch(console.log);
-  }
+export const saveNewCartId = (data: ClientResponse<Cart>): void => {
+  const cartId = data.body.id;
+  localStorage.setItem('comforto-cart-id', cartId);
 };

@@ -1,4 +1,4 @@
-import { addProductInCart, createCart, getCart } from '@utils/apiRequests';
+import { addProductInCart, createCart, getCart, saveNewCartId } from '@utils/apiRequests';
 import BaseComponent from '../../utils/baseComponent';
 import { Alert } from '@components/alert/Alert';
 
@@ -126,28 +126,29 @@ export class CatalogCard {
     return this;
   }
 
-  private addProductToCard(productId: string): void {
-    const cartId = localStorage.getItem('comforto-cart-id');
-    if (cartId) {
-      getCart(cartId)
-        .then((data) => {
-          const version = data.body.version;
-          return addProductInCart(cartId, version, productId);
-        })
-        .then(() => {
-          const alert = new Alert(true, 'Product add to shopping cart');
-          alert.setAlertOnPage();
-        })
-        .catch(console.log);
-    } else {
-      createCart([{ productId: productId }])
-        .then((data) => {
-          const cartId = data.body.id;
-          localStorage.setItem('comforto-cart-id', cartId);
-          const alert = new Alert(true, 'Product add to shopping cart');
-          alert.setAlertOnPage();
-        })
-        .catch(console.log);
-    }
+ private addProductToCard(productId: string): void {
+    const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+
+    getCart(cartId)
+      .then(async (data) => {
+        const version = data.body.version;
+        await addProductInCart(cartId, version, productId).then(() => {
+          this.showAlert();
+        });
+      })
+      .catch(() => {
+        createCart([{ productId: productId }])
+          .then((data) => {
+            saveNewCartId(data);
+            this.showAlert();
+          })
+          .catch(console.log);
+      });
+  }
+
+  private showAlert(): void {
+    const alert = new Alert(true, 'Product add to shopping cart');
+    alert.setAlertOnPage();
   }
 }
+
