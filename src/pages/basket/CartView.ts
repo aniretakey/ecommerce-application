@@ -29,14 +29,12 @@ export class CartView {
       .then((data) => {
         this.displayCartItems(data);
         CartView.cartVersion = data.body.version;
-        console.log(CartView.cartVersion, 'version');
       })
       .catch(() =>
         createCart([]).then((data) => {
           saveNewCartId(data);
           this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
           CartView.cartVersion = data.body.version;
-          console.log(CartView.cartVersion, 'version');
         }),
       );
   }
@@ -44,7 +42,6 @@ export class CartView {
   private displayCartItems(data: ClientResponse<Cart>): void {
     const cartData = data.body;
     cartData?.lineItems.forEach((res) => {
-      console.log(res);
       this.cartItemsContainer.append(
         new CartItem(res.id).create(
           res.name.ru ?? '',

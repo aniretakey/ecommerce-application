@@ -1,6 +1,9 @@
 import { getDeleteIcon } from '@pages/user-profile/user-profile-ui';
 import BaseComponent from '@utils/baseComponent';
 import { CartQuantity } from '@components/cartQuantityContainer';
+import { changeLineItemQuantity } from '@utils/apiRequests';
+import { CartView } from './CartView';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 export class CartItem {
   public cartItem: BaseComponent<'div'>;
@@ -28,20 +31,44 @@ export class CartItem {
       classNames: ['product-name', 'w-full', 'col-span-3', 'font-semibold', 'text-base'],
     });
 
-    const removeItemBtn = new BaseComponent({
-      tagName: 'button',
-      classNames: ['remove-cart-item', 'col-start-5', 'row-start-1', 'w-4'],
-    });
-    removeItemBtn.getNode().innerHTML = getDeleteIcon();
-
     this.cartItem.appendChildren([
       productImg,
       productName,
       this.createPriceContainer(price, discount),
       this.createQuantityContainer(quantityVal),
-      removeItemBtn,
+      this.createRemoveItemBtn(),
     ]);
     return this.cartItem;
+  }
+
+  private createRemoveItemBtn(): BaseComponent<'button'> {
+    const removeItemBtn = new BaseComponent({
+      tagName: 'button',
+      classNames: ['remove-cart-item', 'col-start-5', 'row-start-1', 'w-4'],
+    });
+
+    removeItemBtn.getNode().innerHTML = getDeleteIcon();
+
+    removeItemBtn.addListener('click', (e: Event) => {
+      const { target } = e;
+      if (target) {
+        const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+        changeLineItemQuantity(cartId, this.lineItemId, 0, CartView.cartVersion)
+          .then((data) => {
+            CartView.cartVersion = data.body.version;
+            this.cartItem.destroy();
+            safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+              (data.body.totalPrice.centAmount ?? 0) / 100
+            }`;
+            if (data.body.lineItems.length === 0) {
+              safeQuerySelector<HTMLParagraphElement>('.summary').remove();
+              safeQuerySelector<HTMLParagraphElement>('.cart-items-container').textContent = 'Cart is empty';
+            }
+          })
+          .catch(console.log);
+      }
+    });
+    return removeItemBtn;
   }
 
   private createPriceContainer(price: number, discount?: number): BaseComponent<'div'> {
