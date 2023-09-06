@@ -227,29 +227,6 @@ export const addProductInCart = (ID: string, version: number, productId: string)
     .execute();
 };
 
-/* export const changeCard = (
-  changeAction: (data: ClientResponse<Cart>) => void,
-  lineItems: MyLineItemDraft[] = [],
-  createNewCartCb: () => void = (): void => {},
-): void => {
-  const cartId = localStorage.getItem('comforto-cart-id');
-  if (cartId) {
-    getCart(cartId)
-      .then((data) => {
-        changeAction(data);
-      })
-      .catch(console.log);
-  } else {
-    createCart(lineItems)
-      .then((data) => {
-        const cartId = data.body.id;
-        localStorage.setItem('comforto-cart-id', cartId);
-        createNewCartCb();
-      })
-      .catch(console.log);
-  }
-}; */
-
 export const saveNewCartId = (data: ClientResponse<Cart>): void => {
   const cartId = data.body.id;
   localStorage.setItem('comforto-cart-id', cartId);
