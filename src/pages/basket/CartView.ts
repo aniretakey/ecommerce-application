@@ -7,6 +7,7 @@ import { Cart, ClientResponse } from '@commercetools/platform-sdk';
 export class CartView {
   public cart: BaseComponent<'div'>;
   private cartItemsContainer: BaseComponent<'div'>;
+  public static cartVersion = 1;
 
   constructor() {
     this.cart = new BaseComponent({
@@ -27,11 +28,15 @@ export class CartView {
     getCart(cartId)
       .then((data) => {
         this.displayCartItems(data);
+        CartView.cartVersion = data.body.version;
+        console.log(CartView.cartVersion, 'version');
       })
       .catch(() =>
         createCart([]).then((data) => {
           saveNewCartId(data);
           this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
+          CartView.cartVersion = data.body.version;
+          console.log(CartView.cartVersion, 'version');
         }),
       );
   }
