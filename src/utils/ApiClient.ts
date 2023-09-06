@@ -3,6 +3,7 @@ import { API_URL, AUTH_URL, CLIENT_ID, CLIENT_SECRET, PROJECT_KEY, SCOPES } from
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
 import { TokenResponse } from '@customTypes/types';
+import { getActiveCart } from './apiRequests';
 
 class ApiClient {
   private httpMiddlewareOptions: HttpMiddlewareOptions = {
@@ -69,7 +70,12 @@ class ApiClient {
       .then((res: Response) => res.json())
       .then((data: TokenResponse) => {
         localStorage.setItem('comforto-access-token', data.access_token);
+        localStorage.removeItem('comforto-anonymous-token');
         this.updateExistingFlow(data.access_token);
+        return getActiveCart();
+      })
+      .then((data) => {
+        localStorage.setItem('comforto-cart-id', data.body.id);
       })
       .catch((err: Error) => {
         console.log(err.message);
@@ -94,6 +100,40 @@ class ApiClient {
 
     this.apiRoot = createApiBuilderFromCtpClient(anonCtpClient).withProjectKey({ projectKey: PROJECT_KEY });
     localStorage.removeItem('comforto-access-token');
+    localStorage.removeItem('comforto-cart-id');
+    this.createAnonymousToken().catch(console.log);
+  }
+
+  public createToken(): void {
+    const token = localStorage.getItem('comforto-access-token');
+    const tokenAnonymous = localStorage.getItem('comforto-anonymous-token');
+
+    if (token) {
+      this.updateExistingFlow(token);
+    } else if (tokenAnonymous) {
+      this.updateExistingFlow(tokenAnonymous);
+    } else {
+      apiClient.createAnonymousToken().catch(console.log);
+    }
+  }
+
+  public async createAnonymousToken(): Promise<void> {
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/x-www-form-urlencoded');
+    headers.append('Authorization', 'Basic ' + btoa(`${CLIENT_ID}:${CLIENT_SECRET}`));
+
+    await fetch(`${AUTH_URL}/oauth/${PROJECT_KEY}/anonymous/token?grant_type=client_credentials`, {
+      method: 'POST',
+      headers,
+    })
+      .then((res: Response) => res.json())
+      .then((data: TokenResponse) => {
+        localStorage.setItem('comforto-anonymous-token', data.access_token);
+        this.updateExistingFlow(data.access_token);
+      })
+      .catch((err: Error) => {
+        console.log(err.message);
+      });
   }
 }
 

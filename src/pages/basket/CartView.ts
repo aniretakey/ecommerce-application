@@ -1,7 +1,11 @@
+import { createCart, getCart, saveNewCartId } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { CartItem } from './CartItem';
 import { CartSummary } from './summary';
-import { getCart } from '@utils/apiRequests';
+import { Cart, ClientResponse } from '@commercetools/platform-sdk';
+//import { CartItem } from './CartItem';
+//import { CartSummary } from './summary';
+//import { getCart } from '@utils/apiRequests';
 
 export class CartView {
   public cart: BaseComponent<'div'>;
@@ -21,25 +25,33 @@ export class CartView {
   }
 
   private getCartInfo(): void {
-    getCart()
+    const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+    this.cart.append(this.cartItemsContainer);
+    getCart(cartId)
       .then((data) => {
-        const cartData = data.body.results[0];
-        cartData?.lineItems.forEach((res) => {
-          this.cartItemsContainer.append(
-            new CartItem().create(
-              res.name.ru ?? '',
-              res.price.value.centAmount,
-              (res.variant.images ?? [])[0]?.url ?? '',
-              res.price.discounted?.value.centAmount,
-              res.quantity,
-            ),
-          );
-        });
-        this.cart.appendChildren([
-          this.cartItemsContainer,
-          new CartSummary(cartData?.totalPrice.centAmount ?? 0).summary,
-        ]);
+        this.displayCartItems(data);
       })
-      .catch(console.log);
+      .catch(() =>
+        createCart([]).then((data) => {
+          saveNewCartId(data);
+          this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
+        }),
+      );
+  }
+
+  private displayCartItems(data: ClientResponse<Cart>): void {
+    const cartData = data.body;
+    cartData?.lineItems.forEach((res) => {
+      this.cartItemsContainer.append(
+        new CartItem().create(
+          res.name.ru ?? '',
+          res.price.value.centAmount,
+          (res.variant.images ?? [])[0]?.url ?? '',
+          res.price.discounted?.value.centAmount,
+          res.quantity,
+        ),
+      );
+    });
+    this.cart.append(new CartSummary(cartData?.totalPrice.centAmount ?? 0).summary);
   }
 }

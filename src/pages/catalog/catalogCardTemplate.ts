@@ -1,4 +1,6 @@
+import { addProductInCart, createCart, getCart, saveNewCartId } from '@utils/apiRequests';
 import BaseComponent from '../../utils/baseComponent';
+import { Alert } from '@components/alert/Alert';
 
 export class CatalogCard {
   public card: BaseComponent<'div'>;
@@ -82,8 +84,10 @@ export class CatalogCard {
 
     addToCartButton.addListener('click', (e) => {
       e.preventDefault();
+      const productId = addToCartButton.getNode().getAttribute('productId');
       addToCartButton.getNode().classList.toggle('btn_add-cart__active');
       addToCartButton.getNode().classList.toggle('btn_add-cart__disabled');
+      productId && this.addProductToCard(productId);
     });
     return addToCartButton;
   }
@@ -120,5 +124,30 @@ export class CatalogCard {
   public buildItem(): this {
     this.card.appendChildren([this.photo, this.infoButton, this.cardBody]);
     return this;
+  }
+
+  private addProductToCard(productId: string): void {
+    const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+
+    getCart(cartId)
+      .then(async (data) => {
+        const version = data.body.version;
+        await addProductInCart(cartId, version, productId).then(() => {
+          this.showAlert();
+        });
+      })
+      .catch(() => {
+        createCart([{ productId: productId }])
+          .then((data) => {
+            saveNewCartId(data);
+            this.showAlert();
+          })
+          .catch(console.log);
+      });
+  }
+
+  private showAlert(): void {
+    const alert = new Alert(true, 'Product add to shopping cart');
+    alert.setAlertOnPage();
   }
 }
