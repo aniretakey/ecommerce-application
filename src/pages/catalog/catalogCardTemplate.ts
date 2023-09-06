@@ -126,7 +126,7 @@ export class CatalogCard {
     return this;
   }
 
-  private addProductToCard(productId: string): void {
+ private addProductToCard(productId: string): void {
     const cartId = localStorage.getItem('comforto-cart-id') ?? '';
 
     getCart(cartId)
@@ -151,3 +151,4 @@ export class CatalogCard {
     alert.setAlertOnPage();
   }
 }
+
