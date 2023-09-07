@@ -134,8 +134,9 @@ export class CatalogCard {
       .then(async (data) => {
         const version = data.body.version;
         CartView.cartVersion = version;
-        await addProductInCart(cartId, version, productId).then(() => {
+        await addProductInCart(cartId, version, productId).then((data) => {
           this.showAlert();
+          CartView.cartVersion = data.body.version;
         });
       })
       .catch(() => {
