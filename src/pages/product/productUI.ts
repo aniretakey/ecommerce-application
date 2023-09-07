@@ -1,5 +1,5 @@
 import { Attribute } from '@commercetools/platform-sdk';
-import { getProduct } from '@utils/apiRequests';
+import { getCart, getProduct } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { ProductImgSlider } from '@pages/product/productImgSlider';
 import { ModalWindow } from '@components/modal/modalWindow';
@@ -9,6 +9,7 @@ export default class ProductUI {
   private description: string;
   private price: number;
   private discount: number;
+  private isProductInCart = false;
 
   constructor() {
     this.name = '';
@@ -19,7 +20,7 @@ export default class ProductUI {
 
   public render(parentContainer: HTMLElement, productID: string): void {
     getProduct(productID)
-      .then((data): void => {
+      .then(async (data) => {
         const product = data.body.results[0];
         this.name = product?.name.ru ?? '';
         this.description = product?.description?.ru ?? '';
@@ -33,6 +34,13 @@ export default class ProductUI {
         const attributes = product?.masterVariant.attributes ?? [];
         const productImages = product?.masterVariant.images ?? [];
         const imgLinks = Object.values(productImages).map((img) => img.url);
+
+        const cartId = localStorage.getItem('comforto-cart-id');
+        if (cartId) {
+          await getCart(cartId).then((data) => {
+            this.isProductInCart = Boolean(data.body.lineItems.find((item) => item.productId === product?.id));
+          });
+        }
 
         parentContainer.append(
           this.createMarkup(this.name, this.description, this.price, attributes, imgLinks).getNode(),
@@ -99,9 +107,10 @@ export default class ProductUI {
     const prices = this.addPrices(price, discount);
     const btnAddCart = new BaseComponent({
       tagName: 'button',
-      classNames: ['btn', 'btn-primary', 'btn_add-cart'],
-      textContent: '🛒 Add to cart',
+      classNames: ['btn', 'btn_add-cart'],
+      textContent: this.isProductInCart ? '➖ Remove from cart' : '🛒 Add to cart',
     });
+    !this.isProductInCart && btnAddCart.addClass(['btn-primary']);
     productInfo.appendChildren([productTitle, productDescription, prices, btnAddCart]);
     this.addProductAttributes(productInfo, attributesList);
     return productInfo;
