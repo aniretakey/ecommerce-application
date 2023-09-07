@@ -70,7 +70,6 @@ class ApiClient {
       .then((res: Response) => res.json())
       .then((data: TokenResponse) => {
         localStorage.setItem('comforto-access-token', data.access_token);
-        localStorage.removeItem('comforto-anonymous-token');
         this.updateExistingFlow(data.access_token);
         return getActiveCart();
       })
@@ -100,19 +99,21 @@ class ApiClient {
 
     this.apiRoot = createApiBuilderFromCtpClient(anonCtpClient).withProjectKey({ projectKey: PROJECT_KEY });
     localStorage.removeItem('comforto-access-token');
-    localStorage.removeItem('comforto-cart-id');
     this.createAnonymousToken().catch(console.log);
   }
 
   public createToken(): void {
     const token = localStorage.getItem('comforto-access-token');
-    const tokenAnonymous = localStorage.getItem('comforto-anonymous-token');
+    const refreshTokenAnonymous = localStorage.getItem('comforto-anonymous-refresh-token');
 
     if (token) {
+      console.log('pass token');
       this.updateExistingFlow(token);
-    } else if (tokenAnonymous) {
-      this.updateExistingFlow(tokenAnonymous);
+    } else if (refreshTokenAnonymous) {
+      console.log('refresh anon token');
+      this.refresh(refreshTokenAnonymous);
     } else {
+      console.log('new anon token');
       apiClient.createAnonymousToken().catch(console.log);
     }
   }
@@ -128,12 +129,34 @@ class ApiClient {
     })
       .then((res: Response) => res.json())
       .then((data: TokenResponse) => {
-        localStorage.setItem('comforto-anonymous-token', data.access_token);
-        this.updateExistingFlow(data.access_token);
+        localStorage.setItem('comforto-anonymous-refresh-token', data.refresh_token);
+        this.refresh(data.refresh_token);
+        console.log('new ano');
       })
       .catch((err: Error) => {
         console.log(err.message);
       });
+  }
+
+  private refresh(refreshToken: string): ByProjectKeyRequestBuilder {
+    const options = {
+      host: AUTH_URL,
+      projectKey: PROJECT_KEY,
+      credentials: {
+        clientId: CLIENT_ID,
+        clientSecret: CLIENT_SECRET,
+      },
+      refreshToken,
+      scopes: SCOPES.split(' '),
+      fetch,
+    };
+    const client = new ClientBuilder()
+      .withRefreshTokenFlow(options)
+      .withHttpMiddleware(this.httpMiddlewareOptions)
+      .build();
+    this.apiRoot = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: PROJECT_KEY });
+    console.log('this.refresh');
+    return this.apiRoot;
   }
 }
 
