@@ -1,6 +1,7 @@
 import { addProductInCart, createCart, getCart, saveNewCartId } from '@utils/apiRequests';
 import BaseComponent from '../../utils/baseComponent';
 import { Alert } from '@components/alert/Alert';
+import { CartView } from '@pages/basket/CartView';
 
 export class CatalogCard {
   public card: BaseComponent<'div'>;
@@ -126,12 +127,13 @@ export class CatalogCard {
     return this;
   }
 
- private addProductToCard(productId: string): void {
+  private addProductToCard(productId: string): void {
     const cartId = localStorage.getItem('comforto-cart-id') ?? '';
 
     getCart(cartId)
       .then(async (data) => {
         const version = data.body.version;
+        CartView.cartVersion = version;
         await addProductInCart(cartId, version, productId).then(() => {
           this.showAlert();
         });
@@ -141,6 +143,7 @@ export class CatalogCard {
           .then((data) => {
             saveNewCartId(data);
             this.showAlert();
+            CartView.cartVersion = data.body.version;
           })
           .catch(console.log);
       });
@@ -151,4 +154,3 @@ export class CatalogCard {
     alert.setAlertOnPage();
   }
 }
-

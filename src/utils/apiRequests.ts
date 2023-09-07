@@ -13,6 +13,7 @@ import {
 } from '@commercetools/platform-sdk';
 import { apiClient } from './ApiClient';
 import { Addresses, PersonalInfo, ActionsForUpdateAddressTypes } from '@customTypes/types';
+import { CartView } from '@pages/basket/CartView';
 
 export const signIn = (email: string, password: string): Promise<ClientResponse<CustomerSignInResult>> => {
   const signInBody: CustomerSignin = {
@@ -230,4 +231,23 @@ export const addProductInCart = (ID: string, version: number, productId: string)
 export const saveNewCartId = (data: ClientResponse<Cart>): void => {
   const cartId = data.body.id;
   localStorage.setItem('comforto-cart-id', cartId);
+};
+
+export const changeLineItemQuantity = (
+  cartId: string,
+  lineItemId: string,
+  quantity: number,
+  version: number = CartView.cartVersion,
+): Promise<ClientResponse<Cart>> => {
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .post({
+      body: {
+        version,
+        actions: [{ action: 'changeLineItemQuantity', lineItemId, quantity }],
+      },
+    })
+    .execute();
 };
