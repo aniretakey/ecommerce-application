@@ -85,10 +85,12 @@ export class CatalogCard {
 
     addToCartButton.addListener('click', (e) => {
       e.preventDefault();
-      const productId = addToCartButton.getNode().getAttribute('productId');
-      addToCartButton.getNode().classList.toggle('btn_add-cart__active');
-      addToCartButton.getNode().classList.toggle('btn_add-cart__disabled');
-      productId && this.addProductToCard(productId);
+      if (!addToCartButton.getNode().classList.contains('btn_add-cart__disabled')) {
+        const productId = addToCartButton.getNode().getAttribute('productId');
+        addToCartButton.getNode().classList.remove('btn_add-cart__active');
+        addToCartButton.getNode().classList.add('btn_add-cart__disabled');
+        productId && this.addProductToCard(productId);
+      }
     });
     return addToCartButton;
   }
@@ -134,8 +136,9 @@ export class CatalogCard {
       .then(async (data) => {
         const version = data.body.version;
         CartView.cartVersion = version;
-        await addProductInCart(cartId, version, productId).then(() => {
+        await addProductInCart(cartId, version, productId).then((data) => {
           this.showAlert();
+          CartView.cartVersion = data.body.version;
         });
       })
       .catch(() => {
