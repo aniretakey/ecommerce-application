@@ -12,7 +12,7 @@ import {
   postalCodeValidationCb,
   ageValidationCb,
 } from '@utils/customValidationCb';
-import { signUp, signIn } from '@utils/apiRequests';
+import { signUp } from '@utils/apiRequests';
 import { InvalidCredentialsError, BaseAddress, MyCustomerDraft } from '@commercetools/platform-sdk';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
 import { apiClient } from '@utils/ApiClient';
@@ -179,9 +179,11 @@ export class RegistrationForm extends Form {
         ...defaultAddresses,
       };
       signUp(customer)
-        .then(() => {
+        /*  .then(() => {
+          //    localStorage.removeItem('comforto-access-token');
+          //      apiClient.autorize();
           return signIn(userInfo.email, userInfo.password);
-        })
+        }) */
         .then(async () => {
           await apiClient
             .getNewPassFlowToken(userInfo.email, userInfo.password)
