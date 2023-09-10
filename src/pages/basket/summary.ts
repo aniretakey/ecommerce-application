@@ -1,4 +1,10 @@
+import { ConfirmationPrompt } from '@components/confirmationPrompt';
+import { ModalWindow } from '@components/modal/modalWindow';
+import { clearCart } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
+import { CartView } from './CartView';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
+
 export class CartSummary {
   public summary: BaseComponent<'div'>;
 
@@ -15,7 +21,9 @@ export class CartSummary {
       textContent: 'Clear cart',
       classNames: ['btn', 'btn-accent', 'w-full'],
     });
-
+    clearCartBtn.addListener('click', () => {
+      this.clearCartHandler();
+    });
     const checkoutBtn = new BaseComponent({
       tagName: 'button',
       textContent: 'Checkout',
@@ -29,6 +37,32 @@ export class CartSummary {
       clearCartBtn,
       checkoutBtn,
     ]);
+  }
+
+  private clearCartHandler(): void {
+    const modal = new ModalWindow();
+    const confirmationPrompt = new ConfirmationPrompt('Are you sure you want to clear your cart?');
+    confirmationPrompt.addCancelAction(modal.closeModal.bind(null));
+    confirmationPrompt.addConfirmAction(() => {
+      const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+
+      const lineItemIds = [...document.querySelectorAll('.cart-item')].map((item) => {
+        return item.getAttribute('data-lineitemid') ?? '';
+      });
+      confirmationPrompt.prompt.getNode().innerHTML = `<span class="loading loading-dots loading-lg col-span-2 row-span-2"></span>`;
+
+      clearCart(cartId, lineItemIds, CartView.cartVersion)
+        .then((data) => {
+          safeQuerySelector('.cart-items-container').innerHTML = 'Cart is empty';
+          CartView.cartVersion = data.body.version;
+          safeQuerySelector('.summary').remove();
+          modal.closeModal();
+        })
+        .catch(() => {
+          modal.closeModal();
+        });
+    });
+    modal.buildModal(confirmationPrompt.prompt);
   }
 
   private createTotalPrice(totalPrice: number): BaseComponent<'div'> {

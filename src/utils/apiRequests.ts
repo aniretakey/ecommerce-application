@@ -6,6 +6,7 @@ import {
   Customer,
   CustomerSignInResult,
   CustomerSignin,
+  MyCartUpdateAction,
   MyCustomerDraft,
   MyLineItemDraft,
   OrderPagedQueryResponse,
@@ -247,6 +248,27 @@ export const changeLineItemQuantity = (
       body: {
         version,
         actions: [{ action: 'changeLineItemQuantity', lineItemId, quantity }],
+      },
+    })
+    .execute();
+};
+
+export const clearCart = (
+  cartId: string,
+  lineItemIds: string[],
+  version: number = CartView.cartVersion,
+): Promise<ClientResponse<Cart>> => {
+  const actions: MyCartUpdateAction[] = lineItemIds.map((id) => {
+    return { action: 'changeLineItemQuantity', lineItemId: id, quantity: 0 };
+  });
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .post({
+      body: {
+        version,
+        actions,
       },
     })
     .execute();
