@@ -1,5 +1,11 @@
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
 
+jest.mock('../utils/apiRequests', () => ({
+  addProductInCart: jest.fn().mockResolvedValue({}),
+  createCart: jest.fn().mockResolvedValue({}),
+  getCart: jest.fn().mockResolvedValue({}),
+}));
+
 // eslint-disable-next-line max-lines-per-function
 describe('CatalogCard', () => {
   const card = new CatalogCard();
@@ -96,4 +102,7 @@ describe('CatalogCard', () => {
     card.setProductDescription(description);
     expect(card.description.getNode().textContent).toBe(description);
   });
+});
+afterAll(() => {
+  jest.resetAllMocks();
 });
