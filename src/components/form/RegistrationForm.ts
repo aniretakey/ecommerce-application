@@ -179,11 +179,6 @@ export class RegistrationForm extends Form {
         ...defaultAddresses,
       };
       signUp(customer)
-        /*  .then(() => {
-          //    localStorage.removeItem('comforto-access-token');
-          //      apiClient.autorize();
-          return signIn(userInfo.email, userInfo.password);
-        }) */
         .then(async () => {
           await apiClient
             .getNewPassFlowToken(userInfo.email, userInfo.password)
