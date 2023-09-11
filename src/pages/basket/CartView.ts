@@ -3,6 +3,7 @@ import BaseComponent from '@utils/baseComponent';
 import { CartItem } from './CartItem';
 import { CartSummary } from './summary';
 import { Cart, ClientResponse } from '@commercetools/platform-sdk';
+import { EmptyCart } from './EmptyCart';
 
 export class CartView {
   public cart: BaseComponent<'div'>;
@@ -17,7 +18,7 @@ export class CartView {
 
     this.cartItemsContainer = new BaseComponent({
       tagName: 'div',
-      classNames: ['cart-items-container', 'flex', 'flex-col', 'align-center', 'gap-4'],
+      classNames: ['cart-items-container', 'flex', 'flex-col', 'align-center', 'gap-4', 'w-full'],
     });
     this.getCartInfo();
   }
@@ -33,7 +34,7 @@ export class CartView {
       .catch(() =>
         createCart([]).then((data) => {
           saveNewCartId(data);
-          this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
+          new EmptyCart(this.cartItemsContainer.getNode());
           CartView.cartVersion = data.body.version;
         }),
       );
@@ -55,7 +56,7 @@ export class CartView {
     if (cartData?.lineItems.length > 0) {
       this.cart.append(new CartSummary(cartData?.totalPrice.centAmount ?? 0).summary);
     } else {
-      this.cartItemsContainer.getNode().innerHTML = 'Cart is empty';
+      new EmptyCart(this.cartItemsContainer.getNode());
     }
   }
 }
