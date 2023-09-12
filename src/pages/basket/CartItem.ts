@@ -4,6 +4,7 @@ import { CartQuantity } from '@components/cartQuantityContainer';
 import { changeLineItemQuantity } from '@utils/apiRequests';
 import { CartView } from './CartView';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { EmptyCart } from './EmptyCart';
 
 export class CartItem {
   public cartItem: BaseComponent<'div'>;
@@ -62,7 +63,7 @@ export class CartItem {
             }`;
             if (data.body.lineItems.length === 0) {
               safeQuerySelector<HTMLParagraphElement>('.summary').remove();
-              safeQuerySelector<HTMLParagraphElement>('.cart-items-container').textContent = 'Cart is empty';
+              new EmptyCart(safeQuerySelector<HTMLElement>('.cart-items-container'));
             }
           })
           .catch(console.log);

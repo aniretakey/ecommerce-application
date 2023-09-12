@@ -4,6 +4,7 @@ import { clearCart } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { CartView } from './CartView';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
+import { EmptyCart } from './EmptyCart';
 
 export class CartSummary {
   public summary: BaseComponent<'div'>;
@@ -53,7 +54,9 @@ export class CartSummary {
 
       clearCart(cartId, lineItemIds, CartView.cartVersion)
         .then((data) => {
-          safeQuerySelector('.cart-items-container').innerHTML = 'Cart is empty';
+          const cartItemsContainer = safeQuerySelector('.cart-items-container');
+          cartItemsContainer.innerHTML = '';
+          new EmptyCart(cartItemsContainer);
           CartView.cartVersion = data.body.version;
           safeQuerySelector('.summary').remove();
           modal.closeModal();
