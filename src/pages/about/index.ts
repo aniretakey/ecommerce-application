@@ -2,6 +2,7 @@ import Page from '@utils/pageTemplate';
 import BaseComponent from '@utils/baseComponent';
 import { teamMembers, collaborationInfo } from './teamMembersDescription';
 import createTeamMemberCard from './teamMemberCard';
+import { aboutRSS } from './aboutRSS';
 import './style.css';
 
 export default class About extends Page {
@@ -19,6 +20,15 @@ export default class About extends Page {
     tagName: 'div',
     classNames: ['cards-container'],
   });
+
+  private createAboutRSSContainer(): BaseComponent<'div'> {
+    const aboutRSSContainer = new BaseComponent({
+      tagName: 'div',
+      classNames: ['about-rss'],
+    });
+    aboutRSSContainer.getNode().innerHTML = aboutRSS;
+    return aboutRSSContainer;
+  }
 
   private createTeamMemberCards(): BaseComponent<'div'> {
     teamMembers.forEach((elem) => {
@@ -38,11 +48,9 @@ export default class About extends Page {
   public render(): HTMLElement {
     this.container.append(this.createHeaderTitle('About us'));
     this.container.append(this.collaborationInfoContainer.getNode());
-    // const title = this.createHeaderTitle('About');
-    // return title;
-    // this.container.append(this.cardsElements);
     this.createTeamMemberCards();
     this.container.append(this.cardsContainer.getNode());
+    this.container.append(this.createAboutRSSContainer().getNode());
     return this.container;
   }
 }
