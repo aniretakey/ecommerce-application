@@ -20,8 +20,9 @@
 
 .card-team-member {
   min-width: 300px;
-  max-width: 450px;
-  margin: 15px;
+  max-width: 330px;
+  max-height: 610px;
+  margin: 10px;
 }
 
 .card-team-member:hover img {
@@ -38,30 +39,42 @@
 
 .card-team-member-bio {
   margin: 5px;
+  padding: 5px;
   font-weight: 600;
+  border-top: #aca8a8 1px solid;
+  border-bottom: #aca8a8 1px solid;
 }
 
 ul {
   list-style-type: circle !important;
 }
 
-.avatar {
-  position: absolute;
-  right: 15px;
-
-  @media screen and (max-width: 460px) {
-    position: initial;
-  }
-}
-
-.avatar img {
-  background-color: cornflowerblue;
-}
-
-.btn-tm-github {
-  margin-top: 40px;
+#about .btn {
+  background: url('../../assets/icons/github-mark.png') no-repeat;
+  background-size: contain;
+  max-width: 35px;
+  min-height: 35px !important;
+  height: 35px !important;
 
   @media screen and (max-width: 460px) {
     margin-top: 10px;
   }
+}
+
+.btn-tm-github:hover {
+  background-color: pink;
+  cursor: pointer;
+  box-shadow: 0px 0px 6px 4px #aca8a8;
+}
+
+.photo1 {
+  background: url('../../assets/img/about-us/team-1.jpeg') no-repeat center / contain;
+}
+
+.photo2 {
+  background: url('../../assets/img/about-us/team-2.jpg') no-repeat center / contain;
+}
+
+.photo3 {
+  background: url('../../assets/img/about-us/team-3.jpg') no-repeat center / contain;
 }

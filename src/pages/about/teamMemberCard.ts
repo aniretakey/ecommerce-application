@@ -16,12 +16,12 @@ export default function createTeamMemberCard(
   const photoContainer = createAvatar(photoLink);
   const nameElem = new BaseComponent({ tagName: 'p', textContent: name, classNames: ['card-title', 'card-tm-name'] });
   const bioElem = new BaseComponent({ tagName: 'p', textContent: bio, classNames: ['card-team-member-bio'] });
-  const roleElem = new BaseComponent({ tagName: 'p', textContent: role, classNames: ['card-team-member-subtitle'] });
+  const roleElem = new BaseComponent({ tagName: 'p', classNames: ['card-team-member-subtitle'] });
+  roleElem.getNode().innerHTML = role;
   const gitHubLinkElem = new BaseComponent({
     tagName: 'a',
     attributes: { href: gitHubLink, target: '_blank' },
-    classNames: ['btn', 'btn-base-101', 'btn-tm-github'],
-    textContent: 'GitHub',
+    classNames: ['btn', 'btn-base-101', 'btn-tm-github', 'rounded-full'],
   });
   const contributionsBlock = new BaseComponent({
     tagName: 'ul',
@@ -36,7 +36,7 @@ export default function createTeamMemberCard(
     contributionsBlock.append(contrinutionElem);
   });
 
-  cardBody.appendChildren([nameElem, roleElem, photoContainer, gitHubLinkElem, bioElem, contributionsBlock]);
+  cardBody.appendChildren([photoContainer, nameElem, roleElem, bioElem, contributionsBlock, gitHubLinkElem]);
   teamMemberContainer.append(cardBody);
   return teamMemberContainer;
 }
@@ -48,11 +48,11 @@ function createAvatar(photoLink: string): BaseComponent<'div'> {
   });
   const photoElem = new BaseComponent({
     tagName: 'div',
-    classNames: ['w-24', 'rounded-full'],
+    classNames: ['w-20', 'rounded-full'],
   });
   const photo = new BaseComponent({
     tagName: 'img',
-    attributes: { src: photoLink },
+    classNames: [photoLink],
   });
   photoElem.append(photo);
   photoContainer.append(photoElem);
