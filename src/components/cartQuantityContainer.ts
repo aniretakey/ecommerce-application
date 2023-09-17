@@ -67,9 +67,11 @@ export class CartQuantity {
           (data.body.totalPrice.centAmount ?? 0) / 100
         }`;
         localStorage.setItem('prevPrice', `${data.body.totalPrice.centAmount / 100 + 1000}`);
-        safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
-          (data.body.totalPrice.centAmount + 100000 ?? 0) / 100
-        }`;
+        if (localStorage.getItem('appliedCouponName')) {
+          safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+            (data.body.totalPrice.centAmount + 100000 ?? 0) / 100
+          }`;
+        }
       })
       .catch(console.log);
   }

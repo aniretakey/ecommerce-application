@@ -59,8 +59,9 @@ export class CartSummary {
           new EmptyCart(cartItemsContainer);
           removePromoCode(cartId, data.body.version, {
             typeId: 'discount-code',
-            id: localStorage.getItem('appliedCoupon') ?? '',
+            id: localStorage.getItem('appliedCouponId') ?? '',
           }).catch(console.log);
+          CartView.cartVersion = data.body.version;
           const couponBtn = safeQuerySelector('.apply-coupon-btn');
           const couponInput = safeQuerySelector('.promo-code-input');
           couponBtn.removeAttribute('disabled');
@@ -68,7 +69,7 @@ export class CartSummary {
           couponInput.attributes.removeNamedItem('disabled');
           localStorage.removeItem('appliedCouponId');
           localStorage.removeItem('appliedCouponName');
-          CartView.cartVersion = data.body.version;
+
           safeQuerySelector('.summary').remove();
           modal.closeModal();
         })
@@ -138,6 +139,7 @@ export class CartSummary {
       const discountedPrice = safeQuerySelector('.discounted-price');
       usePromoCode(cartId, CartView.cartVersion, couponInput.getNode().value)
         .then((data) => {
+          CartView.cartVersion = data.body.version;
           localStorage.setItem('prevPrice', discountedPrice.textContent?.slice(1) ?? 'undefined');
           couponInput.setAttributes({ disabled: 'true', placeholder: `${couponInput.getNode().value}` });
           applyCouponBtn.setAttributes({ disabled: 'true' });
