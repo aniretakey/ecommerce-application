@@ -1,11 +1,13 @@
 import {
   BaseAddress,
   Cart,
+  CartRemoveDiscountCodeAction,
   CategoryPagedQueryResponse,
   ClientResponse,
   Customer,
   CustomerSignInResult,
   CustomerSignin,
+  DiscountCodeReference,
   MyCartUpdateAction,
   MyCustomerDraft,
   MyLineItemDraft,
@@ -261,6 +263,44 @@ export const clearCart = (
   const actions: MyCartUpdateAction[] = lineItemIds.map((id) => {
     return { action: 'changeLineItemQuantity', lineItemId: id, quantity: 0 };
   });
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .post({
+      body: {
+        version,
+        actions,
+      },
+    })
+    .execute();
+};
+
+export const usePromoCode = (
+  cartId: string,
+  version: number = CartView.cartVersion,
+  promoCode: string,
+): Promise<ClientResponse<Cart>> => {
+  const actions: MyCartUpdateAction[] = [{ action: 'addDiscountCode', code: promoCode }];
+  return apiClient.apiRoot
+    .me()
+    .carts()
+    .withId({ ID: cartId })
+    .post({
+      body: {
+        version,
+        actions,
+      },
+    })
+    .execute();
+};
+
+export const removePromoCode = (
+  cartId: string,
+  version: number = CartView.cartVersion,
+  promoCode: DiscountCodeReference,
+): Promise<ClientResponse<Cart>> => {
+  const actions: CartRemoveDiscountCodeAction[] = [{ action: 'removeDiscountCode', discountCode: promoCode }];
   return apiClient.apiRoot
     .me()
     .carts()

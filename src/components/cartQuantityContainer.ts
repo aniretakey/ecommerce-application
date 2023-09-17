@@ -63,8 +63,12 @@ export class CartQuantity {
     changeLineItemQuantity(cartId, this.lineItemId, newQuantity, CartView.cartVersion)
       .then((data) => {
         CartView.cartVersion = data.body.version;
-        safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+        safeQuerySelector<HTMLParagraphElement>('.discounted-price').textContent = `₽${
           (data.body.totalPrice.centAmount ?? 0) / 100
+        }`;
+        localStorage.setItem('prevPrice', `${data.body.totalPrice.centAmount / 100 + 1000}`);
+        safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+          (data.body.totalPrice.centAmount + 100000 ?? 0) / 100
         }`;
       })
       .catch(console.log);
