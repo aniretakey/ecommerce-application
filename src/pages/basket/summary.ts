@@ -137,7 +137,7 @@ export class CartSummary {
       const cartId = localStorage.getItem('comforto-cart-id') ?? '';
       const totalPriceContainer = safeQuerySelector('.total-price');
       const discountedPrice = safeQuerySelector('.discounted-price');
-      usePromoCode(cartId, CartView.cartVersion, couponInput.getNode().value)
+      usePromoCode(cartId, CartView.cartVersion, couponInput.getNode().value.trim())
         .then((data) => {
           CartView.cartVersion = data.body.version;
           localStorage.setItem('prevPrice', discountedPrice.textContent?.slice(1) ?? 'undefined');
