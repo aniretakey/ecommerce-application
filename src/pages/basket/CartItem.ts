@@ -58,12 +58,19 @@ export class CartItem {
           .then((data) => {
             CartView.cartVersion = data.body.version;
             this.cartItem.destroy();
-            safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+            localStorage.setItem('prevPrice', `${data.body.totalPrice.centAmount / 100 + 1000}`);
+            safeQuerySelector<HTMLParagraphElement>('.discounted-price').textContent = `₽${
               (data.body.totalPrice.centAmount ?? 0) / 100
+            }`;
+            safeQuerySelector<HTMLParagraphElement>('.total-price').textContent = `₽${
+              (data.body.totalPrice.centAmount ?? 0) / 100 + 1000
             }`;
             if (data.body.lineItems.length === 0) {
               safeQuerySelector<HTMLParagraphElement>('.summary').remove();
               new EmptyCart(safeQuerySelector<HTMLElement>('.cart-items-container'));
+              localStorage.removeItem('appliedCouponId');
+              localStorage.removeItem('appliedCouponName');
+              localStorage.removeItem('prevPrice');
             }
           })
           .catch(console.log);
