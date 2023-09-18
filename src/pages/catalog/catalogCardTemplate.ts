@@ -137,6 +137,9 @@ export class CatalogCard {
         const version = data.body.version;
         CartView.cartVersion = version;
         await addProductInCart(cartId, version, productId).then((data) => {
+          if (localStorage.getItem('appliedCouponName')) {
+            localStorage.setItem('prevPrice', `${data.body.totalPrice.centAmount / 100 + 1000}`);
+          }
           this.showAlert();
           CartView.cartVersion = data.body.version;
         });
