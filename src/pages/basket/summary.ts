@@ -1,6 +1,6 @@
 import { ConfirmationPrompt } from '@components/confirmationPrompt';
 import { ModalWindow } from '@components/modal/modalWindow';
-import { clearCart } from '@utils/apiRequests';
+import { clearCart, usePromoCode, removePromoCode } from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { CartView } from './CartView';
 import { safeQuerySelector } from '@utils/safeQuerySelector';
@@ -57,7 +57,19 @@ export class CartSummary {
           const cartItemsContainer = safeQuerySelector('.cart-items-container');
           cartItemsContainer.innerHTML = '';
           new EmptyCart(cartItemsContainer);
+          removePromoCode(cartId, data.body.version, {
+            typeId: 'discount-code',
+            id: localStorage.getItem('appliedCouponId') ?? '',
+          }).catch(console.log);
           CartView.cartVersion = data.body.version;
+          const couponBtn = safeQuerySelector('.apply-coupon-btn');
+          const couponInput = safeQuerySelector('.promo-code-input');
+          couponBtn.removeAttribute('disabled');
+          couponInput.setAttribute('placeholder', 'Coupon Code');
+          couponInput.attributes.removeNamedItem('disabled');
+          localStorage.removeItem('appliedCouponId');
+          localStorage.removeItem('appliedCouponName');
+
           safeQuerySelector('.summary').remove();
           modal.closeModal();
         })
@@ -80,11 +92,23 @@ export class CartSummary {
     });
     const totalPriceIndicator = new BaseComponent({
       tagName: 'p',
-      classNames: ['total-price', 'product-price', 'text-primary'],
+      classNames: ['total-price', 'product-price', 'text-primary', 'line-through', 'opacity-50'],
+      textContent: `₽${
+        localStorage.getItem('prevPrice') ? Number(localStorage.getItem('prevPrice')) : totalPrice / 100
+      }`,
+    });
+
+    const discountedPriceIndicator = new BaseComponent({
+      tagName: 'p',
+      classNames: ['discounted-price', 'product-price', 'text-accent'],
       textContent: `₽${(totalPrice ?? 0) / 100}`,
     });
 
-    totalPriceContainer.appendChildren([totalPriceLable, totalPriceIndicator]);
+    if (!localStorage.getItem('prevPrice')) {
+      totalPriceIndicator.getNode().textContent = '';
+    }
+    totalPriceContainer.appendChildren([totalPriceLable, totalPriceIndicator, discountedPriceIndicator]);
+
     return totalPriceContainer;
   }
 
@@ -95,15 +119,37 @@ export class CartSummary {
     });
     const couponInput = new BaseComponent({
       tagName: 'input',
-      classNames: ['input', 'input-bordered', 'input-secondary', 'w-full'],
+      classNames: ['input', 'promo-code-input', 'input-bordered', 'input-secondary', 'w-full'],
       attributes: { type: 'text', placeholder: 'Coupon code' },
     });
     const applyCouponBtn = new BaseComponent({
       tagName: 'button',
       textContent: 'Apply',
-      classNames: ['btn', 'btn-secondary'],
+      classNames: ['btn', 'btn-secondary', 'apply-coupon-btn'],
     });
+    const couponCode = localStorage.getItem('appliedCouponName') ?? '';
+    if (couponCode !== '') {
+      couponInput.setAttributes({ disabled: 'true', placeholder: `${couponCode}` });
+      applyCouponBtn.setAttributes({ disabled: 'true' });
+    }
     couponContainer.appendChildren([couponInput, applyCouponBtn]);
+    applyCouponBtn.addListener('click', () => {
+      const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+      const totalPriceContainer = safeQuerySelector('.total-price');
+      const discountedPrice = safeQuerySelector('.discounted-price');
+      usePromoCode(cartId, CartView.cartVersion, couponInput.getNode().value.trim())
+        .then((data) => {
+          CartView.cartVersion = data.body.version;
+          localStorage.setItem('prevPrice', discountedPrice.textContent?.slice(1) ?? 'undefined');
+          couponInput.setAttributes({ disabled: 'true', placeholder: `${couponInput.getNode().value}` });
+          applyCouponBtn.setAttributes({ disabled: 'true' });
+          localStorage.setItem('appliedCouponId', data.body.discountCodes[0]?.discountCode.id ?? '');
+          localStorage.setItem('appliedCouponName', couponInput.getNode().value);
+          totalPriceContainer.textContent = `₽ ${localStorage.getItem('prevPrice')}`;
+          discountedPrice.textContent = `₽ ${(data.body.totalPrice.centAmount ?? 0) / 100}`;
+        })
+        .catch(console.log);
+    });
     return couponContainer;
   }
 }

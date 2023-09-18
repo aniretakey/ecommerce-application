@@ -19,6 +19,7 @@ export class EmptyCart {
   }
 
   private createEmptyCart(): void {
+    localStorage.removeItem('prevPrice');
     const image = new BaseComponent({
       tagName: 'img',
       attributes: { src: `${emptyCartImage}`, alt: 'empty cart' },
