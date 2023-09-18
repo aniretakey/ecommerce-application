@@ -23,6 +23,7 @@ export default class App {
 
   // eslint-disable-next-line max-lines-per-function
   constructor() {
+    apiClient.createToken();
     this.header = new Header();
     this.main = new Main();
     this.router = new Navigo('/', { hash: true, strategy: 'ALL' });
@@ -65,7 +66,11 @@ export default class App {
         const CatalogPage = new Catalog().render();
         CatalogPage.addEventListener('click', (e) => {
           const clickedElem: EventTarget | null = e.target;
-          if (clickedElem instanceof HTMLElement && clickedElem?.closest('.card')) {
+          if (
+            clickedElem instanceof HTMLElement &&
+            clickedElem?.closest('.card') &&
+            !clickedElem.classList.contains('btn_add-to-cart')
+          ) {
             this.clickedCardKey = clickedElem?.closest('.card')?.id;
             this.router.navigate(`/product-page/${this.clickedCardKey}`);
             return this.clickedCardKey;

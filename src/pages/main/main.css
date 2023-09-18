@@ -25,7 +25,7 @@ img {
 
 .popular-products,
 .products-creating {
-  margin: 100px auto 0;
+  margin: 50px auto 0;
 }
 
 .popular-products__title {
@@ -108,4 +108,33 @@ img {
 
 .products-creating__img {
   margin: 10px 0;
+}
+
+.promo-code-section {
+  margin: 50px auto 0;
+  padding: 15px;
+  background: radial-gradient(
+    circle,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(237, 169, 51, 1) 0%,
+    rgba(224, 85, 43, 1) 100%,
+    rgba(232, 13, 13, 1) 100%
+  );
+  min-height: 185px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.promo-code-section__title,
+.promo-code__bold {
+  color: #9f0f0f;
+}
+
+.promo-code-section__description {
+  color: wheat;
+  font-size: 1.4rem;
 }

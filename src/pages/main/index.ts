@@ -126,6 +126,30 @@ export default class Main {
     return block1;
   }
 
+  private createPromoCodeSection(): BaseComponent<'div'> {
+    const promoCodeSection = new BaseComponent({
+      tagName: 'div',
+      classNames: ['promo-code-section'],
+    });
+
+    const promoCodeTitle = new BaseComponent({
+      tagName: 'h2',
+      classNames: ['promo-code-section__title'],
+      textContent: `Autumn Sale!`,
+    });
+
+    const promoCodeDescription = new BaseComponent({
+      tagName: 'p',
+      classNames: ['promo-code-section__description'],
+    });
+
+    promoCodeDescription.getNode().innerHTML = `Get ₽1000 off on all products. Use the code <b class="promo-code__bold">autumn2023</b> in cart`;
+
+    promoCodeSection.appendChildren([promoCodeTitle, promoCodeDescription]);
+    this.main.append(promoCodeSection);
+    return promoCodeSection;
+  }
+
   private createBlockTwo(): BaseComponent<'div'> {
     const block2 = new BaseComponent({
       tagName: 'div',
@@ -168,6 +192,7 @@ export default class Main {
 
   public render(): void {
     this.createMainSection();
+    this.createPromoCodeSection();
     this.createPopularProductsSection();
     this.createProductsMakingSection();
   }

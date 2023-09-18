@@ -20,7 +20,7 @@ const inputclassNames = [
   'focus:shadow-outline',
 ];
 
-const containerClassName = ['form-field-container', 'w-64'];
+const containerClassName = ['form-field-container', 'w-full'];
 
 /**
  * ```html

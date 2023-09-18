@@ -1,6 +1,6 @@
 import BaseComponent from '@utils/baseComponent';
 import { CatalogFilters } from '../../components/filters/CatalogFilters';
-import { getCategories, getProductsSearch } from '@utils/apiRequests';
+import { getCart, getCategories, getProductsSearch } from '@utils/apiRequests';
 import { ProductProjection } from '@commercetools/platform-sdk';
 import placeholder from '@assets/logo.png';
 import { CatalogCard } from '@pages/catalog/catalogCardTemplate';
@@ -9,6 +9,7 @@ import { CATALOG_CARDS_NUM } from '@customTypes/enums';
 import { FilterItem } from '../../components/filters/filterItem';
 import { Search } from './search';
 import { CatalogNav } from './CatalogNav';
+import { safeQuerySelector } from '@utils/safeQuerySelector';
 
 export class CatalogView {
   public catalogWrapper = new BaseComponent({
@@ -30,8 +31,10 @@ export class CatalogView {
   private resultFilters: string[] = [];
   private search: Search;
   private catalogNav: CatalogNav;
+  private cartProductId: string[] = [];
 
   constructor() {
+    this.setCartItems();
     this.search = new Search();
     this.filtersContainer = new CatalogFilters();
     this.catalogNav = new CatalogNav();
@@ -176,6 +179,7 @@ export class CatalogView {
   private createCardItems(results: ProductProjection[], categoryNames: Record<string, string>): void {
     if (results.length >= 1) {
       results.forEach((product, index) => {
+        const id = product.id;
         const categories: string[] = product.categories.map((data) => categoryNames[data.id] ?? '');
         const name = product.name.ru ?? '';
         const description = product.description?.ru ?? '';
@@ -190,7 +194,6 @@ export class CatalogView {
         const images = product.masterVariant.images ?? [];
         let imgSrc = '';
         imgSrc = images[0]?.url ?? `${placeholder}`;
-
         this.cardItems[index]
           ?.setProductName(name)
           .setProductDescription(description)
@@ -198,13 +201,31 @@ export class CatalogView {
           .setCategories(categories)
           .displayPrice(price, discount)
           .addCardId(productKey);
+        const cardElement = this.cardItems[index]?.card;
+        if (cardElement) {
+          const buttonToCard = safeQuerySelector<HTMLButtonElement>('.btn_add-to-cart', cardElement.getNode());
+          buttonToCard.setAttribute('productId', id);
+          this.cartProductId.includes(id) && buttonToCard.classList.remove('btn_add-cart__active');
+          this.cartProductId.includes(id) && buttonToCard.classList.add('btn_add-cart__disabled');
+        }
       });
     }
-
     if (results.length < this.cardItems.length) {
       this.cardItems.slice(results.length).forEach((el) => {
         el.card.destroy();
       });
+    }
+  }
+
+  private setCartItems(): void {
+    const cartId = localStorage.getItem('comforto-cart-id');
+    if (cartId) {
+      getCart(cartId)
+        .then((data) => {
+          this.cartProductId = data.body.lineItems.map((item) => item.productId);
+          console.log(this.cartProductId);
+        })
+        .catch(console.log);
     }
   }
 }

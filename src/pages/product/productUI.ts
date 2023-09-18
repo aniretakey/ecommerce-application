@@ -1,16 +1,30 @@
-import { Attribute } from '@commercetools/platform-sdk';
-import { getProduct } from '@utils/apiRequests';
+import { Attribute, Cart } from '@commercetools/platform-sdk';
+import {
+  addProductInCart,
+  changeLineItemQuantity,
+  createCart,
+  getCart,
+  getProduct,
+  saveNewCartId,
+} from '@utils/apiRequests';
 import BaseComponent from '@utils/baseComponent';
 import { ProductImgSlider } from '@pages/product/productImgSlider';
 import { ModalWindow } from '@components/modal/modalWindow';
+import { CartView } from '@pages/basket/CartView';
+import { Alert } from '@components/alert/Alert';
 
 export default class ProductUI {
+  private id: string;
   private name: string;
   private description: string;
   private price: number;
   private discount: number;
+  private isProductInCart = false;
+  private lineItemId: string | undefined;
+  private btnAddCart = new BaseComponent({ tagName: 'button', classNames: ['btn', 'btn_add-cart'] });
 
   constructor() {
+    this.id = '';
     this.name = '';
     this.description = '';
     this.price = 0;
@@ -19,8 +33,9 @@ export default class ProductUI {
 
   public render(parentContainer: HTMLElement, productID: string): void {
     getProduct(productID)
-      .then((data): void => {
+      .then(async (data) => {
         const product = data.body.results[0];
+        this.id = product?.id ?? '';
         this.name = product?.name.ru ?? '';
         this.description = product?.description?.ru ?? '';
 
@@ -33,6 +48,14 @@ export default class ProductUI {
         const attributes = product?.masterVariant.attributes ?? [];
         const productImages = product?.masterVariant.images ?? [];
         const imgLinks = Object.values(productImages).map((img) => img.url);
+
+        const cartId = localStorage.getItem('comforto-cart-id');
+        if (cartId) {
+          await getCart(cartId).then((data) => {
+            this.lineItemId = data.body.lineItems.find((item) => item.productId === this.id)?.id;
+            this.isProductInCart = Boolean(this.lineItemId);
+          });
+        }
 
         parentContainer.append(
           this.createMarkup(this.name, this.description, this.price, attributes, imgLinks).getNode(),
@@ -97,14 +120,18 @@ export default class ProductUI {
       textContent: description,
     });
     const prices = this.addPrices(price, discount);
-    const btnAddCart = new BaseComponent({
-      tagName: 'button',
-      classNames: ['btn', 'btn-primary', 'btn_add-cart'],
-      textContent: '🛒 Add to cart',
-    });
-    productInfo.appendChildren([productTitle, productDescription, prices, btnAddCart]);
+    this.setButtonToCardContent();
+    this.btnAddCart.addListener('click', () => this.addOrRemoveProductInCart());
+    productInfo.appendChildren([productTitle, productDescription, prices, this.btnAddCart]);
     this.addProductAttributes(productInfo, attributesList);
     return productInfo;
+  }
+
+  private setButtonToCardContent(): void {
+    this.btnAddCart.setTextContent(this.isProductInCart ? '➖ Remove from cart' : '🛒 Add to cart');
+    this.isProductInCart
+      ? this.btnAddCart.getNode().classList.remove('btn-primary')
+      : this.btnAddCart.addClass(['btn-primary']);
   }
 
   private addPrices(price: number, discount?: number): BaseComponent<'div'> {
@@ -151,5 +178,49 @@ export default class ProductUI {
       attribute.getNode().innerHTML = `<b class="attribute-name">${attr.name}: </b>${attr.value}`;
     });
     container.append(attributesContainer);
+  }
+
+  private addOrRemoveProductInCart(): void {
+    const cartId = localStorage.getItem('comforto-cart-id') ?? '';
+    if (this.isProductInCart) {
+      this.lineItemId &&
+        changeLineItemQuantity(cartId, this.lineItemId, 0, CartView.cartVersion)
+          .then((data) => {
+            this.showAlert(false);
+            CartView.cartVersion = data.body.version;
+            this.isProductInCart = false;
+            this.setButtonToCardContent();
+          })
+          .catch(console.log);
+    } else {
+      getCart(cartId)
+        .then(async (data) => {
+          await addProductInCart(cartId, data.body.version, this.id).then((data) => {
+            this.showAlert();
+            this.updateDataAfterAddProductInCart(data.body);
+          });
+        })
+        .catch(() => {
+          createCart([{ productId: this.id }])
+            .then((data) => {
+              saveNewCartId(data);
+              this.showAlert();
+              this.updateDataAfterAddProductInCart(data.body);
+            })
+            .catch(console.log);
+        });
+    }
+  }
+
+  private updateDataAfterAddProductInCart(newData: Cart): void {
+    this.lineItemId = newData.lineItems.find((item) => item.productId === this.id)?.id;
+    this.isProductInCart = true;
+    this.setButtonToCardContent();
+    CartView.cartVersion = newData.version;
+  }
+
+  private showAlert(isAdding = true): void {
+    const alert = new Alert(true, isAdding ? 'Product add to shopping cart' : 'Product remove from shopping cart');
+    alert.setAlertOnPage();
   }
 }
