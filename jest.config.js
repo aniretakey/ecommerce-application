@@ -10,6 +10,7 @@ module.exports = {
     '^@pages/(.*)$': '<rootDir>/src/pages/$1',
     '^@app/(.*)$': '<rootDir>/src/app/$1',
     '^@assets/logo.png$': '<rootDir>/src/tests/imageStub.ts',
+    '^@assets/img/basket/(.*)$': '<rootDir>/src/tests/imageStub.ts',
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/assets/logo.png',
   },
   collectCoverageFrom: ['src/*/*/*', 'src/*/*', 'src/*'],
