@@ -1,0 +1,37 @@
+.nav {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 1.5rem;
+}
+
+.navbar__logo {
+  background-image: url('../../assets/logo-header.png');
+  width: 60px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.nav__list-start.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.nav__sublist-end {
+  width: 130px;
+}
+
+.nav-link {
+  margin: 0 auto;
+
+  @media screen and (max-width: 768px) {
+    padding: 8px;
+  }
+}
+
+.navbar__link-logo {
+  @media screen and (max-width: 768px) {
+    padding: 0 5px 0 0;
+  }
+}

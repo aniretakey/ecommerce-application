@@ -1,0 +1,140 @@
+img {
+  border-radius: 8px;
+}
+
+.description {
+  text-align: center;
+  color: #afadb5;
+  font-size: 1.2rem;
+}
+
+.main-title {
+  margin: 50px auto 30px;
+  max-width: 740px;
+}
+
+.main__description {
+  max-width: 800px;
+  margin: 30px auto;
+}
+
+.main__wide-img {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.popular-products,
+.products-creating {
+  margin: 50px auto 0;
+}
+
+.popular-products__title {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.popular-products__description {
+  margin: 30px auto;
+}
+
+.carousel-main {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.carousel-main .carousel-item-main {
+  max-width: 300px !important;
+  margin: 0 15px;
+}
+
+.carousel-main .carousel-item-main img {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.products-creating {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.products-creating__block {
+  max-width: 48%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  @media screen and (max-width: 768px) {
+    max-width: 100%;
+  }
+}
+
+.products-creating__title,
+.products-creating__description {
+  text-align: left;
+
+  @media screen and (max-width: 768px) {
+    text-align: center;
+  }
+}
+
+.products-creating__tags {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.products-creating__tag {
+  display: flex;
+  flex-direction: column;
+  margin: 0 1rem;
+  font-size: 1.5rem;
+  line-height: 130%;
+
+  @media screen and (max-width: 768px) {
+    font-size: 1rem;
+  }
+}
+
+.products-creating__num {
+  font-weight: 600;
+  font-size: 2rem;
+  margin: 10px 0;
+}
+
+.products-creating__img {
+  margin: 10px 0;
+}
+
+.promo-code-section {
+  margin: 50px auto 0;
+  padding: 15px;
+  background: radial-gradient(
+    circle,
+    rgba(63, 94, 251, 1) 0%,
+    rgba(237, 169, 51, 1) 0%,
+    rgba(224, 85, 43, 1) 100%,
+    rgba(232, 13, 13, 1) 100%
+  );
+  min-height: 185px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.promo-code-section__title,
+.promo-code__bold {
+  color: #9f0f0f;
+}
+
+.promo-code-section__description {
+  color: wheat;
+  font-size: 1.4rem;
+}

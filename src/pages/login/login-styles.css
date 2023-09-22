@@ -1,0 +1,61 @@
+.form-field-container {
+  display: flex;
+  flex-direction: column;
+}
+.error-message {
+  color: red;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.login__show-pw-container {
+  align-items: center;
+}
+
+.login__show-pw-label {
+  position: relative;
+  line-height: 35px;
+  cursor: pointer;
+  padding-left: 40px;
+  user-select: none;
+}
+
+#loginshow-pw {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+  max-width: 100px;
+}
+.login__show-pw-label::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 35px;
+  height: 35px;
+  background: url('../../assets/icons/eye.png') no-repeat;
+  background-size: contain;
+  opacity: 1;
+}
+.login__show-pw-label::after {
+  content: '';
+  position: absolute;
+  top: 40%;
+  left: 0;
+  width: 35px;
+  height: 4px;
+  background-color: black;
+  border: 1px solid white;
+  border-radius: 40px;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+
+.login__show-pw-label:has(+ #loginshow-pw:checked)::after {
+  opacity: 1;
+}
+
+.login__email-container,
+.login__password-container {
+  width: 250px;
+}
